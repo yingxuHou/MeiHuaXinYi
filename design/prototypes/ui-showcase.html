@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI美化展示 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/starry-theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="starry-bg min-h-screen">
+    <!-- 星座装饰元素 -->
+    <div class="constellation-decoration"></div>
+    
+    <!-- 星盘装饰圆环 -->
+    <div class="astral-ring astral-ring-1"></div>
+    <div class="astral-ring astral-ring-2"></div>
+    
+    <!-- 星座符号装饰 -->
+    <div class="zodiac-symbol">♈</div>
+    <div class="zodiac-symbol">♌</div>
+    <div class="zodiac-symbol">♐</div>
+    <div class="zodiac-symbol">♓</div>
+    
+    <div class="max-w-md mx-auto bg-transparent min-h-screen relative z-10">
+        <!-- 标题 -->
+        <div class="text-center py-8">
+            <div class="w-20 h-20 mx-auto mb-4 enhanced-taiji cosmic-glow rounded-full flex items-center justify-center" 
+                 style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+                <i class="fas fa-yin-yang text-3xl text-primary"></i>
+            </div>
+            <h1 class="text-2xl font-bold mystical-text mb-2">✦ UI美化展示 ✦</h1>
+            <p class="mystical-text-secondary">梅花心易 - 玄学神秘星空主题</p>
+        </div>
+
+        <!-- 导航菜单 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border">
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-star mystical-text-accent mr-2"></i>
+                    页面导航
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="window.open('home.html', '_blank')" 
+                            class="mystical-btn py-3 px-4 rounded-lg text-primary font-medium text-sm">
+                        ✦ 主界面 ✦
+                    </button>
+                    <button onclick="window.open('login.html', '_blank')" 
+                            class="mystical-btn py-3 px-4 rounded-lg text-primary font-medium text-sm">
+                        ✦ 登录页 ✦
+                    </button>
+                    <button onclick="window.open('register.html', '_blank')" 
+                            class="mystical-btn py-3 px-4 rounded-lg text-primary font-medium text-sm">
+                        ✦ 注册页 ✦
+                    </button>
+                    <button onclick="window.open('question-input.html', '_blank')" 
+                            class="mystical-btn py-3 px-4 rounded-lg text-primary font-medium text-sm">
+                        ✦ 问题输入 ✦
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设计特色展示 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border relative overflow-hidden">
+                <!-- 装饰星光 -->
+                <div class="absolute top-2 right-2 text-yellow-300/40">
+                    <i class="fas fa-sparkles text-xs"></i>
+                </div>
+                
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-palette mystical-text-accent mr-2"></i>
+                    设计特色
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-400/30 to-purple-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-moon mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">深色星空背景，营造神秘氛围</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-yellow-400/30 to-orange-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-star mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">星座符号装饰，增加易学元素</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-green-400/30 to-emerald-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-sparkles mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">发光效果，体现神秘感</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-pink-400/30 to-red-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-yin-yang mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">保留太极等传统易学图标</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 组件展示 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border">
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-cube mystical-text-accent mr-2"></i>
+                    组件展示
+                </h3>
+                
+                <!-- 神秘按钮 -->
+                <div class="mb-4">
+                    <p class="mystical-text-secondary text-sm mb-2">神秘按钮：</p>
+                    <button class="mystical-btn py-3 px-6 rounded-lg text-primary font-medium">
+                        ✦ 神秘按钮效果 ✦
+                    </button>
+                </div>
+                
+                <!-- 神秘输入框 -->
+                <div class="mb-4">
+                    <p class="mystical-text-secondary text-sm mb-2">神秘输入框：</p>
+                    <input type="text" placeholder="请输入内容..." 
+                           class="mystical-input w-full py-3 px-4 rounded-lg">
+                </div>
+                
+                <!-- 发光图标 -->
+                <div class="mb-4">
+                    <p class="mystical-text-secondary text-sm mb-2">发光图标：</p>
+                    <div class="flex space-x-4">
+                        <i class="fas fa-star mystical-text-accent text-2xl cosmic-glow"></i>
+                        <i class="fas fa-moon mystical-text-accent text-2xl cosmic-glow"></i>
+                        <i class="fas fa-sun mystical-text-accent text-2xl cosmic-glow"></i>
+                        <i class="fas fa-yin-yang mystical-text-accent text-2xl cosmic-glow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技术说明 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border">
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-code mystical-text-accent mr-2"></i>
+                    技术实现
+                </h3>
+                <div class="space-y-2 text-sm mystical-text-secondary">
+                    <p>✧ <strong>CSS动画</strong>：星空闪烁、浮动、发光效果</p>
+                    <p>✧ <strong>玻璃拟态</strong>：backdrop-filter实现毛玻璃效果</p>
+                    <p>✧ <strong>渐变背景</strong>：深色星空主题渐变</p>
+                    <p>✧ <strong>响应式设计</strong>：适配移动端320px-414px</p>
+                    <p>✧ <strong>性能优化</strong>：使用transform和opacity优化动画</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用说明 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border">
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-info-circle mystical-text-accent mr-2"></i>
+                    使用说明
+                </h3>
+                <div class="space-y-2 text-sm mystical-text-secondary">
+                    <p>1. 所有页面已升级为星空神秘主题</p>
+                    <p>2. 保持原有功能逻辑完全不变</p>
+                    <p>3. 添加了星座装饰和发光效果</p>
+                    <p>4. 支持移动端响应式显示</p>
+                    <p>5. 点击上方按钮可查看各页面效果</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部装饰 -->
+        <div class="text-center py-8">
+            <div class="flex justify-center space-x-6 mb-4">
+                <i class="fas fa-star mystical-text-accent text-lg opacity-60 cosmic-glow"></i>
+                <i class="fas fa-sparkles mystical-text-accent text-sm opacity-40"></i>
+                <i class="fas fa-moon mystical-text-accent text-lg opacity-60 cosmic-glow"></i>
+                <i class="fas fa-sparkles mystical-text-accent text-sm opacity-40"></i>
+                <i class="fas fa-star mystical-text-accent text-lg opacity-60 cosmic-glow"></i>
+            </div>
+            <p class="mystical-text-secondary text-xs">
+                ✦ 梅花心易 - 神秘星空主题 ✦
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有按钮添加点击效果
+            const buttons = document.querySelectorAll('.mystical-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

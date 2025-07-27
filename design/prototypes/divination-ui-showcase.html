@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜界面美化展示 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/starry-theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="starry-bg min-h-screen">
+    <!-- 星座装饰元素 -->
+    <div class="constellation-decoration"></div>
+    
+    <!-- 星盘装饰圆环 -->
+    <div class="astral-ring astral-ring-1"></div>
+    <div class="astral-ring astral-ring-2"></div>
+    
+    <!-- 星座符号装饰 -->
+    <div class="zodiac-symbol">♈</div>
+    <div class="zodiac-symbol">♌</div>
+    <div class="zodiac-symbol">♐</div>
+    <div class="zodiac-symbol">♓</div>
+    
+    <div class="max-w-md mx-auto bg-transparent min-h-screen relative z-10">
+        <!-- 标题 -->
+        <div class="text-center py-8">
+            <div class="w-20 h-20 mx-auto mb-4 enhanced-taiji cosmic-glow rounded-full flex items-center justify-center" 
+                 style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+                <i class="fas fa-yin-yang text-3xl text-primary"></i>
+            </div>
+            <h1 class="text-2xl font-bold mystical-text mb-2">✦ 占卜界面美化展示 ✦</h1>
+            <p class="mystical-text-secondary">梅花心易 - 占卜结果界面升级</p>
+        </div>
+
+        <!-- 页面导航 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border">
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-crystal-ball mystical-text-accent mr-2"></i>
+                    占卜界面导航
+                </h3>
+                <div class="space-y-3">
+                    <button onclick="window.open('divination-result.html', '_blank')" 
+                            class="mystical-btn w-full py-3 px-4 rounded-lg text-primary font-medium">
+                        <i class="fas fa-scroll mr-2"></i>
+                        ✦ 占卜结果展示页面 ✦
+                    </button>
+                    <button onclick="window.open('divination-loading.html', '_blank')" 
+                            class="mystical-btn w-full py-3 px-4 rounded-lg text-primary font-medium">
+                        <i class="fas fa-hourglass-half mr-2"></i>
+                        ✦ 占卜进行中页面 ✦
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 美化特色展示 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border relative overflow-hidden">
+                <!-- 装饰星光 -->
+                <div class="absolute top-2 right-2 text-yellow-300/40">
+                    <i class="fas fa-sparkles text-xs"></i>
+                </div>
+                
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-magic mystical-text-accent mr-2"></i>
+                    占卜界面美化特色
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-purple-400/30 to-indigo-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-scroll mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">卦象展示：渐变线条 + 发光效果</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-400/30 to-cyan-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">AI解读：神秘卡片 + 星光装饰</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-green-400/30 to-emerald-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">时间建议：蓝色渐变 + 时钟图标</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-yellow-400/30 to-orange-500/30 rounded-full flex items-center justify-center">
+                            <i class="fas fa-yin-yang mystical-text-accent text-sm"></i>
+                        </div>
+                        <span class="mystical-text-secondary text-sm">太极图标：增强效果 + 宇宙发光</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 卦象演示 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border relative overflow-hidden" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);">
+                <!-- 装饰星光 -->
+                <div class="absolute top-3 right-3 text-yellow-300/50">
+                    <i class="fas fa-yin-yang text-lg cosmic-glow"></i>
+                </div>
+                
+                <h3 class="mystical-text font-semibold mb-4 flex items-center justify-center">
+                    <i class="fas fa-scroll mr-2 mystical-text-accent"></i>
+                    卦象展示演示
+                    <i class="fas fa-scroll ml-2 mystical-text-accent"></i>
+                </h3>
+                
+                <!-- 演示卦象 -->
+                <div class="flex justify-center space-x-6 mb-4">
+                    <!-- 本卦演示 -->
+                    <div class="text-center">
+                        <h4 class="text-sm font-medium mystical-text mb-3 flex items-center justify-center">
+                            <i class="fas fa-sun mr-1 mystical-text-accent text-xs"></i>
+                            本卦
+                        </h4>
+                        <div class="space-y-1 p-2 bg-black/10 rounded-lg">
+                            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-1 w-10 rounded mx-auto cosmic-glow"></div>
+                            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-1 w-10 rounded mx-auto cosmic-glow"></div>
+                            <div class="flex space-x-1 justify-center">
+                                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-1 w-4 rounded cosmic-glow"></div>
+                                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-1 w-4 rounded cosmic-glow"></div>
+                            </div>
+                        </div>
+                        <p class="text-xs mystical-text-secondary mt-2">天火同人</p>
+                    </div>
+                    
+                    <!-- 箭头 -->
+                    <div class="flex items-center">
+                        <i class="fas fa-arrow-right mystical-text-accent text-lg cosmic-glow"></i>
+                    </div>
+                    
+                    <!-- 变卦演示 -->
+                    <div class="text-center">
+                        <h4 class="text-sm font-medium mystical-text mb-3 flex items-center justify-center">
+                            <i class="fas fa-mountain mr-1 mystical-text-accent text-xs"></i>
+                            变卦
+                        </h4>
+                        <div class="space-y-1 p-2 bg-black/10 rounded-lg">
+                            <div class="bg-gradient-to-r from-gray-300 to-gray-400 h-1 w-10 rounded mx-auto"></div>
+                            <div class="bg-gradient-to-r from-gray-300 to-gray-400 h-1 w-10 rounded mx-auto"></div>
+                            <div class="bg-gradient-to-r from-gray-300 to-gray-400 h-1 w-10 rounded mx-auto"></div>
+                        </div>
+                        <p class="text-xs mystical-text-secondary mt-2">天山遁</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技术实现说明 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border">
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-code mystical-text-accent mr-2"></i>
+                    技术实现亮点
+                </h3>
+                <div class="space-y-2 text-sm mystical-text-secondary">
+                    <p>✧ <strong>样式统一</strong>：使用starry-theme.css确保风格一致</p>
+                    <p>✧ <strong>功能保持</strong>：所有占卜逻辑和数据结构不变</p>
+                    <p>✧ <strong>视觉增强</strong>：卦象线条渐变 + 发光效果</p>
+                    <p>✧ <strong>交互优化</strong>：按钮悬停和点击反馈</p>
+                    <p>✧ <strong>响应式设计</strong>：完美适配移动端显示</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 对比说明 -->
+        <div class="px-6 mb-8">
+            <div class="mystical-card rounded-2xl p-6 starlight-border">
+                <h3 class="mystical-text font-semibold mb-4 flex items-center">
+                    <i class="fas fa-balance-scale mystical-text-accent mr-2"></i>
+                    升级对比
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <h4 class="mystical-text text-sm font-medium mb-1">升级前：</h4>
+                        <p class="mystical-text-secondary text-xs">简洁白色卡片 + 基础渐变背景 + 标准UI组件</p>
+                    </div>
+                    <div>
+                        <h4 class="mystical-text text-sm font-medium mb-1">升级后：</h4>
+                        <p class="mystical-text-secondary text-xs">神秘星空主题 + 玻璃质感卡片 + 发光效果装饰</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部装饰 -->
+        <div class="text-center py-8">
+            <div class="flex justify-center space-x-6 mb-4">
+                <i class="fas fa-crystal-ball mystical-text-accent text-lg opacity-60 cosmic-glow"></i>
+                <i class="fas fa-sparkles mystical-text-accent text-sm opacity-40"></i>
+                <i class="fas fa-scroll mystical-text-accent text-lg opacity-60 cosmic-glow"></i>
+                <i class="fas fa-sparkles mystical-text-accent text-sm opacity-40"></i>
+                <i class="fas fa-yin-yang mystical-text-accent text-lg opacity-60 cosmic-glow"></i>
+            </div>
+            <p class="mystical-text-secondary text-xs">
+                ✦ 梅花心易 - 占卜界面星空主题升级 ✦
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 添加交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有按钮添加点击效果
+            const buttons = document.querySelectorAll('.mystical-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

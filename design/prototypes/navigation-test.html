@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航测试 - 梅花心易</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .nav-link {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            background: #1e3a8a;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        .nav-link:hover {
+            background: #312e81;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .file-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .file-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .file-list li {
+            margin: 5px 0;
+        }
+        .deleted {
+            color: #dc3545;
+            text-decoration: line-through;
+        }
+        .kept {
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 梅花心易原型导航测试</h1>
+        <p>此页面用于测试原型目录清理后的导航功能完整性</p>
+
+        <!-- 清理结果展示 -->
+        <div class="test-section">
+            <h3>📋 文件清理结果</h3>
+            <div class="status success">
+                ✅ 文件清理完成！已删除冗余文件，保留最佳版本
+            </div>
+            
+            <div class="file-list">
+                <h4>🗑️ 已删除的文件：</h4>
+                <ul>
+                    <li class="deleted">register-fixed.html (第一次修复版本)</li>
+                    <li class="deleted">register-minimal.html (简化版本)</li>
+                    <li class="deleted">register-debug.html (调试版本)</li>
+                    <li class="deleted">register-diagnostic.html (诊断工具)</li>
+                    <li class="deleted">debug.html (通用调试页面)</li>
+                    <li class="deleted">index-simple.html (简化主页)</li>
+                    <li class="deleted">REGISTER_TROUBLESHOOTING.md (文档)</li>
+                    <li class="deleted">TROUBLESHOOTING.md (文档)</li>
+                </ul>
+
+                <h4>✅ 保留的核心文件：</h4>
+                <ul>
+                    <li class="kept">register.html (优化后的注册页面)</li>
+                    <li class="kept">login.html (登录页面)</li>
+                    <li class="kept">index.html (主页)</li>
+                    <li class="kept">profile-setup.html (资料完善)</li>
+                    <li class="kept">home.html (应用首页)</li>
+                    <li class="kept">其他功能页面...</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 主要页面导航测试 -->
+        <div class="test-section">
+            <h3>🔗 主要页面导航测试</h3>
+            <p>点击以下链接测试页面间的导航是否正常：</p>
+            
+            <a href="index.html" class="nav-link">🏠 主页</a>
+            <a href="register.html" class="nav-link">📝 注册页面</a>
+            <a href="login.html" class="nav-link">🔐 登录页面</a>
+            <a href="profile-setup.html" class="nav-link">👤 资料完善</a>
+            <a href="home.html" class="nav-link">🏡 应用首页</a>
+            
+            <div class="status info">
+                💡 提示：每个页面都应该能正常加载，且页面内的链接应该指向正确的目标页面
+            </div>
+        </div>
+
+        <!-- 功能页面测试 -->
+        <div class="test-section">
+            <h3>⚡ 功能页面测试</h3>
+            <p>测试应用的核心功能页面：</p>
+            
+            <a href="question-input.html" class="nav-link">❓ 问题输入</a>
+            <a href="divination-loading.html" class="nav-link">⏳ 占卜进行中</a>
+            <a href="divination-result.html" class="nav-link">🔮 占卜结果</a>
+            <a href="history.html" class="nav-link">📚 历史记录</a>
+            <a href="user-center.html" class="nav-link">👤 用户中心</a>
+        </div>
+
+        <!-- 模态框和组件测试 -->
+        <div class="test-section">
+            <h3>🎨 组件和模态框测试</h3>
+            <p>测试独立的组件和模态框：</p>
+            
+            <a href="free-quota-modal.html" class="nav-link">🎁 免费额度弹窗</a>
+            <a href="result-actions-modal.html" class="nav-link">⚙️ 结果操作弹窗</a>
+            <a href="prototypes-showcase.html" class="nav-link">🎭 原型展示</a>
+        </div>
+
+        <!-- 开发工具测试 -->
+        <div class="test-section">
+            <h3>🛠️ 开发工具测试</h3>
+            <p>测试开发和调试相关的工具：</p>
+            
+            <a href="test-flow.html" class="nav-link">🔄 交互流程测试</a>
+            <a href="server.js" class="nav-link" target="_blank">🖥️ 本地服务器脚本</a>
+            
+            <div class="status info">
+                💡 提示：这些工具主要用于开发阶段，生产环境可以移除
+            </div>
+        </div>
+
+        <!-- 验证清单 -->
+        <div class="test-section">
+            <h3>✅ 验证清单</h3>
+            <p>请确认以下项目都正常工作：</p>
+            
+            <div style="margin-top: 15px;">
+                <label><input type="checkbox"> 主页 (index.html) 加载正常</label><br>
+                <label><input type="checkbox"> 注册页面显示完整表单（手机号、验证码、密码输入框）</label><br>
+                <label><input type="checkbox"> 注册页面的手机/邮箱切换标签正常工作</label><br>
+                <label><input type="checkbox"> 登录页面加载正常</label><br>
+                <label><input type="checkbox"> 页面间的链接跳转正常</label><br>
+                <label><input type="checkbox"> 所有功能页面都能正常访问</label><br>
+                <label><input type="checkbox"> JavaScript功能正常（按钮点击、表单验证等）</label><br>
+                <label><input type="checkbox"> 样式显示正常（背景、颜色、布局等）</label><br>
+            </div>
+        </div>
+
+        <!-- 返回主页 -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" class="nav-link" style="font-size: 18px; padding: 15px 30px;">
+                🏠 返回主页开始体验
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 简单的页面加载统计
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('导航测试页面加载完成');
+            
+            // 统计链接数量
+            const links = document.querySelectorAll('.nav-link');
+            console.log(`共有 ${links.length} 个导航链接`);
+            
+            // 为每个链接添加点击统计
+            links.forEach((link, index) => {
+                link.addEventListener('click', function() {
+                    console.log(`点击了第 ${index + 1} 个链接: ${this.textContent.trim()}`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

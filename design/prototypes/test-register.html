@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册功能测试 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-center mb-8 text-primary">注册功能测试</h1>
+            
+            <!-- 测试说明 -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-blue-800 mb-2">演示版本测试说明</h3>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>• <strong>登录测试</strong>：点击登录按钮，无需填写信息即可进入</li>
+                    <li>• <strong>注册测试</strong>：只需填写邮箱，立即完成注册</li>
+                    <li>• <strong>演示数据</strong>：邮箱可填写任意格式（如：demo@test.com）</li>
+                    <li>• <strong>直接体验</strong>：注册/登录后直接进入主界面</li>
+                    <li>• <strong>免费次数</strong>：自动获得10次占卜机会</li>
+                </ul>
+            </div>
+
+            <!-- 演示版本说明 -->
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-green-800 mb-2">🚀 演示版本特性</h3>
+                <ul class="text-sm text-green-700 space-y-1">
+                    <li>• <strong>一键登录</strong>：无需输入账号密码，直接体验</li>
+                    <li>• <strong>快速注册</strong>：只需填写邮箱，立即开始使用</li>
+                    <li>• <strong>自动设置</strong>：演示用户 + 10次免费占卜</li>
+                    <li>• <strong>跳过复杂流程</strong>：直接进入核心功能</li>
+                </ul>
+            </div>
+
+            <!-- 修复说明 -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-blue-800 mb-2">✅ 已修复问题</h3>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>• 登录页面输入框颜色：白色背景 + 深色文字</li>
+                    <li>• 注册页面输入框颜色：白色背景 + 深色文字</li>
+                    <li>• 登录功能：支持一键演示登录</li>
+                    <li>• 注册流程：简化为单步快速注册</li>
+                </ul>
+            </div>
+
+            <!-- 测试按钮 -->
+            <div class="space-y-4">
+                <button onclick="testRegisterFlow()" class="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-800 transition-colors">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    开始注册流程测试
+                </button>
+
+                <button onclick="testLoginFlow()" class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    开始登录流程测试
+                </button>
+
+                <button onclick="checkAppState()" class="w-full py-3 bg-secondary text-primary font-semibold rounded-lg hover:bg-yellow-300 transition-colors">
+                    <i class="fas fa-search mr-2"></i>
+                    检查应用状态
+                </button>
+
+                <button onclick="resetAppState()" class="w-full py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors">
+                    <i class="fas fa-trash mr-2"></i>
+                    重置应用状态
+                </button>
+            </div>
+
+            <!-- 状态显示 -->
+            <div id="status-display" class="mt-6 p-4 bg-gray-50 rounded-lg hidden">
+                <h3 class="font-semibold mb-2">当前状态：</h3>
+                <pre id="status-content" class="text-xs text-gray-600 whitespace-pre-wrap"></pre>
+            </div>
+
+            <!-- 返回链接 -->
+            <div class="text-center mt-6">
+                <a href="index.html" class="text-primary hover:text-blue-800 transition-colors">
+                    <i class="fas fa-arrow-left mr-1"></i>
+                    返回首页
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 等待应用初始化
+        function waitForApp() {
+            return new Promise((resolve) => {
+                function check() {
+                    if (window.app && window.app.isInitialized) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                }
+                check();
+            });
+        }
+
+        // 测试注册流程
+        async function testRegisterFlow() {
+            try {
+                await waitForApp();
+                console.log('开始测试注册流程...');
+
+                // 跳转到注册页面
+                if (window.router) {
+                    window.router.navigate('register');
+                } else {
+                    window.location.href = 'register.html';
+                }
+            } catch (error) {
+                console.error('测试注册流程失败:', error);
+                alert('测试失败: ' + error.message);
+            }
+        }
+
+        // 测试登录流程
+        async function testLoginFlow() {
+            try {
+                await waitForApp();
+                console.log('开始测试登录流程...');
+
+                // 跳转到登录页面
+                if (window.router) {
+                    window.router.navigate('login');
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('测试登录流程失败:', error);
+                alert('测试失败: ' + error.message);
+            }
+        }
+
+        // 检查应用状态
+        async function checkAppState() {
+            try {
+                await waitForApp();
+                
+                const state = window.appState.getState();
+                const statusDisplay = document.getElementById('status-display');
+                const statusContent = document.getElementById('status-content');
+                
+                statusContent.textContent = JSON.stringify(state, null, 2);
+                statusDisplay.classList.remove('hidden');
+                
+                console.log('当前应用状态:', state);
+            } catch (error) {
+                console.error('检查状态失败:', error);
+                alert('检查状态失败: ' + error.message);
+            }
+        }
+
+        // 重置应用状态
+        async function resetAppState() {
+            try {
+                await waitForApp();
+                
+                if (confirm('确定要重置应用状态吗？这将清除所有用户数据。')) {
+                    window.appState.reset();
+                    alert('应用状态已重置');
+                    
+                    // 刷新状态显示
+                    checkAppState();
+                }
+            } catch (error) {
+                console.error('重置状态失败:', error);
+                alert('重置状态失败: ' + error.message);
+            }
+        }
+
+        // 页面加载完成后自动检查状态
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                checkAppState();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

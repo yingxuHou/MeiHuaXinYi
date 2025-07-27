@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>梅花心易 - 原型展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+        .prototype-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .prototype-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .prototype-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- 页面标题 -->
+    <div class="bg-gradient-to-r from-primary to-mystic text-white py-8">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold mb-4">梅花心易占卜应用</h1>
+                    <p class="text-xl opacity-90">高保真HTML原型展示</p>
+                    <p class="text-sm opacity-75 mt-2">基于传统梅花易数的AI智能占卜决策助手</p>
+                </div>
+                <button onclick="window.location.href='index.html'" 
+                        class="px-6 py-3 bg-secondary text-primary font-semibold rounded-xl hover:bg-yellow-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    返回应用
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 原型展示区域 -->
+    <div class="prototype-grid">
+        <!-- 注册登录界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">用户注册登录</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="register.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 登录界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">用户登录</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="login.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 完善资料界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">完善个人资料</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="profile-setup.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 首页界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">应用首页</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="home.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 免费次数弹窗 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">每日免费次数提醒</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="free-quota-modal.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题输入界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">问题输入</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="question-input.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 占卜进行中界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">占卜进行中</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="divination-loading.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 占卜结果界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">占卜结果展示</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="divination-result.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果操作弹窗 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">结果操作选择</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="result-actions-modal.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">历史记录</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="history.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户中心界面 -->
+        <div class="prototype-item">
+            <h2 class="prototype-title">用户中心</h2>
+            <div class="phone-frame">
+                <div class="notch"></div>
+                <div class="phone-screen">
+                    <iframe src="user-center.html" width="100%" height="100%" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚信息 -->
+    <div class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-width-4xl mx-auto px-4 text-center">
+            <h3 class="text-lg font-semibold mb-4">技术栈说明</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                    <strong>前端框架：</strong><br>
+                    HTML5 + Tailwind CSS
+                </div>
+                <div>
+                    <strong>图标库：</strong><br>
+                    FontAwesome 6.4.0
+                </div>
+                <div>
+                    <strong>图片来源：</strong><br>
+                    Unsplash + Pexels
+                </div>
+            </div>
+            <p class="text-xs opacity-75 mt-4">
+                本原型采用移动优先设计，模拟iPhone设备外观，专为梅花心易占卜应用设计
+            </p>
+        </div>
+    </div>
+</body>
+</html>

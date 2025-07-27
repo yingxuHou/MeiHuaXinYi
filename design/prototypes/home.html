@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/starry-theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="starry-bg min-h-screen">
+    <!-- 星座装饰元素 -->
+    <div class="constellation-decoration"></div>
+
+    <!-- 星盘装饰圆环 -->
+    <div class="astral-ring astral-ring-1"></div>
+    <div class="astral-ring astral-ring-2"></div>
+
+    <!-- 星座符号装饰 -->
+    <div class="zodiac-symbol">♈</div>
+    <div class="zodiac-symbol">♌</div>
+    <div class="zodiac-symbol">♐</div>
+    <div class="zodiac-symbol">♓</div>
+
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+
+    <!-- 顶部导航栏 -->
+    <div class="starry-bg px-6 py-4 relative z-10">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full enhanced-taiji cosmic-glow flex items-center justify-center" style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+                    <i class="fas fa-yin-yang text-primary"></i>
+                </div>
+                <div>
+                    <h2 class="mystical-text font-medium">易学爱好者</h2>
+                    <p class="mystical-text-secondary text-xs">✦ 今日运势：大吉 ✦</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell mystical-text-accent text-xl cosmic-glow"></i>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-red-400 to-pink-500 rounded-full animate-pulse"></div>
+                </div>
+                <button onclick="window.location.href='user-center.html'" class="mystical-text-accent hover:scale-110 transition-transform">
+                    <i class="fas fa-user-circle text-xl cosmic-glow"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要功能区域 -->
+    <div class="px-6 mb-8 mt-8">
+        <!-- 免费次数卡片 - 星空神秘主题 -->
+        <div class="mb-6 mt-4 relative">
+            <div class="mystical-card rounded-2xl p-6 starlight-border relative overflow-hidden">
+                <!-- 星光装饰 -->
+                <div class="absolute top-2 right-2 text-yellow-300 opacity-60">
+                    <i class="fas fa-star text-xs"></i>
+                </div>
+                <div class="absolute bottom-2 left-2 text-yellow-300 opacity-40">
+                    <i class="fas fa-sparkles text-xs"></i>
+                </div>
+
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <h3 class="text-lg font-bold mystical-text mb-1 flex items-center">
+                            <i class="fas fa-moon mr-2 mystical-text-accent"></i>
+                            免费占卜次数
+                        </h3>
+                        <p class="mystical-text-secondary text-sm">✧ 今日剩余次数 ✧</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold mystical-text-accent cosmic-glow">8</div>
+                        <p class="text-xs mystical-text-secondary">共10次</p>
+                    </div>
+                </div>
+                <div class="mt-4 bg-black/20 rounded-full h-3 overflow-hidden">
+                    <div class="bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 h-3 rounded-full cosmic-glow" style="width: 80%; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);"></div>
+                </div>
+                <button onclick="showFreeQuotaModal()" class="mt-3 mystical-text-accent text-sm font-medium flex items-center hover:scale-105 transition-transform">
+                    <i class="fas fa-gift mr-2 cosmic-glow"></i>
+                    ✦ 分享获得更多次数 ✦
+                </button>
+            </div>
+        </div>
+        <!-- 开始占卜按钮 - 神秘星空主题 -->
+        <div class="relative mb-8">
+            <!-- 外层光环效果 -->
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full pulse-ring opacity-30"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow-300 to-yellow-400 rounded-full pulse-ring opacity-20" style="animation-delay: 0.5s;"></div>
+
+            <button onclick="window.location.href='question-input.html'"
+                    class="mystical-btn relative w-full py-6 rounded-full text-primary font-bold text-xl flex items-center justify-center space-x-3 overflow-hidden">
+                <!-- 背景星光效果 -->
+                <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 opacity-90"></div>
+
+                <!-- 内容 -->
+                <div class="relative z-10 flex items-center space-x-3">
+                    <i class="fas fa-yin-yang text-2xl enhanced-taiji"></i>
+                    <span class="tracking-wide">✦ 开始占卜 ✦</span>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+
+                <!-- 装饰星星 -->
+                <div class="absolute top-2 left-4 text-primary/30">
+                    <i class="fas fa-star text-xs"></i>
+                </div>
+                <div class="absolute bottom-2 right-4 text-primary/30">
+                    <i class="fas fa-star text-xs"></i>
+                </div>
+            </button>
+        </div>
+
+        <!-- 快捷功能 - 星空神秘主题 -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <button onclick="window.location.href='history.html'"
+                    class="mystical-card rounded-xl p-4 starlight-border flex flex-col items-center space-y-2 relative overflow-hidden">
+                <!-- 装饰元素 -->
+                <div class="absolute top-1 right-1 text-yellow-300/30">
+                    <i class="fas fa-sparkles text-xs"></i>
+                </div>
+
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-full flex items-center justify-center cosmic-glow">
+                    <i class="fas fa-history mystical-text-accent text-xl"></i>
+                </div>
+                <span class="mystical-text font-medium">历史记录</span>
+                <span class="mystical-text-secondary text-xs">✧ 查看过往占卜 ✧</span>
+            </button>
+
+            <button class="mystical-card rounded-xl p-4 starlight-border flex flex-col items-center space-y-2 relative overflow-hidden">
+                <!-- 装饰元素 -->
+                <div class="absolute top-1 right-1 text-yellow-300/30">
+                    <i class="fas fa-star text-xs"></i>
+                </div>
+
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full flex items-center justify-center cosmic-glow">
+                    <i class="fas fa-chart-line mystical-text-accent text-xl"></i>
+                </div>
+                <span class="mystical-text font-medium">运势分析</span>
+                <span class="mystical-text-secondary text-xs">✧ 个人趋势报告 ✧</span>
+            </button>
+        </div>
+
+        <!-- 今日推荐 - 星空神秘主题 -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold mystical-text mb-4 flex items-center">
+                <i class="fas fa-star mystical-text-accent mr-2 cosmic-glow"></i>
+                ✦ 今日推荐 ✦
+            </h3>
+            <div class="space-y-3">
+                <div class="mystical-card rounded-xl p-4 starlight-border relative overflow-hidden">
+                    <!-- 装饰星光 -->
+                    <div class="absolute top-2 right-2 text-yellow-300/40">
+                        <i class="fas fa-heart text-xs"></i>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400/30 to-red-500/30 flex items-center justify-center cosmic-glow">
+                            <i class="fas fa-heart mystical-text-accent"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium mystical-text">感情运势占卜</h4>
+                            <p class="mystical-text-secondary text-sm">✧ 了解近期感情发展趋势 ✧</p>
+                        </div>
+                        <i class="fas fa-chevron-right mystical-text-accent"></i>
+                    </div>
+                </div>
+
+                <div class="mystical-card rounded-xl p-4 starlight-border relative overflow-hidden">
+                    <!-- 装饰星光 -->
+                    <div class="absolute top-2 right-2 text-yellow-300/40">
+                        <i class="fas fa-briefcase text-xs"></i>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400/30 to-emerald-500/30 flex items-center justify-center cosmic-glow">
+                            <i class="fas fa-briefcase mystical-text-accent"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium mystical-text">事业发展指引</h4>
+                            <p class="mystical-text-secondary text-sm">✧ 职场决策的智慧建议 ✧</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 易学知识 -->
+        <div class="mb-8">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-book text-secondary mr-2"></i>
+                易学知识
+            </h3>
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4">
+                <div class="flex items-start space-x-3">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center floating-element">
+                        <i class="fas fa-yin-yang text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-800 mb-1">梅花易数的起源</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            梅花易数是宋代易学家邵雍所创，以时间、方位、声音、颜色等自然现象为依据，通过八卦推演来预测事物发展...
+                        </p>
+                        <button class="text-secondary text-sm font-medium mt-2">阅读更多</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3">
+        <div class="flex items-center justify-around">
+            <button class="flex flex-col items-center space-y-1 text-secondary">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs font-medium">首页</span>
+            </button>
+            <button onclick="window.location.href='question-input.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-magic text-xl"></i>
+                <span class="text-xs">占卜</span>
+            </button>
+            <button onclick="window.location.href='history.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-history text-xl"></i>
+                <span class="text-xs">记录</span>
+            </button>
+            <button onclick="window.location.href='user-center.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-xs">我的</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initHomePage();
+        });
+
+        function initHomePage() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                checkAuthStatus();
+                updateUserInfo();
+                updateFreeCount();
+                checkShowFreeQuotaModal();
+            } else {
+                setTimeout(initHomePage, 100);
+            }
+        }
+
+        function checkAuthStatus() {
+            // 检查是否已登录
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (!isLoggedIn) {
+                window.router.navigate('login');
+                return;
+            }
+        }
+
+        function updateUserInfo() {
+            // 更新用户信息显示
+            const nickname = window.appState.getState('user.nickname') || '易学爱好者';
+            const userNameElement = document.querySelector('h2.text-white.font-medium');
+            if (userNameElement) {
+                userNameElement.textContent = nickname;
+            }
+        }
+
+        function updateFreeCount() {
+            // 更新免费次数显示
+            const freeCount = window.appState.getState('app.freeCount');
+            const totalDivinations = window.appState.getState('app.totalDivinations');
+            const currentMonth = window.appState.getState('app.currentMonth');
+
+            // 更新免费次数卡片
+            const freeCountElement = document.querySelector('.text-3xl.font-bold.text-secondary');
+            if (freeCountElement) {
+                freeCountElement.textContent = freeCount;
+            }
+
+            // 更新进度条
+            const progressBar = document.querySelector('.bg-gradient-to-r.from-secondary.to-yellow-500.h-2.rounded-full');
+            if (progressBar) {
+                const percentage = Math.max(0, (freeCount / 10) * 100);
+                progressBar.style.width = `${percentage}%`;
+            }
+
+            // 更新统计数据
+            const statsElements = document.querySelectorAll('.text-2xl.font-bold');
+            if (statsElements.length >= 3) {
+                statsElements[0].textContent = totalDivinations || 0;
+                statsElements[1].textContent = currentMonth || 0;
+                // 连续天数保持原值或计算
+            }
+        }
+
+        function checkShowFreeQuotaModal() {
+            // 检查是否需要显示免费次数弹窗
+            if (window.appState.shouldShowFreeCountModal()) {
+                setTimeout(() => {
+                    showFreeQuotaModal();
+                }, 1000);
+            }
+        }
+
+        function setupEventListeners() {
+            // 开始占卜按钮
+            const startDivinationBtn = document.querySelector('button[onclick*="question-input"]');
+            if (startDivinationBtn) {
+                startDivinationBtn.onclick = null; // 移除原有的onclick
+                startDivinationBtn.addEventListener('click', handleStartDivination);
+            }
+
+            // 免费次数分享按钮
+            const shareBtn = document.querySelector('button[onclick*="showFreeQuotaModal"]');
+            if (shareBtn) {
+                shareBtn.onclick = null;
+                shareBtn.addEventListener('click', showFreeQuotaModal);
+            }
+
+            // 历史记录按钮
+            const historyBtn = document.querySelector('button[onclick*="history.html"]');
+            if (historyBtn) {
+                historyBtn.onclick = null;
+                historyBtn.addEventListener('click', () => window.router.navigate('history'));
+            }
+
+            // 用户中心按钮
+            const userCenterBtn = document.querySelector('button[onclick*="user-center.html"]');
+            if (userCenterBtn) {
+                userCenterBtn.onclick = null;
+                userCenterBtn.addEventListener('click', () => window.router.navigate('user-center'));
+            }
+
+            // 底部导航栏
+            setupBottomNavigation();
+
+            // 监听状态变化
+            window.addEventListener('stateChange', handleStateChange);
+        }
+
+        function setupBottomNavigation() {
+            const navButtons = document.querySelectorAll('.fixed .flex button');
+            navButtons.forEach((button, index) => {
+                button.onclick = null; // 移除原有的onclick
+
+                button.addEventListener('click', function() {
+                    // 更新导航状态
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('text-secondary');
+                        btn.classList.add('text-gray-400');
+                    });
+                    this.classList.remove('text-gray-400');
+                    this.classList.add('text-secondary');
+
+                    // 导航到对应页面
+                    switch(index) {
+                        case 0: // 首页
+                            // 已在首页，不需要跳转
+                            break;
+                        case 1: // 占卜
+                            handleStartDivination();
+                            break;
+                        case 2: // 记录
+                            window.router.navigate('history');
+                            break;
+                        case 3: // 我的
+                            window.router.navigate('user-center');
+                            break;
+                    }
+                });
+            });
+        }
+
+        function handleStartDivination() {
+            // 检查免费次数
+            const freeCount = window.appState.getState('app.freeCount');
+            if (freeCount <= 0) {
+                showFreeQuotaModal();
+                return;
+            }
+
+            // 跳转到问题输入页面
+            window.router.navigate('question-input');
+        }
+
+        function showFreeQuotaModal() {
+            // 创建模态框或跳转到模态框页面
+            window.router.navigate('free-quota-modal');
+        }
+
+        function handleStateChange(detail) {
+            const { path } = detail;
+
+            // 如果免费次数发生变化，更新显示
+            if (path === 'app.freeCount') {
+                updateFreeCount();
+            }
+
+            // 如果用户信息发生变化，更新显示
+            if (path.startsWith('user.')) {
+                updateUserInfo();
+            }
+        }
+
+        // 页面加载动画
+        function initPageAnimations() {
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // 页面加载完成后执行动画
+        window.addEventListener('load', initPageAnimations);
+    </script>
+</body>
+</html>

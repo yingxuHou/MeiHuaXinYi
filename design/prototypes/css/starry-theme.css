@@ -1,0 +1,286 @@
+/* 梅花心易 - 星空玄学主题样式 */
+
+/* 星空背景动画 */
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes float-mystical {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-8px) rotate(2deg); }
+    66% { transform: translateY(4px) rotate(-1deg); }
+}
+
+@keyframes constellation-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.6), 0 0 30px rgba(251, 191, 36, 0.3); }
+}
+
+@keyframes cosmic-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* 星空背景基础 */
+.starry-bg {
+    background: linear-gradient(135deg, 
+        #0a0a23 0%, 
+        #1a1a3e 25%, 
+        #2d1b69 50%, 
+        #1e1e3f 75%, 
+        #0f0f2a 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.starry-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: twinkle 4s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+/* 星座装饰元素 */
+.constellation-decoration {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.constellation-decoration::after {
+    content: '✦ ✧ ⋆ ✦ ✧ ⋆ ✦ ✧ ⋆';
+    position: absolute;
+    top: 10%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgba(251, 191, 36, 0.3);
+    font-size: 12px;
+    letter-spacing: 20px;
+    animation: twinkle 6s ease-in-out infinite;
+}
+
+/* 神秘卡片样式 */
+.mystical-card {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.mystical-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(251, 191, 36, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(251, 191, 36, 0.4);
+}
+
+/* 神秘按钮样式 */
+.mystical-btn {
+    background: linear-gradient(135deg, 
+        rgba(251, 191, 36, 0.9) 0%, 
+        rgba(245, 158, 11, 0.9) 100%);
+    border: 2px solid rgba(251, 191, 36, 0.5);
+    box-shadow: 
+        0 4px 15px rgba(251, 191, 36, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.mystical-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent);
+    transition: left 0.5s ease;
+}
+
+.mystical-btn:hover::before {
+    left: 100%;
+}
+
+.mystical-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(251, 191, 36, 0.4),
+        0 0 20px rgba(251, 191, 36, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* 星座符号装饰 */
+.zodiac-symbol {
+    position: absolute;
+    color: rgba(251, 191, 36, 0.2);
+    font-size: 24px;
+    animation: float-mystical 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.zodiac-symbol:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+.zodiac-symbol:nth-child(2) { top: 20%; right: 15%; animation-delay: 2s; }
+.zodiac-symbol:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+.zodiac-symbol:nth-child(4) { bottom: 15%; right: 10%; animation-delay: 6s; }
+
+/* 神秘输入框 */
+.mystical-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    backdrop-filter: blur(5px);
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.mystical-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.mystical-input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(251, 191, 36, 0.6);
+    box-shadow: 
+        0 0 15px rgba(251, 191, 36, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+/* 神秘文字样式 */
+.mystical-text {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+
+.mystical-text-secondary {
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.mystical-text-accent {
+    color: #fbbf24;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+/* 太极符号增强 */
+.enhanced-taiji {
+    position: relative;
+    animation: cosmic-pulse 3s ease-in-out infinite;
+}
+
+.enhanced-taiji::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid rgba(251, 191, 36, 0.3);
+    border-radius: 50%;
+    animation: constellation-glow 2s ease-in-out infinite;
+}
+
+/* 星盘装饰圆环 */
+.astral-ring {
+    position: absolute;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 50%;
+    animation: float-mystical 10s linear infinite;
+    pointer-events: none;
+}
+
+.astral-ring-1 {
+    width: 200px;
+    height: 200px;
+    top: 10%;
+    right: -100px;
+    animation-duration: 15s;
+}
+
+.astral-ring-2 {
+    width: 150px;
+    height: 150px;
+    bottom: 20%;
+    left: -75px;
+    animation-duration: 20s;
+    animation-direction: reverse;
+}
+
+/* 神秘加载动画 */
+.mystical-loading {
+    border: 3px solid rgba(251, 191, 36, 0.3);
+    border-top: 3px solid #fbbf24;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 响应式调整 */
+@media (max-width: 414px) {
+    .zodiac-symbol {
+        font-size: 18px;
+    }
+    
+    .astral-ring-1 {
+        width: 120px;
+        height: 120px;
+        right: -60px;
+    }
+    
+    .astral-ring-2 {
+        width: 100px;
+        height: 100px;
+        left: -50px;
+    }
+    
+    .constellation-decoration::after {
+        font-size: 10px;
+        letter-spacing: 15px;
+    }
+}
+
+/* 特殊效果 */
+.cosmic-glow {
+    box-shadow: 
+        0 0 20px rgba(251, 191, 36, 0.3),
+        0 0 40px rgba(251, 191, 36, 0.1),
+        0 0 60px rgba(251, 191, 36, 0.05);
+}
+
+.starlight-border {
+    border: 1px solid;
+    border-image: linear-gradient(45deg, 
+        rgba(251, 191, 36, 0.5), 
+        rgba(255, 255, 255, 0.2), 
+        rgba(251, 191, 36, 0.5)) 1;
+}

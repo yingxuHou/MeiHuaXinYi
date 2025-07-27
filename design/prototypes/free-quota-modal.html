@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>免费次数提醒 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        .gift-animation {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        .share-button {
+            transition: all 0.3s ease;
+        }
+        .share-button:hover {
+            transform: scale(1.05);
+        }
+        .floating-coins {
+            animation: float-coins 3s ease-in-out infinite;
+        }
+        @keyframes float-coins {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+    
+    <!-- 模拟首页背景 -->
+    <div class="h-screen bg-gradient-to-br from-primary to-mystic relative">
+        <!-- 模态框背景 -->
+        <div class="modal-backdrop absolute inset-0 flex items-center justify-center p-6">
+            <!-- 模态框内容 -->
+            <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl transform scale-100 transition-all">
+                <!-- 关闭按钮 -->
+                <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+
+                <!-- 礼物图标 -->
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-secondary to-yellow-500 rounded-full flex items-center justify-center gift-animation">
+                        <i class="fas fa-gift text-white text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">每日免费占卜</h2>
+                    <p class="text-gray-600">今日您还有 <span class="text-secondary font-bold">8次</span> 免费机会</p>
+                </div>
+
+                <!-- 次数显示 -->
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">免费次数</h3>
+                            <p class="text-sm text-gray-600">每日10次，已使用2次</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-secondary">8</div>
+                            <div class="text-xs text-gray-500">剩余</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 bg-white rounded-full h-2">
+                        <div class="bg-gradient-to-r from-secondary to-yellow-500 h-2 rounded-full" style="width: 80%"></div>
+                    </div>
+                </div>
+
+                <!-- 获得更多次数 -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-plus-circle text-green-500 mr-2"></i>
+                        获得更多次数
+                    </h3>
+                    <div class="space-y-3">
+                        <!-- 分享获得 -->
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-share-alt text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">分享给朋友</h4>
+                                        <p class="text-sm text-gray-600">立即获得10次</p>
+                                    </div>
+                                </div>
+                                <div class="text-green-600 font-bold">+10</div>
+                            </div>
+                        </div>
+
+                        <!-- 邀请好友 -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user-plus text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">邀请好友注册</h4>
+                                        <p class="text-sm text-gray-600">每邀请1人获得</p>
+                                    </div>
+                                </div>
+                                <div class="text-blue-600 font-bold">+10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分享按钮 -->
+                <div class="space-y-3">
+                    <button onclick="shareToWechat()" class="share-button w-full py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-colors flex items-center justify-center space-x-2">
+                        <i class="fab fa-weixin text-xl"></i>
+                        <span>分享到微信</span>
+                        <div class="floating-coins">
+                            <i class="fas fa-coins text-yellow-300"></i>
+                        </div>
+                    </button>
+                    
+                    <button onclick="shareToFriends()" class="share-button w-full py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2">
+                        <i class="fas fa-share-alt text-xl"></i>
+                        <span>分享到朋友圈</span>
+                        <div class="floating-coins" style="animation-delay: 1s;">
+                            <i class="fas fa-coins text-yellow-300"></i>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- 稍后提醒 -->
+                <button onclick="closeModal()" class="w-full mt-4 py-3 text-gray-500 font-medium hover:text-gray-700 transition-colors">
+                    稍后提醒
+                </button>
+
+                <!-- 底部提示 -->
+                <div class="mt-4 text-center">
+                    <p class="text-xs text-gray-500">
+                        <i class="fas fa-clock mr-1"></i>
+                        免费次数每日0点重置
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 背景装饰元素 -->
+        <div class="absolute top-20 left-10 text-white/10 text-6xl floating-coins">
+            <i class="fas fa-yin-yang"></i>
+        </div>
+        <div class="absolute bottom-32 right-8 text-white/10 text-4xl floating-coins" style="animation-delay: 2s;">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="absolute top-1/2 left-6 text-white/10 text-5xl floating-coins" style="animation-delay: 0.5s;">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+
+    <!-- 分享成功提示 -->
+    <div id="shareSuccess" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg hidden">
+        <div class="flex items-center space-x-2">
+            <i class="fas fa-check-circle"></i>
+            <span>分享成功！已获得10次免费占卜</span>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initFreeQuotaModal();
+        });
+
+        function initFreeQuotaModal() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                updateFreeCountDisplay();
+                initModalAnimation();
+            } else {
+                setTimeout(initFreeQuotaModal, 100);
+            }
+        }
+
+        function updateFreeCountDisplay() {
+            const freeCount = window.appState.getState('app.freeCount');
+            const usedToday = Math.min(10, 10 - freeCount);
+
+            // 更新显示的免费次数
+            const freeCountElements = document.querySelectorAll('[data-free-count]');
+            freeCountElements.forEach(el => {
+                el.textContent = `${freeCount}次`;
+            });
+
+            // 更新剩余次数
+            const remainingElements = document.querySelectorAll('.text-2xl.font-bold.text-secondary');
+            remainingElements.forEach(el => {
+                el.textContent = freeCount;
+            });
+
+            // 更新已使用次数
+            const usedElements = document.querySelectorAll('span:contains("已使用")');
+            usedElements.forEach(el => {
+                el.innerHTML = el.innerHTML.replace(/已使用\d+次/, `已使用${usedToday}次`);
+            });
+
+            // 更新进度条
+            const progressBar = document.querySelector('.bg-gradient-to-r.from-secondary.to-yellow-500.h-2.rounded-full');
+            if (progressBar) {
+                const percentage = (freeCount / 10) * 100;
+                progressBar.style.width = `${percentage}%`;
+            }
+        }
+
+        function setupEventListeners() {
+            // 关闭按钮
+            const closeBtn = document.querySelector('.fa-times').parentElement;
+            closeBtn.addEventListener('click', closeModal);
+
+            // 分享按钮
+            const shareButtons = document.querySelectorAll('.share-button');
+            shareButtons.forEach(btn => {
+                btn.addEventListener('click', handleShare);
+            });
+
+            // 稍后提醒按钮
+            const laterBtn = document.querySelector('button:last-of-type');
+            laterBtn.addEventListener('click', closeModal);
+
+            // 点击背景关闭模态框
+            document.querySelector('.modal-backdrop').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        }
+
+        function closeModal() {
+            window.router.goBack();
+        }
+
+        async function handleShare(e) {
+            e.preventDefault();
+
+            const button = e.target.closest('button');
+            const originalText = button.innerHTML;
+            const platform = button.textContent.includes('微信') ? 'wechat' : 'moments';
+
+            try {
+                // 显示分享中状态
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>分享中...';
+                button.disabled = true;
+
+                // 模拟分享过程
+                await window.Utils.simulateNetworkDelay(1000, 2000);
+
+                // 增加免费次数
+                window.appState.addFreeCount(10);
+
+                // 显示成功状态
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>分享成功';
+                button.classList.add('bg-green-600');
+
+                // 显示成功提示
+                showShareSuccess();
+
+                // 更新显示
+                updateFreeCountDisplay();
+
+                // 延迟关闭
+                setTimeout(() => {
+                    closeModal();
+                }, 2000);
+
+            } catch (error) {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                window.Utils.showToast('分享失败，请重试', 'error');
+            }
+        }
+
+        function showShareSuccess() {
+            const successMsg = document.getElementById('shareSuccess');
+            if (successMsg) {
+                successMsg.classList.remove('hidden');
+                successMsg.style.animation = 'slideDown 0.5s ease-out';
+
+                setTimeout(() => {
+                    successMsg.style.animation = 'slideUp 0.5s ease-in';
+                    setTimeout(() => {
+                        successMsg.classList.add('hidden');
+                    }, 500);
+                }, 1500);
+            } else {
+                window.Utils.showToast('分享成功！已获得10次免费占卜', 'success');
+            }
+        }
+
+        function initModalAnimation() {
+            const modal = document.querySelector('.bg-white.rounded-3xl');
+            if (modal) {
+                modal.style.transform = 'scale(0.8)';
+                modal.style.opacity = '0';
+
+                setTimeout(() => {
+                    modal.style.transition = 'all 0.3s ease-out';
+                    modal.style.transform = 'scale(1)';
+                    modal.style.opacity = '1';
+                }, 100);
+            }
+        }
+
+        // 添加滑动动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translate(-50%, -100%); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { transform: translate(-50%, 0); opacity: 1; }
+                to { transform: translate(-50%, -100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

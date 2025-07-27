@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/starry-theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .mystic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="starry-bg min-h-screen">
+    <!-- 星座装饰元素 -->
+    <div class="constellation-decoration"></div>
+
+    <!-- 星盘装饰圆环 -->
+    <div class="astral-ring astral-ring-1"></div>
+    <div class="astral-ring astral-ring-2"></div>
+
+    <!-- 星座符号装饰 -->
+    <div class="zodiac-symbol">♉</div>
+    <div class="zodiac-symbol">♍</div>
+    <div class="zodiac-symbol">♑</div>
+    <div class="zodiac-symbol">♋</div>
+
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+
+    <!-- 顶部导航 -->
+    <div class="px-6 py-4 relative z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="goBack()" class="mystical-text-accent hover:scale-110 transition-transform">
+                <i class="fas fa-arrow-left text-xl cosmic-glow"></i>
+            </button>
+            <h1 class="mystical-text font-semibold text-lg">✦ 快速注册 ✦</h1>
+            <div class="w-6"></div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="px-6 pb-12 relative z-10">
+        <!-- 简化注册表单 -->
+        <div id="register-form">
+            <!-- Logo和标题 - 星空神秘主题 -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto mb-4 enhanced-taiji cosmic-glow rounded-full flex items-center justify-center floating-element"
+                     style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+                    <i class="fas fa-yin-yang text-3xl text-primary"></i>
+                </div>
+                <h2 class="text-2xl font-bold mystical-text mb-2">✦ 欢迎加入梅花心易 ✦</h2>
+                <p class="mystical-text-secondary text-sm">填写基本信息即可开始神秘易学之旅</p>
+
+                <!-- 装饰星星 -->
+                <div class="flex justify-center space-x-4 mt-4">
+                    <i class="fas fa-star mystical-text-accent text-sm opacity-60"></i>
+                    <i class="fas fa-sparkles mystical-text-accent text-xs opacity-40"></i>
+                    <i class="fas fa-star mystical-text-accent text-sm opacity-60"></i>
+                </div>
+            </div>
+
+            <!-- 简化的注册表单 - 星空神秘主题 -->
+            <div class="space-y-6 mb-8">
+                <!-- 邮箱输入 -->
+                <div>
+                    <label class="block mystical-text text-sm font-medium mb-3 flex items-center">
+                        <i class="fas fa-envelope mr-2 mystical-text-accent"></i>
+                        邮箱地址
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope mystical-text-accent"></i>
+                        </div>
+                        <input id="email-input" type="email" placeholder="请输入邮箱地址"
+                               class="mystical-input w-full pl-12 pr-4 py-4 rounded-xl text-base">
+                    </div>
+                </div>
+
+                <!-- 昵称输入 -->
+                <div>
+                    <label class="block mystical-text text-sm font-medium mb-3 flex items-center">
+                        <i class="fas fa-user-astronaut mr-2 mystical-text-accent"></i>
+                        昵称（可选）
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-user mystical-text-accent"></i>
+                        </div>
+                        <input id="nickname-input" type="text" placeholder="请输入昵称，不填写将使用默认昵称"
+                               class="mystical-input w-full pl-12 pr-4 py-4 rounded-xl text-base">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户协议 -->
+            <div class="mb-8">
+                <label class="flex items-start space-x-3">
+                    <input id="agreement-checkbox" type="checkbox" checked class="w-5 h-5 text-secondary bg-white/10 border-yellow-300 rounded focus:ring-secondary mt-0.5">
+                    <span class="mystical-text-secondary text-sm leading-relaxed">
+                        ✧ 我已阅读并同意
+                        <a href="#" class="mystical-text-accent hover:scale-105 transition-transform">《用户协议》</a>
+                        和
+                        <a href="#" class="mystical-text-accent hover:scale-105 transition-transform">《隐私政策》</a> ✧
+                    </span>
+                </label>
+            </div>
+
+            <!-- 立即注册按钮 -->
+            <button id="register-btn" onclick="handleQuickRegister()" class="mystical-btn w-full py-4 font-bold text-lg rounded-xl text-primary">
+                ✦ 立即注册并开始体验 ✦
+            </button>
+        </div>
+    </div>
+
+    <!-- 已有账号登录 -->
+    <div class="text-center px-6 pb-8">
+        <span class="text-white/70">已有账号？</span>
+        <a href="login.html" class="text-secondary font-medium ml-1 hover:text-yellow-300 transition-colors">立即登录</a>
+    </div>
+
+    <!-- 底部装饰元素 -->
+    <div class="fixed bottom-0 left-0 right-0 pointer-events-none">
+        <div class="relative h-32 overflow-hidden">
+            <div class="absolute bottom-4 left-4 text-white/10 text-6xl floating-element" style="animation-delay: -2s;">
+                <i class="fas fa-circle"></i>
+            </div>
+            <div class="absolute bottom-8 right-8 text-white/10 text-4xl floating-element" style="animation-delay: -4s;">
+                <i class="fas fa-adjust"></i>
+            </div>
+            <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/10 text-5xl floating-element" style="animation-delay: -1s;">
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 text-center">
+            <div class="w-12 h-12 mx-auto mb-4 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-white font-medium">正在创建账号...</p>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initRegisterPage();
+        });
+
+        function initRegisterPage() {
+            if (window.app && window.app.isInitialized) {
+                checkAuthRedirect();
+            } else {
+                setTimeout(initRegisterPage, 100);
+            }
+        }
+
+        function checkAuthRedirect() {
+            // 如果已登录，重定向到首页
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (isLoggedIn) {
+                window.router.navigate('home');
+            }
+        }
+
+        // 返回上一页
+        function goBack() {
+            window.router.navigate('login');
+        }
+
+        // 简化的快速注册
+        async function handleQuickRegister() {
+            const button = document.getElementById('register-btn');
+            const originalText = button.innerHTML;
+
+            try {
+                const email = document.getElementById('email-input').value.trim();
+                const nickname = document.getElementById('nickname-input').value.trim();
+                const agreement = document.getElementById('agreement-checkbox').checked;
+
+                // 简单验证
+                if (!email) {
+                    window.Utils.showToast('请输入邮箱地址', 'error');
+                    return;
+                }
+
+                if (!agreement) {
+                    window.Utils.showToast('请同意用户协议', 'error');
+                    return;
+                }
+
+                // 显示加载状态
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>注册中...';
+                button.disabled = true;
+                showLoading(true);
+
+                // 模拟注册过程
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // 创建演示用户数据
+                const userData = {
+                    id: 'demo_user_' + Date.now(),
+                    email: email,
+                    nickname: nickname || '演示用户',
+                    registerType: 'demo',
+                    createdAt: new Date().toISOString()
+                };
+
+                // 使用AppState进行登录
+                window.appState.login(userData);
+                
+                // 设置免费次数
+                window.appState.setState('app.freeCount', 10);
+                
+                showLoading(false);
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>注册成功';
+                button.classList.remove('bg-secondary');
+                button.classList.add('bg-green-500');
+
+                window.Utils.showToast('注册成功！欢迎加入梅花心易', 'success');
+                
+                // 直接跳转到主界面，跳过资料完善
+                setTimeout(() => {
+                    window.router.navigate('home');
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Registration failed:', error);
+                showLoading(false);
+                button.innerHTML = originalText;
+                button.disabled = false;
+                button.classList.remove('bg-green-500');
+                button.classList.add('bg-secondary');
+                window.Utils.showToast('注册失败，请重试', 'error');
+            }
+        }
+
+        function showLoading(show) {
+            const overlay = document.getElementById('loading-overlay');
+            if (show) {
+                overlay.classList.remove('hidden');
+            } else {
+                overlay.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

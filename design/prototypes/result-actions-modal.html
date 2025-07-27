@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结果操作选择 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        .action-button {
+            transition: all 0.3s ease;
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .modal-slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .pulse-effect {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+    
+    <!-- 模拟占卜结果页面背景 -->
+    <div class="h-screen bg-gradient-to-br from-blue-50 to-purple-50 relative">
+        <!-- 模态框背景 -->
+        <div class="modal-backdrop absolute inset-0 flex items-end justify-center">
+            <!-- 底部弹出的操作面板 -->
+            <div class="modal-slide-up bg-white rounded-t-3xl w-full max-w-md shadow-2xl">
+                <!-- 拖拽指示器 -->
+                <div class="flex justify-center pt-4 pb-2">
+                    <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+                </div>
+                
+                <!-- 标题 -->
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-800 text-center">选择您的下一步操作</h2>
+                    <p class="text-sm text-gray-500 text-center mt-1">占卜完成，您可以选择以下操作</p>
+                </div>
+                
+                <!-- 操作选项 -->
+                <div class="px-6 py-6 space-y-4">
+                    <!-- 继续占卜 -->
+                    <button onclick="continueAskQuestion()" 
+                            class="action-button w-full p-4 bg-gradient-to-r from-secondary to-yellow-500 rounded-2xl text-primary font-semibold text-left flex items-center space-x-4 pulse-effect">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-redo text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">继续占卜</h3>
+                            <p class="text-sm opacity-80">提出新的问题，获得更多指引</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-xl"></i>
+                    </button>
+                    
+                    <!-- 分享结果 -->
+                    <button onclick="shareResult()" 
+                            class="action-button w-full p-4 bg-blue-500 rounded-2xl text-white font-semibold text-left flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-share-alt text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">分享结果</h3>
+                            <p class="text-sm opacity-80">与朋友分享您的占卜体验</p>
+                        </div>
+                        <div class="flex space-x-1">
+                            <i class="fab fa-weixin text-green-400"></i>
+                            <i class="fab fa-qq text-blue-300"></i>
+                        </div>
+                    </button>
+                    
+                    <!-- 查看历史 -->
+                    <button onclick="viewHistory()" 
+                            class="action-button w-full p-4 bg-purple-500 rounded-2xl text-white font-semibold text-left flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-history text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">查看历史记录</h3>
+                            <p class="text-sm opacity-80">回顾过往的占卜记录</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-xl"></i>
+                    </button>
+                    
+                    <!-- 返回首页 -->
+                    <button onclick="goHome()" 
+                            class="action-button w-full p-4 bg-gray-100 rounded-2xl text-gray-700 font-semibold text-left flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                            <i class="fas fa-home text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold">返回首页</h3>
+                            <p class="text-sm opacity-70">回到应用主页面</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- 额外信息 -->
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center space-x-2 text-gray-600">
+                            <i class="fas fa-clock"></i>
+                            <span>今日剩余次数：7次</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-green-600">
+                            <i class="fas fa-gift"></i>
+                            <span>分享获得更多</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 关闭按钮 -->
+                <div class="px-6 pb-6">
+                    <button onclick="closeModal()" 
+                            class="w-full py-3 text-gray-500 font-medium hover:text-gray-700 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 背景内容（模拟占卜结果页面） -->
+        <div class="p-6 opacity-50">
+            <div class="bg-white rounded-2xl p-6 mb-4">
+                <h3 class="font-semibold text-gray-800 mb-2">占卜结果</h3>
+                <p class="text-gray-600 text-sm">天火同人卦象显示...</p>
+            </div>
+            <div class="bg-gradient-to-r from-secondary/10 to-yellow-100 rounded-2xl p-6">
+                <h3 class="font-semibold text-gray-800 mb-2">AI智能解读</h3>
+                <p class="text-gray-600 text-sm">建议接受这个工作机会...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作成功提示 -->
+    <div id="successToast" class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-full shadow-lg hidden z-50">
+        <div class="flex items-center space-x-2">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">操作成功</span>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initResultActionsModal();
+        });
+
+        function initResultActionsModal() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                updateFreeCountDisplay();
+                initModalAnimation();
+            } else {
+                setTimeout(initResultActionsModal, 100);
+            }
+        }
+
+        function updateFreeCountDisplay() {
+            const freeCount = window.appState.getState('app.freeCount');
+            const freeCountElement = document.querySelector('.text-blue-700.font-bold');
+            if (freeCountElement) {
+                freeCountElement.textContent = `${freeCount}次`;
+            }
+        }
+
+        function setupEventListeners() {
+            // 继续占卜按钮
+            const continueBtn = document.querySelector('.pulse-effect');
+            if (continueBtn) {
+                continueBtn.addEventListener('click', continueAskQuestion);
+            }
+
+            // 分享结果按钮
+            const shareBtn = document.querySelector('.bg-blue-500');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', shareResult);
+            }
+
+            // 查看历史按钮
+            const historyBtn = document.querySelector('.bg-purple-500');
+            if (historyBtn) {
+                historyBtn.addEventListener('click', viewHistory);
+            }
+
+            // 返回首页按钮
+            const homeBtn = document.querySelector('.bg-gray-100');
+            if (homeBtn) {
+                homeBtn.addEventListener('click', goHome);
+            }
+
+            // 关闭按钮
+            const closeBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.includes('关闭'));
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeModal);
+            }
+
+            // 点击背景关闭模态框
+            document.querySelector('.modal-backdrop').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+
+            // 键盘支持
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            // 手势支持
+            setupGestureSupport();
+        }
+
+        function continueAskQuestion() {
+            window.Utils.showToast('准备新的占卜...', 'info');
+            setTimeout(() => {
+                window.router.navigate('question-input');
+            }, 1000);
+        }
+
+        async function shareResult() {
+            try {
+                const success = await window.app.shareResult();
+                if (success) {
+                    updateFreeCountDisplay();
+                    setTimeout(() => {
+                        closeModal();
+                    }, 2000);
+                }
+            } catch (error) {
+                window.Utils.showToast('分享失败，请重试', 'error');
+            }
+        }
+
+        function viewHistory() {
+            window.Utils.showToast('正在加载历史记录...', 'info');
+            setTimeout(() => {
+                window.router.navigate('history');
+            }, 1000);
+        }
+
+        function goHome() {
+            window.Utils.showToast('返回首页...', 'info');
+            setTimeout(() => {
+                window.router.navigate('home');
+            }, 1000);
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal-slide-up');
+            if (modal) {
+                modal.style.animation = 'slideDown 0.3s ease-in';
+
+                setTimeout(() => {
+                    window.router.goBack();
+                }, 300);
+            } else {
+                window.router.goBack();
+            }
+        }
+
+        function initModalAnimation() {
+            const modal = document.querySelector('.modal-slide-up');
+            if (modal) {
+                modal.style.transform = 'translateY(100%)';
+                modal.style.opacity = '0';
+
+                setTimeout(() => {
+                    modal.style.transition = 'all 0.3s ease-out';
+                    modal.style.transform = 'translateY(0)';
+                    modal.style.opacity = '1';
+                }, 100);
+            }
+        }
+
+        function setupGestureSupport() {
+            let startY = 0;
+            let currentY = 0;
+            let isDragging = false;
+
+            const modal = document.querySelector('.modal-slide-up');
+            if (!modal) return;
+
+            modal.addEventListener('touchstart', function(e) {
+                startY = e.touches[0].clientY;
+                isDragging = true;
+            });
+
+            modal.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+
+                currentY = e.touches[0].clientY;
+                const deltaY = currentY - startY;
+
+                if (deltaY > 0) {
+                    modal.style.transform = `translateY(${deltaY}px)`;
+                }
+            });
+
+            modal.addEventListener('touchend', function(e) {
+                if (!isDragging) return;
+
+                const deltaY = currentY - startY;
+
+                if (deltaY > 100) {
+                    closeModal();
+                } else {
+                    modal.style.transform = 'translateY(0)';
+                }
+
+                isDragging = false;
+            });
+        }
+
+        // 添加滑动动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translateY(0); opacity: 1; }
+                to { transform: translateY(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 监听状态变化
+        window.addEventListener('stateChange', function(e) {
+            const { path } = e.detail;
+            if (path === 'app.freeCount') {
+                updateFreeCountDisplay();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/starry-theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .mystic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .input-focus:focus {
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        }
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="starry-bg min-h-screen">
+    <!-- 星座装饰元素 -->
+    <div class="constellation-decoration"></div>
+
+    <!-- 星盘装饰圆环 -->
+    <div class="astral-ring astral-ring-1"></div>
+    <div class="astral-ring astral-ring-2"></div>
+
+    <!-- 星座符号装饰 -->
+    <div class="zodiac-symbol">♊</div>
+    <div class="zodiac-symbol">♎</div>
+    <div class="zodiac-symbol">♒</div>
+    <div class="zodiac-symbol">♌</div>
+
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+
+    <!-- 主要内容区域 -->
+    <div class="px-6 py-12 relative z-10">
+        <!-- Logo和标题 - 星空神秘主题 -->
+        <div class="text-center mb-12">
+            <div class="w-24 h-24 mx-auto mb-6 enhanced-taiji cosmic-glow rounded-full flex items-center justify-center floating-element"
+                 style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+                <i class="fas fa-yin-yang text-4xl text-primary"></i>
+            </div>
+            <h1 class="text-3xl font-bold mystical-text mb-3">✦ 欢迎回来 ✦</h1>
+            <p class="mystical-text-secondary text-base">继续您的神秘易学之旅</p>
+
+            <!-- 装饰星星 -->
+            <div class="flex justify-center space-x-4 mt-4">
+                <i class="fas fa-star mystical-text-accent text-sm opacity-60"></i>
+                <i class="fas fa-sparkles mystical-text-accent text-xs opacity-40"></i>
+                <i class="fas fa-star mystical-text-accent text-sm opacity-60"></i>
+            </div>
+        </div>
+
+        <!-- 登录表单 - 星空神秘主题 -->
+        <div class="space-y-6">
+            <!-- 账号输入 -->
+            <div>
+                <label class="block mystical-text text-sm font-medium mb-3 flex items-center">
+                    <i class="fas fa-user-astronaut mr-2 mystical-text-accent"></i>
+                    手机号/邮箱
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-user mystical-text-accent"></i>
+                    </div>
+                    <input id="account-input" type="text" placeholder="请输入手机号或邮箱"
+                           class="mystical-input w-full pl-12 pr-4 py-4 rounded-xl text-base">
+                </div>
+            </div>
+
+            <!-- 密码输入 -->
+            <div>
+                <label class="block mystical-text text-sm font-medium mb-3 flex items-center">
+                    <i class="fas fa-key mr-2 mystical-text-accent"></i>
+                    密码
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-lock mystical-text-accent"></i>
+                    </div>
+                    <input id="password-input" type="password" placeholder="请输入密码"
+                           class="mystical-input w-full pl-12 pr-12 py-4 rounded-xl text-base">
+                    <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                        <i id="password-eye" class="fas fa-eye mystical-text-accent hover:scale-110 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 记住登录和忘记密码 -->
+            <div class="flex items-center justify-between">
+                <label class="flex items-center space-x-2">
+                    <input id="remember-checkbox" type="checkbox" class="w-4 h-4 text-secondary bg-white/10 border-yellow-300 rounded focus:ring-secondary">
+                    <span class="mystical-text-secondary text-sm">✧ 记住登录 ✧</span>
+                </label>
+                <a href="#" class="mystical-text-accent text-sm hover:scale-105 transition-transform">忘记密码？</a>
+            </div>
+
+            <!-- 登录按钮 -->
+            <button id="login-btn" onclick="handleLogin()" class="mystical-btn w-full mt-8 py-4 font-bold text-lg rounded-xl text-primary">
+                ✦ 立即登录 ✦
+            </button>
+
+            <!-- 快捷登录分割线 -->
+            <div class="flex items-center my-8">
+                <div class="flex-1 border-t border-yellow-300/30"></div>
+                <span class="px-4 mystical-text-secondary text-sm">✧ 或 ✧</span>
+                <div class="flex-1 border-t border-yellow-300/30"></div>
+            </div>
+
+            <!-- 第三方登录 -->
+            <div class="space-y-3">
+                <button onclick="thirdPartyLogin('wechat')" class="mystical-card w-full py-3 starlight-border rounded-xl mystical-text font-medium flex items-center justify-center space-x-2">
+                    <i class="fab fa-weixin text-green-400 text-xl cosmic-glow"></i>
+                    <span>✧ 微信登录 ✧</span>
+                </button>
+                <button onclick="thirdPartyLogin('qq')" class="w-full py-3 bg-white border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2">
+                    <i class="fab fa-qq text-blue-500 text-xl"></i>
+                    <span>QQ登录</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 注册链接 -->
+        <div class="text-center mt-8">
+            <span class="text-white/70">还没有账号？</span>
+            <a href="register.html" class="text-secondary font-medium ml-1 hover:text-yellow-300 transition-colors">立即注册</a>
+        </div>
+    </div>
+
+    <!-- 底部装饰元素 -->
+    <div class="fixed bottom-0 left-0 right-0 pointer-events-none">
+        <div class="relative h-32 overflow-hidden">
+            <!-- 装饰性的易经符号 -->
+            <div class="absolute bottom-4 left-4 text-white/10 text-6xl floating-element" style="animation-delay: -2s;">
+                <i class="fas fa-circle"></i>
+            </div>
+            <div class="absolute bottom-8 right-8 text-white/10 text-4xl floating-element" style="animation-delay: -4s;">
+                <i class="fas fa-adjust"></i>
+            </div>
+            <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/10 text-5xl floating-element" style="animation-delay: -1s;">
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 安全提示 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-black/20 backdrop-blur-sm p-3">
+        <div class="flex items-center justify-center space-x-2 text-white/60 text-xs">
+            <i class="fas fa-shield-alt"></i>
+            <span>安全登录，信息加密保护</span>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initLoginPage();
+        });
+
+        function initLoginPage() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                checkAuthRedirect();
+            } else {
+                setTimeout(initLoginPage, 100);
+            }
+        }
+
+        function checkAuthRedirect() {
+            // 如果已登录，重定向到首页
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (isLoggedIn) {
+                window.router.navigate('home');
+            }
+        }
+
+        function setupEventListeners() {
+            // 回车键登录
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleLogin();
+                    }
+                });
+            });
+
+            // 注册链接
+            document.querySelector('a[href="register.html"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.router.navigate('register');
+            });
+        }
+
+        // 密码可见性切换
+        function togglePasswordVisibility() {
+            const input = document.getElementById('password-input');
+            const icon = document.getElementById('password-eye');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // 第三方登录
+        function thirdPartyLogin(platform) {
+            window.Utils.showToast(`${platform === 'wechat' ? '微信' : 'QQ'}登录功能开发中...`, 'info');
+        }
+
+        async function handleLogin() {
+            const button = document.getElementById('login-btn');
+            const originalText = button.innerHTML;
+
+            try {
+                // 显示加载状态
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>登录中...';
+                button.disabled = true;
+
+                // 模拟登录过程（简化版）
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                // 直接登录成功，设置演示用户数据
+                const demoUserData = {
+                    id: 'demo_user_' + Date.now(),
+                    email: 'demo@example.com',
+                    nickname: '演示用户',
+                    loginType: 'demo',
+                    createdAt: new Date().toISOString()
+                };
+
+                // 使用AppState进行登录
+                window.appState.login(demoUserData);
+
+                // 设置免费次数
+                window.appState.setState('app.freeCount', 10);
+
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>登录成功';
+                button.classList.remove('bg-secondary');
+                button.classList.add('bg-green-500');
+
+                window.Utils.showToast('欢迎体验梅花心易！', 'success');
+
+                // 延迟跳转到主界面
+                setTimeout(() => {
+                    window.router.navigate('home');
+                }, 1000);
+
+            } catch (error) {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                button.classList.remove('bg-green-500');
+                button.classList.add('bg-secondary');
+                window.Utils.showToast('登录失败，请重试', 'error');
+            }
+        }
+
+        // 简化版：移除所有验证逻辑，演示模式直接登录
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题输入 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/starry-theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .char-count {
+            transition: color 0.3s ease;
+        }
+        .char-count.warning {
+            color: #f59e0b;
+        }
+        .char-count.danger {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body class="starry-bg min-h-screen">
+    <!-- 星座装饰元素 -->
+    <div class="constellation-decoration"></div>
+
+    <!-- 星盘装饰圆环 -->
+    <div class="astral-ring astral-ring-1"></div>
+    <div class="astral-ring astral-ring-2"></div>
+
+    <!-- 星座符号装饰 -->
+    <div class="zodiac-symbol">♈</div>
+    <div class="zodiac-symbol">♌</div>
+    <div class="zodiac-symbol">♐</div>
+    <div class="zodiac-symbol">♓</div>
+
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+
+    <!-- 顶部导航 -->
+    <div class="starry-bg px-6 py-4 relative z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="window.location.href='home.html'" class="mystical-text-accent hover:scale-110 transition-transform">
+                <i class="fas fa-arrow-left text-xl cosmic-glow"></i>
+            </button>
+            <h1 class="mystical-text font-semibold text-lg">✦ 请输入您的问题 ✦</h1>
+            <div class="w-6"></div>
+        </div>
+    </div>
+
+    <!-- 次数提醒 - 星空神秘主题 -->
+    <div class="px-6 py-4 mystical-card starlight-border relative z-10">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-moon mystical-text-accent cosmic-glow"></i>
+                <span class="mystical-text-secondary text-sm">✧ 今日剩余免费次数 ✧</span>
+            </div>
+            <span class="mystical-text-accent font-bold cosmic-glow">8次</span>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="px-6 py-6 relative z-10">
+        <!-- 指导说明 - 星空神秘主题 -->
+        <div class="mb-6">
+            <div class="mystical-card rounded-2xl p-6 starlight-border relative overflow-hidden">
+                <!-- 装饰星光 -->
+                <div class="absolute top-2 right-2 text-yellow-300/40">
+                    <i class="fas fa-sparkles text-xs"></i>
+                </div>
+
+                <div class="flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400/30 to-yellow-500/30 rounded-full flex items-center justify-center floating-element cosmic-glow">
+                        <i class="fas fa-lightbulb mystical-text-accent text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold mystical-text mb-2 flex items-center">
+                            <i class="fas fa-star mr-2 mystical-text-accent text-sm"></i>
+                            如何提出好问题？
+                        </h3>
+                        <ul class="text-sm mystical-text-secondary space-y-1">
+                            <li>✧ 问题要具体明确，避免过于宽泛</li>
+                            <li>✧ 描述您面临的具体选择或困惑</li>
+                            <li>✧ 可以包含背景信息帮助理解</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题输入区域 -->
+        <div class="mb-6">
+            <label class="block text-gray-800 font-medium mb-3">您的问题</label>
+            <div class="relative">
+                <textarea id="questionInput" 
+                          placeholder="请详细描述您面临的选择或困惑，例如：我在考虑是否应该接受这个新的工作机会，这个职位薪资更高但需要搬到另一个城市..."
+                          class="w-full h-32 px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20 resize-none"
+                          maxlength="200"></textarea>
+                <div class="absolute bottom-3 right-3 text-xs char-count" id="charCount">0/200</div>
+            </div>
+        </div>
+
+        <!-- 问题类型选择 -->
+        <div class="mb-6">
+            <label class="block text-gray-800 font-medium mb-3">问题类型（可选）</label>
+            <div class="grid grid-cols-2 gap-3">
+                <button class="question-card bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-secondary transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-heart text-pink-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-800">感情问题</h4>
+                            <p class="text-xs text-gray-500">恋爱、婚姻、人际关系</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button class="question-card bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-secondary transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-briefcase text-blue-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-800">事业发展</h4>
+                            <p class="text-xs text-gray-500">工作、创业、职业规划</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button class="question-card bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-secondary transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-green-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-800">学业考试</h4>
+                            <p class="text-xs text-gray-500">升学、专业选择、考试</p>
+                        </div>
+                    </div>
+                </button>
+                
+                <button class="question-card bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-secondary transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-life-ring text-purple-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-800">生活决策</h4>
+                            <p class="text-xs text-gray-500">日常选择、重要决定</p>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- 常见问题示例 -->
+        <div class="mb-8">
+            <h3 class="text-gray-800 font-medium mb-3">常见问题示例</h3>
+            <div class="space-y-2">
+                <button onclick="fillExample(this)" class="w-full text-left p-3 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors">
+                    "我在考虑是否应该和现任男友分手，我们在一起两年了但最近总是吵架..."
+                </button>
+                <button onclick="fillExample(this)" class="w-full text-left p-3 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors">
+                    "公司给了我升职机会但需要调到外地工作，我应该接受吗？"
+                </button>
+                <button onclick="fillExample(this)" class="w-full text-left p-3 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors">
+                    "我在纠结是选择稳定的公务员工作还是去创业公司发展..."
+                </button>
+            </div>
+        </div>
+
+        <!-- 开始占卜按钮 -->
+        <button id="startDivination" onclick="startDivination()"
+                class="w-full py-4 bg-gradient-to-r from-secondary to-yellow-500 text-primary font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                disabled>
+            <i class="fas fa-yin-yang mr-2"></i>
+            开始占卜
+        </button>
+
+        <!-- 温馨提示 -->
+        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-exclamation-triangle text-yellow-600 mt-1"></i>
+                <div>
+                    <h4 class="font-medium text-yellow-800 mb-1">温馨提示</h4>
+                    <p class="text-sm text-yellow-700">
+                        占卜结果仅供参考，最终决策请结合实际情况理性判断。我们尊重您的隐私，问题内容将被安全加密处理。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        let selectedType = null;
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initQuestionInputPage();
+        });
+
+        function initQuestionInputPage() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                checkAuthStatus();
+                updateFreeCountDisplay();
+                initPageAnimations();
+            } else {
+                setTimeout(initQuestionInputPage, 100);
+            }
+        }
+
+        function checkAuthStatus() {
+            // 检查是否已登录
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (!isLoggedIn) {
+                window.router.navigate('login');
+                return;
+            }
+        }
+
+        function updateFreeCountDisplay() {
+            const freeCount = window.appState.getState('app.freeCount');
+            const freeCountElement = document.querySelector('.text-blue-700.font-bold');
+            if (freeCountElement) {
+                freeCountElement.textContent = `${freeCount}次`;
+            }
+        }
+
+        function setupEventListeners() {
+            const questionInput = document.getElementById('questionInput');
+            const charCount = document.getElementById('charCount');
+            const startButton = document.getElementById('startDivination');
+
+            // 返回按钮
+            document.querySelector('.fa-arrow-left').parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.router.goBack();
+            });
+
+            // 字数统计
+            questionInput.addEventListener('input', function() {
+                const length = this.value.length;
+                charCount.textContent = `${length}/200`;
+
+                // 字数颜色提示
+                charCount.classList.remove('warning', 'danger');
+                if (length > 150) {
+                    charCount.classList.add('warning');
+                }
+                if (length > 180) {
+                    charCount.classList.add('danger');
+                }
+
+                // 按钮状态
+                startButton.disabled = length < 10;
+                if (length >= 10) {
+                    startButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    startButton.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            });
+
+            // 问题类型选择
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.question-card').forEach(c => {
+                        c.classList.remove('border-secondary', 'bg-secondary/5');
+                        c.classList.add('border-gray-200');
+                    });
+                    this.classList.remove('border-gray-200');
+                    this.classList.add('border-secondary', 'bg-secondary/5');
+                    selectedType = this.querySelector('h4').textContent;
+                });
+            });
+
+            // 示例问题按钮
+            document.querySelectorAll('button[onclick*="fillExample"]').forEach(btn => {
+                btn.onclick = null; // 移除原有的onclick
+                btn.addEventListener('click', function() {
+                    fillExample(this);
+                });
+            });
+
+            // 开始占卜按钮
+            startButton.addEventListener('click', startDivination);
+        }
+
+        // 填充示例问题
+        function fillExample(button) {
+            const text = button.textContent.replace(/"/g, '').trim();
+            const questionInput = document.getElementById('questionInput');
+            questionInput.value = text;
+            questionInput.dispatchEvent(new Event('input'));
+            questionInput.focus();
+        }
+
+        // 开始占卜
+        async function startDivination(e) {
+            e.preventDefault();
+
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value.trim();
+
+            if (question.length < 10) {
+                window.Utils.showToast('请输入至少10个字符的问题描述', 'warning');
+                return;
+            }
+
+            // 检查免费次数
+            const freeCount = window.appState.getState('app.freeCount');
+            if (freeCount <= 0) {
+                window.Utils.showToast('免费次数不足，请分享获得更多次数', 'warning');
+                window.router.navigate('free-quota-modal');
+                return;
+            }
+
+            try {
+                // 开始占卜
+                const success = await window.app.startDivination(question, selectedType || '未分类');
+                if (success) {
+                    // 跳转到占卜进行中页面
+                    window.router.navigate('divination-loading');
+                }
+            } catch (error) {
+                window.Utils.showToast('占卜启动失败，请重试', 'error');
+            }
+        }
+
+        // 页面加载动画
+        function initPageAnimations() {
+            const elements = document.querySelectorAll('.question-card, .bg-white');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    element.style.transition = 'all 0.5s ease';
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // 监听状态变化
+        window.addEventListener('stateChange', function(e) {
+            const { path } = e.detail;
+            if (path === 'app.freeCount') {
+                updateFreeCountDisplay();
+            }
+        });
+    </script>
+</body>
+</html>

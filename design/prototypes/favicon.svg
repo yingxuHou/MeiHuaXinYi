@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- 背景圆形 -->
+  <circle cx="32" cy="32" r="30" fill="#1e3a8a" stroke="#fbbf24" stroke-width="2"/>
+  
+  <!-- 太极图案 -->
+  <g transform="translate(32,32)">
+    <!-- 白色半圆 -->
+    <path d="M 0,-20 A 20,20 0 0,1 0,20 A 10,10 0 0,1 0,0 A 10,10 0 0,0 0,-20" fill="white"/>
+    <!-- 黑色半圆 -->
+    <path d="M 0,20 A 20,20 0 0,1 0,-20 A 10,10 0 0,1 0,0 A 10,10 0 0,0 0,20" fill="#1e3a8a"/>
+    <!-- 白色小圆 -->
+    <circle cx="0" cy="-10" r="3" fill="white"/>
+    <!-- 黑色小圆 -->
+    <circle cx="0" cy="10" r="3" fill="#1e3a8a"/>
+  </g>
+  
+  <!-- 装饰性边框 -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.5"/>
+</svg>

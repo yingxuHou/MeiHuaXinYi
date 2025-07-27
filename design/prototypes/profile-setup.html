@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完善资料 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .input-focus:focus {
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+        }
+        .avatar-option {
+            transition: all 0.3s ease;
+        }
+        .avatar-option.selected {
+            border: 3px solid #fbbf24;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+    
+    <!-- 顶部导航 -->
+    <div class="flex items-center justify-between px-6 py-4">
+        <button class="text-white/80 hover:text-white">
+            <i class="fas fa-arrow-left text-xl"></i>
+        </button>
+        <h1 class="text-white font-semibold text-lg">完善个人资料</h1>
+        <button class="text-secondary font-medium">跳过</button>
+    </div>
+
+    <!-- 进度条 -->
+    <div class="px-6 mb-8">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-white/80 text-sm">完成度</span>
+            <span class="text-secondary text-sm font-medium">60%</span>
+        </div>
+        <div class="w-full bg-white/20 rounded-full h-2">
+            <div class="progress-bar h-2 rounded-full" style="width: 60%"></div>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="px-6 pb-8">
+        <!-- 头像选择 -->
+        <div class="mb-8">
+            <h2 class="text-white font-medium text-lg mb-4">选择头像</h2>
+            <div class="grid grid-cols-4 gap-4">
+                <!-- 头像选项 -->
+                <div class="avatar-option w-16 h-16 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-user text-white text-xl"></i>
+                </div>
+                <div class="avatar-option selected w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-star text-white text-xl"></i>
+                </div>
+                <div class="avatar-option w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-leaf text-white text-xl"></i>
+                </div>
+                <div class="avatar-option w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-sun text-white text-xl"></i>
+                </div>
+                <div class="avatar-option w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-heart text-white text-xl"></i>
+                </div>
+                <div class="avatar-option w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-moon text-white text-xl"></i>
+                </div>
+                <div class="avatar-option w-16 h-16 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-mountain text-white text-xl"></i>
+                </div>
+                <div class="avatar-option w-16 h-16 rounded-full bg-white/20 border-2 border-dashed border-white/40 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-camera text-white/60 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 基本信息表单 -->
+        <div class="space-y-6">
+            <!-- 昵称 -->
+            <div>
+                <label class="block text-white/90 text-sm font-medium mb-2">昵称 *</label>
+                <input type="text" placeholder="请输入昵称" value="易学爱好者"
+                       class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 input-focus focus:outline-none">
+            </div>
+
+            <!-- 性别选择 -->
+            <div>
+                <label class="block text-white/90 text-sm font-medium mb-3">性别</label>
+                <div class="flex space-x-4">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="gender" value="female" class="w-4 h-4 text-secondary bg-white/10 border-white/20 focus:ring-secondary" checked>
+                        <span class="text-white">女</span>
+                        <i class="fas fa-venus text-pink-400"></i>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="gender" value="male" class="w-4 h-4 text-secondary bg-white/10 border-white/20 focus:ring-secondary">
+                        <span class="text-white">男</span>
+                        <i class="fas fa-mars text-blue-400"></i>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="gender" value="unknown" class="w-4 h-4 text-secondary bg-white/10 border-white/20 focus:ring-secondary">
+                        <span class="text-white">保密</span>
+                        <i class="fas fa-question text-gray-400"></i>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 出生日期 -->
+            <div>
+                <label class="block text-white/90 text-sm font-medium mb-2">出生日期</label>
+                <div class="relative">
+                    <input type="date" value="1995-06-15"
+                           class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white input-focus focus:outline-none">
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <i class="fas fa-calendar-alt text-white/50"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-white/60 mt-1">用于提供更精准的占卜解读</p>
+            </div>
+
+            <!-- 职业行业 -->
+            <div>
+                <label class="block text-white/90 text-sm font-medium mb-2">职业行业</label>
+                <select class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white input-focus focus:outline-none">
+                    <option value="" class="bg-primary">请选择职业行业</option>
+                    <option value="student" class="bg-primary">学生</option>
+                    <option value="it" class="bg-primary" selected>IT/互联网</option>
+                    <option value="finance" class="bg-primary">金融</option>
+                    <option value="education" class="bg-primary">教育</option>
+                    <option value="healthcare" class="bg-primary">医疗健康</option>
+                    <option value="design" class="bg-primary">设计</option>
+                    <option value="marketing" class="bg-primary">市场营销</option>
+                    <option value="other" class="bg-primary">其他</option>
+                </select>
+            </div>
+
+            <!-- 兴趣标签 -->
+            <div>
+                <label class="block text-white/90 text-sm font-medium mb-3">兴趣标签（可多选）</label>
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-3 py-1 bg-secondary text-primary text-sm rounded-full font-medium">易经八卦</button>
+                    <button class="px-3 py-1 bg-white/20 text-white text-sm rounded-full hover:bg-white/30 transition-colors">塔罗占卜</button>
+                    <button class="px-3 py-1 bg-white/20 text-white text-sm rounded-full hover:bg-white/30 transition-colors">星座运势</button>
+                    <button class="px-3 py-1 bg-secondary text-primary text-sm rounded-full font-medium">心理学</button>
+                    <button class="px-3 py-1 bg-white/20 text-white text-sm rounded-full hover:bg-white/30 transition-colors">哲学思考</button>
+                    <button class="px-3 py-1 bg-white/20 text-white text-sm rounded-full hover:bg-white/30 transition-colors">传统文化</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 完成按钮 -->
+        <button class="w-full mt-8 py-4 bg-secondary text-primary font-bold text-lg rounded-lg hover:bg-yellow-300 transition-colors shadow-lg">
+            完成设置
+        </button>
+
+        <!-- 提示信息 -->
+        <div class="mt-6 p-4 bg-white/10 rounded-lg border border-white/20">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-info-circle text-secondary mt-1"></i>
+                <div>
+                    <h3 class="text-white font-medium text-sm mb-1">为什么需要这些信息？</h3>
+                    <p class="text-white/70 text-xs leading-relaxed">
+                        完善的个人资料有助于AI为您提供更精准、个性化的占卜解读。您的隐私将得到严格保护，信息仅用于改善服务体验。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        let selectedAvatar = 'star'; // 默认选中的头像
+        let selectedInterests = ['易经八卦', '心理学']; // 默认选中的兴趣
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initProfileSetupPage();
+        });
+
+        function initProfileSetupPage() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                checkAuthStatus();
+                loadExistingData();
+            } else {
+                setTimeout(initProfileSetupPage, 100);
+            }
+        }
+
+        function checkAuthStatus() {
+            // 检查是否已登录
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (!isLoggedIn) {
+                window.router.navigate('login');
+                return;
+            }
+        }
+
+        function loadExistingData() {
+            // 加载已有的用户数据
+            const nickname = window.appState.getState('user.nickname');
+            const gender = window.appState.getState('user.gender');
+            const birthDate = window.appState.getState('user.birthDate');
+            const industry = window.appState.getState('user.industry');
+
+            if (nickname) {
+                document.querySelector('input[placeholder="请输入昵称"]').value = nickname;
+            }
+
+            if (gender) {
+                document.querySelector(`input[value="${gender}"]`).checked = true;
+            }
+
+            if (birthDate) {
+                document.querySelector('input[type="date"]').value = birthDate;
+            }
+
+            if (industry) {
+                const select = document.querySelector('select');
+                select.value = industry;
+            }
+        }
+
+        function setupEventListeners() {
+            // 返回按钮
+            document.querySelector('.fas.fa-arrow-left').parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (window.router.canGoBack()) {
+                    window.router.goBack();
+                } else {
+                    window.router.navigate('login');
+                }
+            });
+
+            // 跳过按钮
+            const skipButton = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.includes('跳过'));
+            if (skipButton) {
+                skipButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.router.navigate('home');
+                });
+            }
+
+            // 头像选择功能
+            document.querySelectorAll('.avatar-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+
+                    // 获取头像类型
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        selectedAvatar = icon.classList[1].replace('fa-', ''); // 获取图标名称
+                    }
+                });
+            });
+
+            // 兴趣标签切换
+            document.querySelectorAll('.flex-wrap button').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    const tagText = this.textContent.trim();
+
+                    if (this.classList.contains('bg-secondary')) {
+                        // 取消选择
+                        this.classList.remove('bg-secondary', 'text-primary', 'font-medium');
+                        this.classList.add('bg-white/20', 'text-white');
+                        selectedInterests = selectedInterests.filter(interest => interest !== tagText);
+                    } else {
+                        // 选择
+                        this.classList.remove('bg-white/20', 'text-white');
+                        this.classList.add('bg-secondary', 'text-primary', 'font-medium');
+                        if (!selectedInterests.includes(tagText)) {
+                            selectedInterests.push(tagText);
+                        }
+                    }
+                });
+            });
+
+            // 完成按钮
+            document.querySelector('.w-full.mt-8').addEventListener('click', handleCompleteSetup);
+
+            // 表单验证
+            document.querySelector('input[placeholder="请输入昵称"]').addEventListener('input', validateForm);
+        }
+
+        async function handleCompleteSetup(e) {
+            e.preventDefault();
+
+            const button = e.target;
+            const originalText = button.innerHTML;
+
+            try {
+                // 收集表单数据
+                const formData = collectProfileData();
+
+                // 验证表单
+                const validation = validateProfileData(formData);
+                if (!validation.isValid) {
+                    window.Utils.showToast(validation.errors[0], 'error');
+                    return;
+                }
+
+                // 显示加载状态
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>保存中...';
+                button.disabled = true;
+
+                // 模拟保存过程
+                await window.Utils.simulateNetworkDelay(1000, 2000);
+
+                // 保存用户资料
+                window.appState.updateProfile(formData);
+
+                // 显示成功状态
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>设置完成';
+                button.classList.remove('bg-secondary');
+                button.classList.add('bg-green-500');
+
+                window.Utils.showToast('资料设置完成！', 'success');
+
+                // 跳转到首页
+                setTimeout(() => {
+                    window.router.navigate('home');
+                }, 1500);
+
+            } catch (error) {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                window.Utils.showToast('保存失败，请重试', 'error');
+            }
+        }
+
+        function collectProfileData() {
+            const nickname = document.querySelector('input[placeholder="请输入昵称"]').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value || '';
+            const birthDate = document.querySelector('input[type="date"]').value;
+            const industry = document.querySelector('select').value;
+
+            return {
+                nickname: nickname.trim(),
+                gender,
+                birthDate,
+                industry,
+                avatar: selectedAvatar,
+                interests: selectedInterests
+            };
+        }
+
+        function validateProfileData(data) {
+            const errors = [];
+
+            if (!data.nickname) {
+                errors.push('请输入昵称');
+            } else if (data.nickname.length < 2) {
+                errors.push('昵称至少需要2个字符');
+            } else if (data.nickname.length > 20) {
+                errors.push('昵称不能超过20个字符');
+            }
+
+            return {
+                isValid: errors.length === 0,
+                errors
+            };
+        }
+
+        function validateForm() {
+            const nickname = document.querySelector('input[placeholder="请输入昵称"]').value;
+            const completeButton = document.querySelector('.w-full.mt-8');
+
+            if (nickname.trim().length >= 2) {
+                completeButton.disabled = false;
+                completeButton.classList.remove('opacity-50');
+            } else {
+                completeButton.disabled = true;
+                completeButton.classList.add('opacity-50');
+            }
+        }
+
+        // 进度条动画
+        setTimeout(() => {
+            document.querySelector('.progress-bar').style.width = '100%';
+            document.querySelector('.text-secondary.text-sm.font-medium').textContent = '100%';
+        }, 1000);
+
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            const elements = document.querySelectorAll('.avatar-option, .bg-white\\/10');
+            elements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    element.style.transition = 'all 0.5s ease';
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>梅花心易 - 传统易学智慧，AI智能解读</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .mystic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="gradient-bg mystic-pattern min-h-screen">
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+
+    <!-- 主要内容区域 -->
+    <div class="flex flex-col items-center justify-center min-h-screen px-6 py-8 relative">
+        <!-- 背景装饰元素 -->
+        <div class="absolute top-20 left-8 text-white/10 text-6xl floating-element">
+            <i class="fas fa-yin-yang"></i>
+        </div>
+        <div class="absolute top-32 right-12 text-white/10 text-4xl floating-element" style="animation-delay: 2s;">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="absolute bottom-40 left-12 text-white/10 text-5xl floating-element" style="animation-delay: 1s;">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="absolute bottom-32 right-8 text-white/10 text-3xl floating-element" style="animation-delay: 3s;">
+            <i class="fas fa-mountain"></i>
+        </div>
+
+        <!-- Logo和标题 -->
+        <div class="text-center mb-12">
+            <div class="relative mb-8">
+                <div class="absolute inset-0 w-24 h-24 bg-secondary/20 rounded-full pulse-ring"></div>
+                <div class="relative w-24 h-24 mx-auto bg-secondary rounded-full flex items-center justify-center floating-element">
+                    <i class="fas fa-yin-yang text-primary text-4xl"></i>
+                </div>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">梅花心易</h1>
+            <p class="text-white/80 text-lg mb-2">传统易学智慧，AI智能解读</p>
+            <p class="text-white/60 text-sm">基于正宗梅花易数算法的占卜决策助手</p>
+        </div>
+
+        <!-- 功能特色 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl w-full">
+            <div class="feature-card bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-yin-yang text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-white font-semibold text-lg mb-2">专业算法</h3>
+                <p class="text-white/70 text-sm">基于正宗梅花易数算法，非随机生成结果</p>
+            </div>
+
+            <div class="feature-card bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-robot text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-white font-semibold text-lg mb-2">AI解读</h3>
+                <p class="text-white/70 text-sm">智能AI提供个性化解读和指导建议</p>
+            </div>
+
+            <div class="feature-card bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-mobile-alt text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-white font-semibold text-lg mb-2">移动优先</h3>
+                <p class="text-white/70 text-sm">专为移动端设计，随时随地获得指引</p>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="space-y-4 w-full max-w-sm">
+            <button id="startBtn" class="w-full py-4 bg-secondary text-primary font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+                <i class="fas fa-play mr-2"></i>
+                开始体验
+            </button>
+
+            <div class="flex space-x-4">
+                <button id="loginBtn" class="flex-1 py-3 bg-white/20 text-white font-medium rounded-xl hover:bg-white/30 transition-colors">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    登录
+                </button>
+                <button id="registerBtn" class="flex-1 py-3 bg-white/20 text-white font-medium rounded-xl hover:bg-white/30 transition-colors">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    注册
+                </button>
+            </div>
+        </div>
+
+        <!-- 开发者选项 -->
+        <div class="mt-8 text-center">
+            <button id="devModeBtn" class="text-white/50 text-xs hover:text-white/80 transition-colors">
+                开发者模式
+            </button>
+        </div>
+    </div>
+
+    <!-- 开发者面板 -->
+    <div id="devPanel" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-6">
+            <div class="bg-white rounded-2xl p-6 max-w-md w-full">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800">开发者选项</h3>
+                    <button id="closeDev" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <button id="resetAppBtn" class="w-full py-3 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 transition-colors">
+                        <i class="fas fa-refresh mr-2"></i>
+                        重置应用数据
+                    </button>
+
+                    <button id="viewPrototypesBtn" class="w-full py-3 bg-blue-500 text-white font-medium rounded-xl hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-eye mr-2"></i>
+                        查看原型展示
+                    </button>
+
+                    <div class="text-xs text-gray-500 mt-4">
+                        <p>当前状态：<span id="currentStatus">未初始化</span></p>
+                        <p>登录状态：<span id="loginStatus">未登录</span></p>
+                        <p>免费次数：<span id="freeCountStatus">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 简单的Toast提示函数（降级使用）
+        function showSimpleToast(message) {
+            if (window.Utils && window.Utils.showToast) {
+                window.Utils.showToast(message, 'info');
+            } else {
+                // 降级处理
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 80px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #374151;
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 24px;
+                    z-index: 1000;
+                    font-size: 14px;
+                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 3000);
+            }
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，开始初始化');
+            initIndexPage();
+        });
+
+        let initAttempts = 0;
+        const maxInitAttempts = 50;
+
+        function initIndexPage() {
+            initAttempts++;
+
+            // 检查应用是否已初始化
+            const hasRequiredObjects = window.app && window.app.isInitialized && window.appState && window.router && window.Utils;
+
+            if (hasRequiredObjects) {
+                console.log('应用初始化完成，设置事件监听器');
+                try {
+                    setupEventListeners();
+                    updateDevPanel();
+                    checkAutoLogin();
+                } catch (error) {
+                    console.error('设置事件监听器失败:', error);
+                }
+            } else if (initAttempts >= maxInitAttempts) {
+                console.error('应用初始化超时，尝试降级处理');
+                setupBasicEventListeners();
+            } else {
+                console.log(`等待应用初始化... (${initAttempts}/${maxInitAttempts})`, {
+                    app: !!window.app,
+                    appInitialized: window.app?.isInitialized,
+                    appState: !!window.appState,
+                    router: !!window.router,
+                    utils: !!window.Utils
+                });
+                // 等待应用初始化完成
+                setTimeout(initIndexPage, 200);
+            }
+        }
+
+        function setupBasicEventListeners() {
+            console.log('设置基本事件监听器（降级模式）');
+
+            // 基本的页面跳转功能
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    console.log('开始体验按钮被点击（降级模式）');
+                    window.location.href = 'register.html';
+                });
+            }
+
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    console.log('登录按钮被点击（降级模式）');
+                    window.location.href = 'login.html';
+                });
+            }
+
+            const registerBtn = document.getElementById('registerBtn');
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function() {
+                    console.log('注册按钮被点击（降级模式）');
+                    window.location.href = 'register.html';
+                });
+            }
+
+            const devModeBtn = document.getElementById('devModeBtn');
+            if (devModeBtn) {
+                devModeBtn.addEventListener('click', function() {
+                    console.log('开发者模式按钮被点击（降级模式）');
+                    const devPanel = document.getElementById('devPanel');
+                    if (devPanel) {
+                        devPanel.classList.remove('hidden');
+                    }
+                });
+            }
+        }
+
+        function setupEventListeners() {
+            console.log('开始设置事件监听器');
+
+            // 开始体验按钮
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    console.log('开始体验按钮被点击');
+                    showSimpleToast('正在跳转...');
+                    try {
+                        const isLoggedIn = window.appState.getState('user.isLoggedIn');
+                        if (isLoggedIn) {
+                            window.router.navigate('home');
+                        } else {
+                            window.router.navigate('register');
+                        }
+                    } catch (error) {
+                        console.error('开始体验按钮点击错误:', error);
+                        showSimpleToast('使用直接跳转');
+                        setTimeout(() => {
+                            window.location.href = 'register.html';
+                        }, 500);
+                    }
+                });
+                console.log('开始体验按钮事件监听器已设置');
+            } else {
+                console.error('找不到开始体验按钮');
+            }
+
+            // 登录按钮
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    console.log('登录按钮被点击');
+                    showSimpleToast('正在跳转到登录页面...');
+                    try {
+                        window.router.navigate('login');
+                    } catch (error) {
+                        console.error('登录按钮点击错误:', error);
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 500);
+                    }
+                });
+                console.log('登录按钮事件监听器已设置');
+            } else {
+                console.error('找不到登录按钮');
+            }
+
+            // 注册按钮
+            const registerBtn = document.getElementById('registerBtn');
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function() {
+                    console.log('注册按钮被点击');
+                    showSimpleToast('正在跳转到注册页面...');
+                    try {
+                        window.router.navigate('register');
+                    } catch (error) {
+                        console.error('注册按钮点击错误:', error);
+                        setTimeout(() => {
+                            window.location.href = 'register.html';
+                        }, 500);
+                    }
+                });
+                console.log('注册按钮事件监听器已设置');
+            } else {
+                console.error('找不到注册按钮');
+            }
+
+            // 开发者模式按钮
+            const devModeBtn = document.getElementById('devModeBtn');
+            if (devModeBtn) {
+                devModeBtn.addEventListener('click', function() {
+                    console.log('开发者模式按钮被点击');
+                    try {
+                        const devPanel = document.getElementById('devPanel');
+                        if (devPanel) {
+                            devPanel.classList.remove('hidden');
+                            updateDevPanel();
+                        } else {
+                            console.error('找不到开发者面板');
+                        }
+                    } catch (error) {
+                        console.error('开发者模式按钮点击错误:', error);
+                    }
+                });
+                console.log('开发者模式按钮事件监听器已设置');
+            } else {
+                console.error('找不到开发者模式按钮');
+            }
+
+            // 关闭开发者面板
+            const closeDev = document.getElementById('closeDev');
+            if (closeDev) {
+                closeDev.addEventListener('click', function() {
+                    console.log('关闭开发者面板按钮被点击');
+                    const devPanel = document.getElementById('devPanel');
+                    if (devPanel) {
+                        devPanel.classList.add('hidden');
+                    }
+                });
+            }
+
+            // 重置应用数据
+            const resetAppBtn = document.getElementById('resetAppBtn');
+            if (resetAppBtn) {
+                resetAppBtn.addEventListener('click', function() {
+                    console.log('重置应用数据按钮被点击');
+                    try {
+                        if (window.app && window.app.resetApp) {
+                            window.app.resetApp();
+                            updateDevPanel();
+                        } else {
+                            console.error('resetApp方法不可用');
+                        }
+                    } catch (error) {
+                        console.error('重置应用数据错误:', error);
+                    }
+                });
+            }
+
+            // 查看原型展示
+            const viewPrototypesBtn = document.getElementById('viewPrototypesBtn');
+            if (viewPrototypesBtn) {
+                viewPrototypesBtn.addEventListener('click', function() {
+                    console.log('查看原型展示按钮被点击');
+                    window.location.href = 'prototypes-showcase.html';
+                });
+            }
+
+            // 点击背景关闭开发者面板
+            const devPanel = document.getElementById('devPanel');
+            if (devPanel) {
+                devPanel.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function updateDevPanel() {
+            console.log('更新开发者面板');
+            try {
+                if (!window.appState) {
+                    console.log('appState不可用');
+                    return;
+                }
+
+                const isLoggedIn = window.appState.getState('user.isLoggedIn');
+                const freeCount = window.appState.getState('app.freeCount');
+
+                const currentStatusEl = document.getElementById('currentStatus');
+                const loginStatusEl = document.getElementById('loginStatus');
+                const freeCountStatusEl = document.getElementById('freeCountStatus');
+
+                if (currentStatusEl) {
+                    currentStatusEl.textContent = window.app && window.app.isInitialized ? '已初始化' : '未初始化';
+                }
+                if (loginStatusEl) {
+                    loginStatusEl.textContent = isLoggedIn ? '已登录' : '未登录';
+                }
+                if (freeCountStatusEl) {
+                    freeCountStatusEl.textContent = freeCount || 0;
+                }
+            } catch (error) {
+                console.error('更新开发者面板错误:', error);
+            }
+        }
+
+        function checkAutoLogin() {
+            console.log('检查自动登录状态');
+            try {
+                if (!window.appState) return;
+
+                // 检查是否已登录，如果是则显示不同的按钮文字
+                const isLoggedIn = window.appState.getState('user.isLoggedIn');
+                if (isLoggedIn) {
+                    const startBtn = document.getElementById('startBtn');
+                    if (startBtn) {
+                        startBtn.innerHTML = '<i class="fas fa-home mr-2"></i>进入应用';
+                    }
+
+                    const nickname = window.appState.getState('user.nickname');
+                    if (nickname) {
+                        const loginBtn = document.getElementById('loginBtn');
+                        if (loginBtn) {
+                            loginBtn.innerHTML = `<i class="fas fa-user mr-2"></i>${nickname}`;
+                            // 移除之前的事件监听器，添加新的
+                            loginBtn.onclick = () => {
+                                try {
+                                    window.router.navigate('user-center');
+                                } catch (error) {
+                                    console.error('导航到用户中心失败:', error);
+                                }
+                            };
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('检查自动登录错误:', error);
+            }
+        }
+
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

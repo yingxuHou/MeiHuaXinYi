@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史记录 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .history-card {
+            transition: all 0.3s ease;
+        }
+        .history-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .filter-tab {
+            transition: all 0.3s ease;
+        }
+        .filter-tab.active {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1e3a8a;
+        }
+        .hexagram-mini {
+            width: 3px;
+            height: 1px;
+            background: #fbbf24;
+            margin: 1px 0;
+        }
+        .hexagram-mini.broken {
+            width: 1px;
+            margin-right: 1px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+    
+    <!-- 顶部导航 -->
+    <div class="gradient-bg px-6 py-4">
+        <div class="flex items-center justify-between">
+            <button onclick="window.location.href='home.html'" class="text-white/80 hover:text-white">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </button>
+            <h1 class="text-white font-semibold text-lg">历史记录</h1>
+            <button onclick="showSearchModal()" class="text-white/80 hover:text-white">
+                <i class="fas fa-search text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 统计信息 -->
+    <div class="px-6 py-4 bg-white border-b border-gray-100">
+        <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+                <div class="text-2xl font-bold text-secondary">23</div>
+                <div class="text-xs text-gray-500">总占卜次数</div>
+            </div>
+            <div>
+                <div class="text-2xl font-bold text-green-600">18</div>
+                <div class="text-xs text-gray-500">本月占卜</div>
+            </div>
+            <div>
+                <div class="text-2xl font-bold text-blue-600">7</div>
+                <div class="text-xs text-gray-500">连续天数</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 筛选标签 -->
+    <div class="px-6 py-4 bg-white border-b border-gray-100">
+        <div class="flex space-x-2 overflow-x-auto">
+            <button class="filter-tab active px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap">
+                全部
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-600 bg-gray-100 whitespace-nowrap">
+                感情问题
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-600 bg-gray-100 whitespace-nowrap">
+                事业发展
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-600 bg-gray-100 whitespace-nowrap">
+                学业考试
+            </button>
+            <button class="filter-tab px-4 py-2 rounded-full text-sm font-medium text-gray-600 bg-gray-100 whitespace-nowrap">
+                生活决策
+            </button>
+        </div>
+    </div>
+
+    <!-- 历史记录列表 -->
+    <div class="px-6 py-4 space-y-4 pb-24">
+        <!-- 今天 -->
+        <div>
+            <h3 class="text-sm font-medium text-gray-500 mb-3 flex items-center">
+                <i class="fas fa-calendar-day mr-2"></i>
+                今天
+            </h3>
+            
+            <!-- 记录项 -->
+            <div class="history-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-3">
+                <div class="flex items-start space-x-4">
+                    <!-- 卦象缩略图 -->
+                    <div class="flex-shrink-0 w-8 h-8 bg-secondary/10 rounded-lg flex flex-col justify-center items-center p-1">
+                        <div class="hexagram-mini"></div>
+                        <div class="hexagram-mini"></div>
+                        <div class="flex space-x-0.5">
+                            <div class="hexagram-mini broken"></div>
+                            <div class="hexagram-mini broken"></div>
+                        </div>
+                        <div class="hexagram-mini"></div>
+                        <div class="flex space-x-0.5">
+                            <div class="hexagram-mini broken"></div>
+                            <div class="hexagram-mini broken"></div>
+                        </div>
+                        <div class="hexagram-mini"></div>
+                    </div>
+                    
+                    <!-- 内容 -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-800 mb-1">工作机会选择</h4>
+                                <p class="text-gray-600 text-sm line-clamp-2 mb-2">
+                                    我在考虑是否应该接受这个新的工作机会，这个职位薪资更高但需要搬到另一个城市...
+                                </p>
+                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-yin-yang mr-1 text-secondary"></i>
+                                        天火同人
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-star mr-1 text-green-500"></i>
+                                        中吉
+                                    </span>
+                                    <span>14:30</span>
+                                </div>
+                            </div>
+                            <button onclick="viewDetail(1)" class="text-gray-400 hover:text-gray-600 ml-2">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-lg flex flex-col justify-center items-center p-1">
+                        <div class="hexagram-mini bg-purple-500"></div>
+                        <div class="flex space-x-0.5">
+                            <div class="hexagram-mini broken bg-purple-500"></div>
+                            <div class="hexagram-mini broken bg-purple-500"></div>
+                        </div>
+                        <div class="hexagram-mini bg-purple-500"></div>
+                        <div class="hexagram-mini bg-purple-500"></div>
+                        <div class="flex space-x-0.5">
+                            <div class="hexagram-mini broken bg-purple-500"></div>
+                            <div class="hexagram-mini broken bg-purple-500"></div>
+                        </div>
+                        <div class="hexagram-mini bg-purple-500"></div>
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-800 mb-1">感情关系困惑</h4>
+                                <p class="text-gray-600 text-sm line-clamp-2 mb-2">
+                                    最近和男朋友总是因为小事争吵，不知道这段关系是否还有继续的必要...
+                                </p>
+                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-yin-yang mr-1 text-purple-500"></i>
+                                        水雷屯
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-star mr-1 text-yellow-500"></i>
+                                        小凶
+                                    </span>
+                                    <span>09:15</span>
+                                </div>
+                            </div>
+                            <button onclick="viewDetail(2)" class="text-gray-400 hover:text-gray-600 ml-2">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 昨天 -->
+        <div>
+            <h3 class="text-sm font-medium text-gray-500 mb-3 flex items-center">
+                <i class="fas fa-calendar-minus mr-2"></i>
+                昨天
+            </h3>
+            
+            <div class="history-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-3">
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex flex-col justify-center items-center p-1">
+                        <div class="hexagram-mini bg-green-500"></div>
+                        <div class="hexagram-mini bg-green-500"></div>
+                        <div class="hexagram-mini bg-green-500"></div>
+                        <div class="flex space-x-0.5">
+                            <div class="hexagram-mini broken bg-green-500"></div>
+                            <div class="hexagram-mini broken bg-green-500"></div>
+                        </div>
+                        <div class="flex space-x-0.5">
+                            <div class="hexagram-mini broken bg-green-500"></div>
+                            <div class="hexagram-mini broken bg-green-500"></div>
+                        </div>
+                        <div class="flex space-x-0.5">
+                            <div class="hexagram-mini broken bg-green-500"></div>
+                            <div class="hexagram-mini broken bg-green-500"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-medium text-gray-800 mb-1">考研专业选择</h4>
+                                <p class="text-gray-600 text-sm line-clamp-2 mb-2">
+                                    在计算机科学和心理学之间纠结，不知道哪个更适合我的未来发展...
+                                </p>
+                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-yin-yang mr-1 text-green-500"></i>
+                                        天地否
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-star mr-1 text-green-500"></i>
+                                        大吉
+                                    </span>
+                                    <span>20:45</span>
+                                </div>
+                            </div>
+                            <button onclick="viewDetail(3)" class="text-gray-400 hover:text-gray-600 ml-2">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 本周早些时候 -->
+        <div>
+            <h3 class="text-sm font-medium text-gray-500 mb-3 flex items-center">
+                <i class="fas fa-calendar-week mr-2"></i>
+                本周早些时候
+            </h3>
+            
+            <div class="space-y-3">
+                <div class="history-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex flex-col justify-center items-center p-1">
+                            <div class="hexagram-mini bg-blue-500"></div>
+                            <div class="hexagram-mini bg-blue-500"></div>
+                            <div class="flex space-x-0.5">
+                                <div class="hexagram-mini broken bg-blue-500"></div>
+                                <div class="hexagram-mini broken bg-blue-500"></div>
+                            </div>
+                            <div class="hexagram-mini bg-blue-500"></div>
+                            <div class="hexagram-mini bg-blue-500"></div>
+                            <div class="hexagram-mini bg-blue-500"></div>
+                        </div>
+                        
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 mb-1">投资理财决策</h4>
+                                    <p class="text-gray-600 text-sm line-clamp-2 mb-2">
+                                        手里有一笔闲钱，在股票和基金之间犹豫不决...
+                                    </p>
+                                    <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-yin-yang mr-1 text-blue-500"></i>
+                                            山水蒙
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-star mr-1 text-yellow-500"></i>
+                                            平
+                                        </span>
+                                        <span>1月24日</span>
+                                    </div>
+                                </div>
+                                <button onclick="viewDetail(4)" class="text-gray-400 hover:text-gray-600 ml-2">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-lg flex flex-col justify-center items-center p-1">
+                            <div class="flex space-x-0.5">
+                                <div class="hexagram-mini broken bg-red-500"></div>
+                                <div class="hexagram-mini broken bg-red-500"></div>
+                            </div>
+                            <div class="flex space-x-0.5">
+                                <div class="hexagram-mini broken bg-red-500"></div>
+                                <div class="hexagram-mini broken bg-red-500"></div>
+                            </div>
+                            <div class="flex space-x-0.5">
+                                <div class="hexagram-mini broken bg-red-500"></div>
+                                <div class="hexagram-mini broken bg-red-500"></div>
+                            </div>
+                            <div class="hexagram-mini bg-red-500"></div>
+                            <div class="hexagram-mini bg-red-500"></div>
+                            <div class="hexagram-mini bg-red-500"></div>
+                        </div>
+                        
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800 mb-1">搬家时机选择</h4>
+                                    <p class="text-gray-600 text-sm line-clamp-2 mb-2">
+                                        租约到期需要搬家，在几个房源之间难以抉择...
+                                    </p>
+                                    <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-yin-yang mr-1 text-red-500"></i>
+                                            地天泰
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-star mr-1 text-green-500"></i>
+                                            大吉
+                                        </span>
+                                        <span>1月23日</span>
+                                    </div>
+                                </div>
+                                <button onclick="viewDetail(5)" class="text-gray-400 hover:text-gray-600 ml-2">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3">
+        <div class="flex items-center justify-around">
+            <button onclick="window.location.href='home.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs">首页</span>
+            </button>
+            <button onclick="window.location.href='question-input.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-magic text-xl"></i>
+                <span class="text-xs">占卜</span>
+            </button>
+            <button class="flex flex-col items-center space-y-1 text-secondary">
+                <i class="fas fa-history text-xl"></i>
+                <span class="text-xs font-medium">记录</span>
+            </button>
+            <button onclick="window.location.href='user-center.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-xs">我的</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        let currentFilter = '全部';
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initHistoryPage();
+        });
+
+        function initHistoryPage() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                checkAuthStatus();
+                updateStatistics();
+                loadHistoryRecords();
+                initPageAnimations();
+            } else {
+                setTimeout(initHistoryPage, 100);
+            }
+        }
+
+        function checkAuthStatus() {
+            // 检查是否已登录
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (!isLoggedIn) {
+                window.router.navigate('login');
+                return;
+            }
+        }
+
+        function updateStatistics() {
+            const stats = window.app.getAppStats();
+
+            // 更新统计数字
+            const statElements = document.querySelectorAll('.text-2xl.font-bold');
+            if (statElements.length >= 3) {
+                statElements[0].textContent = stats.totalDivinations;
+                statElements[1].textContent = stats.currentMonth;
+                statElements[2].textContent = stats.consecutiveDays;
+            }
+        }
+
+        function loadHistoryRecords() {
+            const history = window.appState.getDivinationHistory();
+
+            if (history.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            // 这里可以根据实际历史记录更新页面内容
+            // 当前使用静态内容作为示例
+        }
+
+        function showEmptyState() {
+            const historyContainer = document.querySelector('.space-y-4.pb-24');
+            if (historyContainer) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-history text-gray-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-gray-600 font-medium mb-2">暂无占卜记录</h3>
+                        <p class="text-gray-500 text-sm mb-6">开始您的第一次占卜吧</p>
+                        <button onclick="window.router.navigate('question-input')"
+                                class="px-6 py-3 bg-secondary text-primary font-medium rounded-xl hover:bg-yellow-300 transition-colors">
+                            <i class="fas fa-magic mr-2"></i>
+                            开始占卜
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function setupEventListeners() {
+            // 返回按钮
+            document.querySelector('.fa-arrow-left').parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.router.navigate('home');
+            });
+
+            // 搜索按钮
+            document.querySelector('.fa-search').parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSearchModal();
+            });
+
+            // 筛选标签切换
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-tab').forEach(t => {
+                        t.classList.remove('active');
+                        t.classList.add('text-gray-600', 'bg-gray-100');
+                    });
+                    this.classList.add('active');
+                    this.classList.remove('text-gray-600', 'bg-gray-100');
+
+                    currentFilter = this.textContent.trim();
+                    filterHistoryRecords(currentFilter);
+                });
+            });
+
+            // 历史记录项点击
+            document.querySelectorAll('.history-card').forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    viewDetail(index + 1);
+                });
+            });
+
+            // 底部导航
+            setupBottomNavigation();
+        }
+
+        function setupBottomNavigation() {
+            const navButtons = document.querySelectorAll('.fixed .flex button');
+            navButtons.forEach((button, index) => {
+                button.onclick = null; // 移除原有的onclick
+
+                button.addEventListener('click', function() {
+                    // 更新导航状态
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('text-secondary');
+                        btn.classList.add('text-gray-400');
+                    });
+                    this.classList.remove('text-gray-400');
+                    this.classList.add('text-secondary');
+
+                    // 导航到对应页面
+                    switch(index) {
+                        case 0: // 首页
+                            window.router.navigate('home');
+                            break;
+                        case 1: // 占卜
+                            window.router.navigate('question-input');
+                            break;
+                        case 2: // 记录
+                            // 已在记录页面，不需要跳转
+                            break;
+                        case 3: // 我的
+                            window.router.navigate('user-center');
+                            break;
+                    }
+                });
+            });
+        }
+
+        function viewDetail(id) {
+            // 模拟设置当前查看的记录
+            const history = window.appState.getDivinationHistory();
+            if (history.length > 0) {
+                // 设置当前结果为历史记录中的某一项
+                window.appState.setState('session.currentResult', history[0]);
+                window.appState.setState('session.currentQuestion', history[0].question);
+            }
+
+            window.router.navigate('divination-result');
+        }
+
+        function showSearchModal() {
+            const searchTerm = prompt('请输入搜索关键词：');
+            if (searchTerm && searchTerm.trim()) {
+                filterHistoryRecords(searchTerm.trim());
+                window.Utils.showToast(`搜索"${searchTerm}"`, 'info');
+            }
+        }
+
+        function filterHistoryRecords(filter) {
+            // 这里可以实现实际的筛选逻辑
+            console.log('筛选类型:', filter);
+
+            // 模拟筛选效果
+            const cards = document.querySelectorAll('.history-card');
+            cards.forEach(card => {
+                if (filter === '全部') {
+                    card.style.display = 'block';
+                } else {
+                    // 简单的文本匹配筛选
+                    const cardText = card.textContent.toLowerCase();
+                    const filterText = filter.toLowerCase();
+
+                    if (cardText.includes(filterText)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // 页面加载动画
+        function initPageAnimations() {
+            const cards = document.querySelectorAll('.history-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // 监听状态变化
+        window.addEventListener('stateChange', function(e) {
+            const { path } = e.detail;
+            if (path === 'history') {
+                loadHistoryRecords();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互流程测试 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .test-card {
+            transition: all 0.3s ease;
+        }
+        .test-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-success { background-color: #10b981; }
+        .status-warning { background-color: #f59e0b; }
+        .status-error { background-color: #ef4444; }
+        .status-info { background-color: #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+    
+    <!-- 顶部导航 -->
+    <div class="bg-gradient-to-r from-primary to-mystic px-6 py-4">
+        <div class="flex items-center justify-between">
+            <button onclick="window.location.href='index.html'" class="text-white/80 hover:text-white">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </button>
+            <h1 class="text-white font-semibold text-lg">交互流程测试</h1>
+            <button onclick="resetAllData()" class="text-white/80 hover:text-white">
+                <i class="fas fa-refresh text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <div class="px-6 py-6">
+        <!-- 应用状态 -->
+        <div class="test-card bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                应用状态
+            </h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between">
+                    <span>应用初始化</span>
+                    <span id="appInitStatus" class="flex items-center">
+                        <span class="status-indicator status-warning"></span>
+                        检查中...
+                    </span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>登录状态</span>
+                    <span id="loginStatus" class="flex items-center">
+                        <span class="status-indicator status-error"></span>
+                        未登录
+                    </span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>免费次数</span>
+                    <span id="freeCountStatus" class="flex items-center">
+                        <span class="status-indicator status-info"></span>
+                        <span id="freeCountValue">-</span>次
+                    </span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>历史记录</span>
+                    <span id="historyStatus" class="flex items-center">
+                        <span class="status-indicator status-info"></span>
+                        <span id="historyCount">-</span>条
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试流程 -->
+        <div class="test-card bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-play-circle text-green-500 mr-2"></i>
+                测试流程
+            </h2>
+            <div class="space-y-3">
+                <button onclick="testUserRegistration()" class="w-full p-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors text-left">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    1. 测试用户注册流程
+                </button>
+                <button onclick="testUserLogin()" class="w-full p-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors text-left">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    2. 测试用户登录流程
+                </button>
+                <button onclick="testDivinationFlow()" class="w-full p-3 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors text-left">
+                    <i class="fas fa-magic mr-2"></i>
+                    3. 测试完整占卜流程
+                </button>
+                <button onclick="testShareFunction()" class="w-full p-3 bg-yellow-500 text-white rounded-xl hover:bg-yellow-600 transition-colors text-left">
+                    <i class="fas fa-share-alt mr-2"></i>
+                    4. 测试分享功能
+                </button>
+                <button onclick="testHistoryView()" class="w-full p-3 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition-colors text-left">
+                    <i class="fas fa-history mr-2"></i>
+                    5. 测试历史记录查看
+                </button>
+            </div>
+        </div>
+
+        <!-- 快速操作 -->
+        <div class="test-card bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                快速操作
+            </h2>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="quickLogin()" class="p-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-zap mr-2"></i>
+                    快速登录
+                </button>
+                <button onclick="addFreeCount()" class="p-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>
+                    增加次数
+                </button>
+                <button onclick="generateMockHistory()" class="p-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-database mr-2"></i>
+                    生成历史
+                </button>
+                <button onclick="resetAllData()" class="p-3 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-colors">
+                    <i class="fas fa-trash mr-2"></i>
+                    重置数据
+                </button>
+            </div>
+        </div>
+
+        <!-- 测试日志 -->
+        <div class="test-card bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-list text-gray-500 mr-2"></i>
+                测试日志
+                <button onclick="clearLog()" class="ml-auto text-sm text-gray-500 hover:text-gray-700">
+                    清空
+                </button>
+            </h2>
+            <div id="testLog" class="bg-gray-50 rounded-xl p-4 h-40 overflow-y-auto text-sm font-mono">
+                <div class="text-gray-500">等待测试开始...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initTestPage();
+        });
+
+        function initTestPage() {
+            if (window.app && window.app.isInitialized) {
+                updateStatus();
+                log('测试页面初始化完成');
+                
+                // 监听状态变化
+                window.addEventListener('stateChange', updateStatus);
+                
+                // 定期更新状态
+                setInterval(updateStatus, 1000);
+            } else {
+                setTimeout(initTestPage, 100);
+            }
+        }
+
+        function updateStatus() {
+            // 应用初始化状态
+            const appInitElement = document.getElementById('appInitStatus');
+            if (window.app && window.app.isInitialized) {
+                appInitElement.innerHTML = '<span class="status-indicator status-success"></span>已初始化';
+            } else {
+                appInitElement.innerHTML = '<span class="status-indicator status-error"></span>未初始化';
+            }
+
+            // 登录状态
+            const isLoggedIn = window.appState ? window.appState.getState('user.isLoggedIn') : false;
+            const loginElement = document.getElementById('loginStatus');
+            if (isLoggedIn) {
+                const nickname = window.appState.getState('user.nickname') || '用户';
+                loginElement.innerHTML = `<span class="status-indicator status-success"></span>已登录 (${nickname})`;
+            } else {
+                loginElement.innerHTML = '<span class="status-indicator status-error"></span>未登录';
+            }
+
+            // 免费次数
+            const freeCount = window.appState ? window.appState.getState('app.freeCount') : 0;
+            document.getElementById('freeCountValue').textContent = freeCount;
+
+            // 历史记录
+            const history = window.appState ? window.appState.getState('history') : [];
+            document.getElementById('historyCount').textContent = history ? history.length : 0;
+        }
+
+        function log(message) {
+            const logElement = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span class="text-gray-400">[${timestamp}]</span> ${message}`;
+            logElement.appendChild(logEntry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '<div class="text-gray-500">日志已清空</div>';
+        }
+
+        // 测试函数
+        function testUserRegistration() {
+            log('开始测试用户注册流程...');
+            window.router.navigate('register');
+        }
+
+        function testUserLogin() {
+            log('开始测试用户登录流程...');
+            window.router.navigate('login');
+        }
+
+        function testDivinationFlow() {
+            log('开始测试完整占卜流程...');
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (!isLoggedIn) {
+                log('用户未登录，先进行快速登录...');
+                quickLogin();
+                setTimeout(() => {
+                    window.router.navigate('question-input');
+                }, 1000);
+            } else {
+                window.router.navigate('question-input');
+            }
+        }
+
+        function testShareFunction() {
+            log('测试分享功能...');
+            window.app.shareResult().then(success => {
+                if (success) {
+                    log('分享功能测试成功');
+                } else {
+                    log('分享功能测试失败');
+                }
+            });
+        }
+
+        function testHistoryView() {
+            log('测试历史记录查看...');
+            window.router.navigate('history');
+        }
+
+        function quickLogin() {
+            log('执行快速登录...');
+            window.appState.login({
+                id: 'test-user-' + Date.now(),
+                nickname: '测试用户',
+                email: 'test@example.com'
+            });
+            log('快速登录完成');
+        }
+
+        function addFreeCount() {
+            log('增加免费次数...');
+            window.appState.addFreeCount(10);
+            log('已增加10次免费占卜');
+        }
+
+        function generateMockHistory() {
+            log('生成模拟历史记录...');
+            const mockRecords = [
+                {
+                    question: '我应该换工作吗？',
+                    questionType: '事业发展',
+                    hexagram: { name: '天火同人', type: '同人', element: '火天', fortune: '中吉' },
+                    interpretation: '此卦象显示，您当前面临的选择具有积极的发展潜力。',
+                    result: { advice: '建议谨慎考虑', timing: '本月下旬' }
+                },
+                {
+                    question: '感情问题咨询',
+                    questionType: '感情问题',
+                    hexagram: { name: '水雷屯', type: '屯', element: '水雷', fortune: '小凶' },
+                    interpretation: '感情方面需要更多耐心和理解。',
+                    result: { advice: '多沟通交流', timing: '下个月' }
+                }
+            ];
+
+            mockRecords.forEach(record => {
+                window.appState.saveDivinationRecord(record);
+            });
+            
+            log(`已生成${mockRecords.length}条模拟历史记录`);
+        }
+
+        function resetAllData() {
+            if (confirm('确定要重置所有数据吗？这将清除所有用户数据和历史记录。')) {
+                log('重置所有应用数据...');
+                window.appState.reset();
+                log('数据重置完成');
+                updateStatus();
+            }
+        }
+    </script>
+</body>
+</html>

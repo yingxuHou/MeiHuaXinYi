@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜进行中 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/starry-theme.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .mystic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        /* 主要动画 */
+        .yin-yang-spin {
+            animation: yinYangSpin 3s linear infinite;
+        }
+        @keyframes yinYangSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .pulse-ring {
+            animation: pulseRing 2s infinite;
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .floating-symbols {
+            animation: floatSymbols 4s ease-in-out infinite;
+        }
+        @keyframes floatSymbols {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .progress-bar {
+            animation: progressFill 8s ease-in-out forwards;
+        }
+        @keyframes progressFill {
+            0% { width: 0%; }
+            25% { width: 30%; }
+            50% { width: 60%; }
+            75% { width: 85%; }
+            100% { width: 100%; }
+        }
+        
+        .text-fade {
+            animation: textFade 2s ease-in-out infinite;
+        }
+        @keyframes textFade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .hexagram-line {
+            animation: hexagramDraw 0.5s ease-out forwards;
+            transform-origin: left center;
+            transform: scaleX(0);
+        }
+        @keyframes hexagramDraw {
+            to { transform: scaleX(1); }
+        }
+    </style>
+</head>
+<body class="starry-bg min-h-screen overflow-hidden">
+    <!-- 星座装饰元素 -->
+    <div class="constellation-decoration"></div>
+
+    <!-- 星盘装饰圆环 -->
+    <div class="astral-ring astral-ring-1"></div>
+    <div class="astral-ring astral-ring-2"></div>
+
+    <!-- 星座符号装饰 -->
+    <div class="zodiac-symbol">♈</div>
+    <div class="zodiac-symbol">♌</div>
+    <div class="zodiac-symbol">♐</div>
+    <div class="zodiac-symbol">♓</div>
+
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+
+    <!-- 主要内容区域 -->
+    <div class="flex flex-col items-center justify-center min-h-screen px-6 py-8 relative z-10">
+        <!-- 背景装饰符号 - 星空神秘主题 -->
+        <div class="absolute top-20 left-8 mystical-text-accent text-4xl floating-symbols cosmic-glow">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="absolute top-32 right-12 mystical-text-accent text-3xl floating-symbols cosmic-glow" style="animation-delay: 1s;">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="absolute bottom-40 left-12 mystical-text-accent text-5xl floating-symbols cosmic-glow" style="animation-delay: 2s;">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="absolute bottom-32 right-8 mystical-text-accent text-3xl floating-symbols cosmic-glow" style="animation-delay: 0.5s;">
+            <i class="fas fa-mountain"></i>
+        </div>
+
+        <!-- 中央占卜区域 - 星空神秘主题 -->
+        <div class="text-center mb-12">
+            <!-- 主要太极图标 -->
+            <div class="relative mb-8">
+                <!-- 脉冲环 -->
+                <div class="absolute inset-0 w-32 h-32 bg-gradient-to-r from-yellow-400/20 to-yellow-500/20 rounded-full pulse-ring cosmic-glow"></div>
+                <div class="absolute inset-0 w-32 h-32 bg-gradient-to-r from-yellow-300/10 to-yellow-400/10 rounded-full pulse-ring cosmic-glow" style="animation-delay: 1s;"></div>
+
+                <!-- 太极图 -->
+                <div class="relative w-32 h-32 mx-auto enhanced-taiji rounded-full flex items-center justify-center yin-yang-spin cosmic-glow"
+                     style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);">
+                    <i class="fas fa-yin-yang text-primary text-5xl"></i>
+                </div>
+            </div>
+
+            <!-- 状态文字 -->
+            <h1 class="text-2xl font-bold mystical-text mb-4 text-fade">✦ 正在为您占卜 ✦</h1>
+            <p id="statusText" class="mystical-text-secondary text-lg mb-8">梅花易数算法计算中...</p>
+        </div>
+
+        <!-- 卦象生成区域 - 星空神秘主题 -->
+        <div class="mb-8">
+            <h3 class="mystical-text text-center mb-4 flex items-center justify-center">
+                <i class="fas fa-scroll mr-2 mystical-text-accent"></i>
+                卦象生成中
+                <i class="fas fa-scroll ml-2 mystical-text-accent"></i>
+            </h3>
+            <div id="hexagramDisplay" class="flex flex-col items-center space-y-2 mystical-card p-4 rounded-xl starlight-border">
+                <!-- 卦象线条将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 进度条 - 星空神秘主题 -->
+        <div class="w-full max-w-xs mb-8">
+            <div class="flex items-center justify-between mb-2">
+                <span class="mystical-text-secondary text-sm flex items-center">
+                    <i class="fas fa-hourglass-half mr-2 mystical-text-accent"></i>
+                    占卜进度
+                </span>
+                <span id="progressPercent" class="mystical-text-accent text-sm font-medium cosmic-glow">0%</span>
+            </div>
+            <div class="w-full bg-black/20 rounded-full h-3 overflow-hidden">
+                <div class="progress-bar bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 h-3 rounded-full cosmic-glow" style="box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);"></div>
+            </div>
+        </div>
+
+        <!-- 占卜步骤说明 - 星空神秘主题 -->
+        <div class="text-center space-y-3">
+            <div id="step1" class="flex items-center justify-center space-x-2 mystical-text-secondary text-sm">
+                <i class="fas fa-check-circle text-green-400 cosmic-glow"></i>
+                <span>✧ 问题分析完成 ✧</span>
+            </div>
+            <div id="step2" class="flex items-center justify-center space-x-2 mystical-text-secondary text-sm">
+                <i class="fas fa-spinner fa-spin mystical-text-accent cosmic-glow"></i>
+                <span>✧ 梅花易数计算中 ✧</span>
+            </div>
+            <div id="step3" class="flex items-center justify-center space-x-2 text-white/40 text-sm">
+                <i class="fas fa-circle text-gray-500"></i>
+                <span>AI解读生成中</span>
+            </div>
+            <div id="step4" class="flex items-center justify-center space-x-2 text-white/40 text-sm">
+                <i class="fas fa-circle text-gray-500"></i>
+                <span>结果整理完成</span>
+            </div>
+        </div>
+
+        <!-- 底部提示 -->
+        <div class="absolute bottom-8 left-6 right-6">
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-info-circle text-secondary"></i>
+                    <div>
+                        <p class="text-white/90 text-sm font-medium">占卜原理</p>
+                        <p class="text-white/70 text-xs">基于传统梅花易数算法，结合时间、方位等因素进行推演</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        let currentStep = 1;
+        let divinationResult = null;
+
+        // 状态文字数组
+        const statusTexts = [
+            "梅花易数算法计算中...",
+            "分析问题核心要素...",
+            "生成本卦和变卦...",
+            "AI智能解读中...",
+            "整理占卜结果..."
+        ];
+
+        // 卦象线条类型（实线和虚线）
+        const hexagramLines = [
+            { type: 'solid', delay: 0 },
+            { type: 'broken', delay: 0.5 },
+            { type: 'solid', delay: 1 },
+            { type: 'broken', delay: 1.5 },
+            { type: 'solid', delay: 2 },
+            { type: 'broken', delay: 2.5 }
+        ];
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initDivinationLoading();
+        });
+
+        function initDivinationLoading() {
+            if (window.app && window.app.isInitialized) {
+                checkAuthStatus();
+                checkSessionData();
+                startDivinationProcess();
+            } else {
+                setTimeout(initDivinationLoading, 100);
+            }
+        }
+
+        function checkAuthStatus() {
+            // 检查是否已登录
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (!isLoggedIn) {
+                window.router.navigate('login');
+                return;
+            }
+        }
+
+        function checkSessionData() {
+            // 检查是否有当前问题
+            const currentQuestion = window.appState.getState('session.currentQuestion');
+            if (!currentQuestion) {
+                // 如果没有问题，重定向到问题输入页面
+                window.router.navigate('question-input');
+                return;
+            }
+        }
+
+        async function startDivinationProcess() {
+            try {
+                // 创建卦象线条动画
+                createHexagramLines();
+
+                // 开始进度更新
+                updateProgress();
+
+                // 生成占卜结果
+                divinationResult = await window.app.generateDivinationResult();
+
+                // 添加神秘效果
+                addMysticEffects();
+
+            } catch (error) {
+                console.error('Divination process failed:', error);
+                window.Utils.showToast('占卜过程出现错误', 'error');
+                setTimeout(() => {
+                    window.router.navigate('question-input');
+                }, 2000);
+            }
+        }
+
+        // 创建卦象线条
+        function createHexagramLines() {
+            const container = document.getElementById('hexagramDisplay');
+
+            hexagramLines.forEach((line, index) => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'hexagram-line bg-secondary h-1 rounded';
+                lineElement.style.animationDelay = `${line.delay}s`;
+
+                if (line.type === 'solid') {
+                    lineElement.style.width = '60px';
+                } else {
+                    // 虚线（两段）
+                    lineElement.className = 'flex space-x-2';
+                    lineElement.innerHTML = `
+                        <div class="hexagram-line bg-secondary h-1 w-6 rounded" style="animation-delay: ${line.delay}s;"></div>
+                        <div class="hexagram-line bg-secondary h-1 w-6 rounded" style="animation-delay: ${line.delay + 0.1}s;"></div>
+                    `;
+                }
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 更新进度和状态
+        function updateProgress() {
+            const progressPercent = document.getElementById('progressPercent');
+            const statusText = document.getElementById('statusText');
+
+            // 步骤1: 25%
+            setTimeout(() => {
+                progressPercent.textContent = '25%';
+                updateStep(2);
+            }, 2000);
+
+            // 步骤2: 50%
+            setTimeout(() => {
+                progressPercent.textContent = '50%';
+                statusText.textContent = statusTexts[1];
+                updateStep(3);
+            }, 3500);
+
+            // 步骤3: 75%
+            setTimeout(() => {
+                progressPercent.textContent = '75%';
+                statusText.textContent = statusTexts[2];
+                updateStep(4);
+            }, 5000);
+
+            // 步骤4: 90%
+            setTimeout(() => {
+                progressPercent.textContent = '90%';
+                statusText.textContent = statusTexts[3];
+            }, 6500);
+
+            // 完成: 100%
+            setTimeout(() => {
+                progressPercent.textContent = '100%';
+                statusText.textContent = statusTexts[4];
+
+                // 跳转到结果页面
+                setTimeout(() => {
+                    window.router.navigate('divination-result');
+                }, 1500);
+            }, 8000);
+        }
+
+        // 更新步骤状态
+        function updateStep(step) {
+            // 更新当前步骤
+            const currentStepEl = document.getElementById(`step${currentStep}`);
+            if (currentStepEl) {
+                const icon = currentStepEl.querySelector('i');
+                icon.className = 'fas fa-check-circle text-green-400';
+                currentStepEl.classList.remove('text-white/60');
+                currentStepEl.classList.add('text-white/80');
+            }
+
+            // 激活下一步骤
+            if (step <= 4) {
+                const nextStepEl = document.getElementById(`step${step}`);
+                if (nextStepEl) {
+                    const icon = nextStepEl.querySelector('i');
+                    icon.className = 'fas fa-spinner fa-spin text-secondary';
+                    nextStepEl.classList.remove('text-white/40');
+                    nextStepEl.classList.add('text-white/60');
+                }
+            }
+
+            currentStep = step;
+        }
+
+        // 添加神秘效果
+        function addMysticEffects() {
+            // 随机改变浮动符号的动画速度
+            setInterval(() => {
+                const symbols = document.querySelectorAll('.floating-symbols');
+                symbols.forEach(symbol => {
+                    symbol.style.animationDuration = `${3 + Math.random() * 2}s`;
+                });
+            }, 3000);
+        }
+
+        // 防止用户意外离开
+        window.addEventListener('beforeunload', function(e) {
+            // 只在占卜进行中时阻止离开
+            if (currentStep < 4) {
+                e.preventDefault();
+                e.returnValue = '占卜正在进行中，确定要离开吗？';
+            }
+        });
+
+        // 监听页面可见性变化
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                // 页面被隐藏时暂停动画
+                document.querySelectorAll('.yin-yang-spin, .pulse-ring').forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                });
+            } else {
+                // 页面重新可见时恢复动画
+                document.querySelectorAll('.yin-yang-spin, .pulse-ring').forEach(el => {
+                    el.style.animationPlayState = 'running';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

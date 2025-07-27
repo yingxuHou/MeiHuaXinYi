@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户中心 - 梅花心易</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e3a8a',
+                        secondary: '#fbbf24',
+                        dark: '#0f172a',
+                        mystic: '#312e81',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        }
+        .menu-item {
+            transition: all 0.3s ease;
+        }
+        .menu-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(251, 191, 36, 0.05);
+        }
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .stats-card {
+            transition: all 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 状态栏 -->
+    <div class="h-11 bg-black"></div>
+    
+    <!-- 顶部用户信息区域 -->
+    <div class="gradient-bg px-6 py-8 relative overflow-hidden">
+        <!-- 背景装饰 -->
+        <div class="absolute top-4 right-4 text-white/10 text-6xl floating-element">
+            <i class="fas fa-yin-yang"></i>
+        </div>
+        <div class="absolute bottom-4 left-4 text-white/10 text-4xl floating-element" style="animation-delay: 2s;">
+            <i class="fas fa-star"></i>
+        </div>
+        
+        <!-- 用户头像和信息 -->
+        <div class="relative z-10">
+            <div class="flex items-center space-x-4 mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-star text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-white text-xl font-bold">易学爱好者</h2>
+                    <p class="text-white/80 text-sm">注册时间：2025年1月</p>
+                    <div class="flex items-center space-x-2 mt-1">
+                        <div class="flex text-secondary">
+                            <i class="fas fa-star text-xs"></i>
+                            <i class="fas fa-star text-xs"></i>
+                            <i class="fas fa-star text-xs"></i>
+                            <i class="fas fa-star text-xs"></i>
+                            <i class="fas fa-star-half-alt text-xs"></i>
+                        </div>
+                        <span class="text-white/70 text-xs">活跃用户</span>
+                    </div>
+                </div>
+                <button class="ml-auto text-white/80 hover:text-white">
+                    <i class="fas fa-edit text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- 快速统计 -->
+            <div class="grid grid-cols-3 gap-4">
+                <div class="stats-card bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
+                    <div class="text-2xl font-bold text-white">23</div>
+                    <div class="text-xs text-white/80">总占卜次数</div>
+                </div>
+                <div class="stats-card bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
+                    <div class="text-2xl font-bold text-secondary">7</div>
+                    <div class="text-xs text-white/80">剩余次数</div>
+                </div>
+                <div class="stats-card bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
+                    <div class="text-2xl font-bold text-green-400">15</div>
+                    <div class="text-xs text-white/80">连续天数</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要功能菜单 -->
+    <div class="px-6 py-6">
+        <!-- 账户管理 -->
+        <div class="mb-6">
+            <h3 class="text-gray-800 font-semibold mb-4 flex items-center">
+                <i class="fas fa-user-cog text-secondary mr-2"></i>
+                账户管理
+            </h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-id-card text-blue-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">个人资料</h4>
+                            <p class="text-sm text-gray-500">管理您的基本信息</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+                
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-coins text-green-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">次数管理</h4>
+                            <p class="text-sm text-gray-500">查看和购买占卜次数</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-secondary font-medium text-sm">7次</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-crown text-purple-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">会员中心</h4>
+                            <p class="text-sm text-gray-500">升级会员享受更多特权</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full">普通用户</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- 功能设置 -->
+        <div class="mb-6">
+            <h3 class="text-gray-800 font-semibold mb-4 flex items-center">
+                <i class="fas fa-cog text-secondary mr-2"></i>
+                功能设置
+            </h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-bell text-orange-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">消息通知</h4>
+                            <p class="text-sm text-gray-500">管理推送和提醒设置</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-12 h-6 bg-secondary rounded-full relative">
+                            <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 shadow-sm"></div>
+                        </div>
+                    </div>
+                </button>
+                
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-palette text-indigo-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">主题设置</h4>
+                            <p class="text-sm text-gray-500">选择您喜欢的界面主题</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-500">深蓝主题</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </button>
+                
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-red-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">隐私设置</h4>
+                            <p class="text-sm text-gray-500">保护您的个人隐私</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 帮助与支持 -->
+        <div class="mb-6">
+            <h3 class="text-gray-800 font-semibold mb-4 flex items-center">
+                <i class="fas fa-question-circle text-secondary mr-2"></i>
+                帮助与支持
+            </h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-book text-teal-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">使用指南</h4>
+                            <p class="text-sm text-gray-500">了解如何更好地使用应用</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+                
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-comments text-yellow-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">意见反馈</h4>
+                            <p class="text-sm text-gray-500">告诉我们您的建议</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+                
+                <button class="menu-item w-full px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-heart text-pink-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h4 class="font-medium text-gray-800">关于我们</h4>
+                            <p class="text-sm text-gray-500">了解梅花心易的故事</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 邀请好友 -->
+        <div class="mb-8">
+            <div class="bg-gradient-to-r from-secondary/10 to-yellow-100 rounded-2xl p-6 border border-secondary/20">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center floating-element">
+                        <i class="fas fa-gift text-primary text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800 mb-1">邀请好友</h3>
+                        <p class="text-sm text-gray-600">邀请朋友注册，双方都可获得10次免费占卜</p>
+                    </div>
+                    <button class="px-4 py-2 bg-secondary text-primary font-medium rounded-lg hover:bg-yellow-300 transition-colors">
+                        邀请
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 退出登录 -->
+        <div class="mb-24">
+            <button onclick="logout()" class="w-full py-4 bg-gray-100 text-gray-600 font-medium rounded-xl hover:bg-gray-200 transition-colors">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                退出登录
+            </button>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3">
+        <div class="flex items-center justify-around">
+            <button onclick="window.location.href='home.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs">首页</span>
+            </button>
+            <button onclick="window.location.href='question-input.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-magic text-xl"></i>
+                <span class="text-xs">占卜</span>
+            </button>
+            <button onclick="window.location.href='history.html'" 
+                    class="flex flex-col items-center space-y-1 text-gray-400">
+                <i class="fas fa-history text-xl"></i>
+                <span class="text-xs">记录</span>
+            </button>
+            <button class="flex flex-col items-center space-y-1 text-secondary">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-xs font-medium">我的</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 引入应用核心脚本 -->
+    <script src="js/app-state.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app-core.js"></script>
+
+    <script>
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initUserCenterPage();
+        });
+
+        function initUserCenterPage() {
+            if (window.app && window.app.isInitialized) {
+                setupEventListeners();
+                checkAuthStatus();
+                updateUserInfo();
+                updateStatistics();
+                initPageAnimations();
+            } else {
+                setTimeout(initUserCenterPage, 100);
+            }
+        }
+
+        function checkAuthStatus() {
+            // 检查是否已登录
+            const isLoggedIn = window.appState.getState('user.isLoggedIn');
+            if (!isLoggedIn) {
+                window.router.navigate('login');
+                return;
+            }
+        }
+
+        function updateUserInfo() {
+            const nickname = window.appState.getState('user.nickname') || '易学爱好者';
+            const createdAt = window.appState.getState('user.createdAt');
+
+            // 更新用户昵称
+            const nicknameElement = document.querySelector('.text-white.text-xl.font-bold');
+            if (nicknameElement) {
+                nicknameElement.textContent = nickname;
+            }
+
+            // 更新注册时间
+            if (createdAt) {
+                const registerDate = new Date(createdAt);
+                const registerText = `注册时间：${registerDate.getFullYear()}年${registerDate.getMonth() + 1}月`;
+                const registerElement = document.querySelector('.text-white\\/80.text-sm');
+                if (registerElement) {
+                    registerElement.textContent = registerText;
+                }
+            }
+        }
+
+        function updateStatistics() {
+            const stats = window.app.getAppStats();
+
+            // 更新统计卡片
+            const statElements = document.querySelectorAll('.text-2xl.font-bold');
+            if (statElements.length >= 3) {
+                statElements[0].textContent = stats.totalDivinations;
+                statElements[1].textContent = stats.freeCount;
+                statElements[2].textContent = stats.consecutiveDays;
+            }
+        }
+
+        function setupEventListeners() {
+            // 编辑个人信息按钮
+            document.querySelector('.fa-edit').parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.router.navigate('profile-setup');
+            });
+
+            // 菜单项点击事件
+            setupMenuItems();
+
+            // 底部导航
+            setupBottomNavigation();
+
+            // 退出登录按钮
+            const logoutBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.includes('退出登录'));
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            // 开关切换
+            setupToggleSwitches();
+
+            // 邀请好友按钮
+            const inviteBtn = document.querySelector('.bg-secondary.text-primary.font-medium.rounded-lg');
+            if (inviteBtn) {
+                inviteBtn.addEventListener('click', handleInviteFriends);
+            }
+        }
+
+        function setupMenuItems() {
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const titleElement = this.querySelector('h4');
+                    if (!titleElement) return;
+
+                    const title = titleElement.textContent.trim();
+
+                    switch(title) {
+                        case '个人资料':
+                            window.router.navigate('profile-setup');
+                            break;
+                        case '次数管理':
+                            showQuotaManagement();
+                            break;
+                        case '会员中心':
+                            showMemberCenter();
+                            break;
+                        case '消息通知':
+                            toggleNotifications();
+                            break;
+                        case '主题设置':
+                            showThemeSettings();
+                            break;
+                        case '隐私设置':
+                            showPrivacySettings();
+                            break;
+                        case '使用指南':
+                            showUserGuide();
+                            break;
+                        case '意见反馈':
+                            showFeedback();
+                            break;
+                        case '关于我们':
+                            showAbout();
+                            break;
+                        default:
+                            window.Utils.showToast(`${title}功能开发中`, 'info');
+                    }
+                });
+            });
+        }
+
+        function setupBottomNavigation() {
+            const navButtons = document.querySelectorAll('.fixed .flex button');
+            navButtons.forEach((button, index) => {
+                button.onclick = null; // 移除原有的onclick
+
+                button.addEventListener('click', function() {
+                    // 更新导航状态
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('text-secondary');
+                        btn.classList.add('text-gray-400');
+                    });
+                    this.classList.remove('text-gray-400');
+                    this.classList.add('text-secondary');
+
+                    // 导航到对应页面
+                    switch(index) {
+                        case 0: // 首页
+                            window.router.navigate('home');
+                            break;
+                        case 1: // 占卜
+                            window.router.navigate('question-input');
+                            break;
+                        case 2: // 记录
+                            window.router.navigate('history');
+                            break;
+                        case 3: // 我的
+                            // 已在用户中心，不需要跳转
+                            break;
+                    }
+                });
+            });
+        }
+
+        function setupToggleSwitches() {
+            document.querySelectorAll('.w-12.h-6.bg-secondary').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const dot = this.querySelector('div');
+                    if (dot.classList.contains('right-0.5')) {
+                        dot.classList.remove('right-0.5');
+                        dot.classList.add('left-0.5');
+                        this.classList.remove('bg-secondary');
+                        this.classList.add('bg-gray-300');
+                    } else {
+                        dot.classList.remove('left-0.5');
+                        dot.classList.add('right-0.5');
+                        this.classList.remove('bg-gray-300');
+                        this.classList.add('bg-secondary');
+                    }
+                });
+            });
+        }
+
+        // 菜单功能实现
+        function showQuotaManagement() {
+            const freeCount = window.appState.getState('app.freeCount');
+            window.Utils.showToast(`当前剩余${freeCount}次免费占卜`, 'info');
+        }
+
+        function showMemberCenter() {
+            window.Utils.showToast('会员功能开发中，敬请期待', 'info');
+        }
+
+        function toggleNotifications() {
+            const notifications = window.appState.getState('app.notifications');
+            window.appState.setState('app.notifications', !notifications);
+            window.Utils.showToast(notifications ? '已关闭通知' : '已开启通知', 'success');
+        }
+
+        function showThemeSettings() {
+            window.Utils.showToast('主题设置功能开发中', 'info');
+        }
+
+        function showPrivacySettings() {
+            window.Utils.showToast('隐私设置功能开发中', 'info');
+        }
+
+        function showUserGuide() {
+            window.Utils.showToast('使用指南功能开发中', 'info');
+        }
+
+        function showFeedback() {
+            const feedback = prompt('请输入您的意见或建议：');
+            if (feedback && feedback.trim()) {
+                window.Utils.showToast('感谢您的反馈！', 'success');
+            }
+        }
+
+        function showAbout() {
+            alert('梅花心易 v1.0\n基于传统梅花易数的AI智能占卜应用\n\n开发团队：梅花心易工作室\n技术支持：AI + 传统易学');
+        }
+
+        function handleInviteFriends() {
+            window.Utils.showToast('邀请链接已生成', 'success');
+            // 模拟生成邀请链接
+            const inviteLink = 'https://meihua.app/invite?code=ABC123';
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(inviteLink);
+                window.Utils.showToast('邀请链接已复制到剪贴板', 'success');
+            }
+        }
+
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                window.app.logout();
+                window.router.navigate('index');
+            }
+        }
+
+        // 页面加载动画
+        function initPageAnimations() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.5s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, index * 50);
+            });
+        }
+
+        // 监听状态变化
+        window.addEventListener('stateChange', function(e) {
+            const { path } = e.detail;
+            if (path.startsWith('user.')) {
+                updateUserInfo();
+            }
+            if (path.startsWith('app.')) {
+                updateStatistics();
+            }
+        });
+    </script>
+</body>
+</html>
