@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜按钮修复验证 - 梅花心易</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .step h3 {
+            color: #fbbf24;
+            margin-top: 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e3a8a;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+        }
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        .status.warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .checklist li:before {
+            content: "✅ ";
+            color: #10b981;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 占卜按钮修复验证</h1>
+        
+        <div class="step">
+            <h3>📋 修复内容总结</h3>
+            <ul class="checklist">
+                <li>设置默认问题分类为"其他问题"</li>
+                <li>添加智能按钮文本提示</li>
+                <li>改进用户体验和错误提示</li>
+                <li>保持所有验证逻辑不变</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>🧪 测试步骤</h3>
+            <p><strong>步骤1：设置登录状态</strong></p>
+            <button class="btn" onclick="setupLogin()">🔑 设置登录状态</button>
+            <div id="loginStatus" class="status warning">请先设置登录状态</div>
+            
+            <p><strong>步骤2：访问占卜页面</strong></p>
+            <a href="http://localhost:5173/divination/question" class="btn" target="_blank">📝 打开占卜页面</a>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.7);">
+                注意：如果页面跳转到登录页面，说明登录状态未正确设置
+            </p>
+            
+            <p><strong>步骤3：测试按钮功能</strong></p>
+            <ol style="font-size: 14px; color: rgba(255,255,255,0.8);">
+                <li>页面加载后，按钮应该显示"请输入您的问题"</li>
+                <li>输入1-4个字符，按钮应该显示"请输入至少5个字符"</li>
+                <li>输入5个或更多字符，按钮应该变为"开始占卜"并可点击</li>
+                <li>点击按钮应该跳转到加载页面</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>🔍 问题诊断工具</h3>
+            <p>如果按钮仍然无法点击，请使用诊断工具：</p>
+            <a href="http://localhost:5173/divination-button-debug.html" class="btn secondary" target="_blank">🛠️ 打开诊断工具</a>
+        </div>
+
+        <div class="step">
+            <h3>📊 预期行为</h3>
+            <div class="status success">
+                <strong>修复后的预期行为：</strong><br>
+                1. 页面加载时，分类默认选择"其他问题"<br>
+                2. 按钮文本会根据当前状态显示不同提示<br>
+                3. 用户只需输入5个字符以上的问题即可启用按钮<br>
+                4. 按钮点击后正常跳转到占卜流程
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>🚨 如果问题仍然存在</h3>
+            <div class="status error">
+                <strong>可能的原因：</strong><br>
+                1. 前端代码未重新加载 - 请刷新页面或重启前端服务器<br>
+                2. 用户未登录 - 请确保已设置登录状态<br>
+                3. 免费次数为0 - 请检查用户的免费占卜次数<br>
+                4. 浏览器缓存 - 请清除浏览器缓存或使用无痕模式
+            </div>
+            
+            <button class="btn secondary" onclick="clearCache()">🗑️ 清除缓存</button>
+            <button class="btn secondary" onclick="checkFrontendServer()">🔍 检查前端服务器</button>
+        </div>
+    </div>
+
+    <script>
+        function setupLogin() {
+            // 设置模拟登录状态
+            const mockToken = 'mock_token_' + Date.now();
+            const mockUser = {
+                id: 'mock_user_' + Date.now(),
+                username: 'test_user',
+                email: 'test@example.com',
+                freeCount: 3,
+                isEmailVerified: true,
+                createdAt: new Date().toISOString()
+            };
+            
+            // 设置多种可能的存储键名
+            localStorage.setItem('token', mockToken);
+            localStorage.setItem('authToken', mockToken);
+            localStorage.setItem('userInfo', JSON.stringify(mockUser));
+            localStorage.setItem('freeCount', '3');
+            
+            // 更新状态显示
+            document.getElementById('loginStatus').innerHTML = 
+                '<div class="status success">✅ 登录状态已设置！用户名: test_user，免费次数: 3</div>';
+            
+            console.log('登录状态已设置:', {
+                token: mockToken,
+                user: mockUser
+            });
+        }
+
+        function clearCache() {
+            // 清除所有相关的本地存储
+            const keys = ['token', 'authToken', 'userInfo', 'freeCount', 'refreshToken'];
+            keys.forEach(key => localStorage.removeItem(key));
+            
+            // 清除会话存储
+            sessionStorage.clear();
+            
+            alert('缓存已清除！请重新设置登录状态。');
+            
+            // 重置状态显示
+            document.getElementById('loginStatus').innerHTML = 
+                '<div class="status warning">请先设置登录状态</div>';
+        }
+
+        async function checkFrontendServer() {
+            try {
+                const response = await fetch('http://localhost:5173/');
+                if (response.ok) {
+                    alert('✅ 前端服务器运行正常');
+                } else {
+                    alert('⚠️ 前端服务器响应异常');
+                }
+            } catch (error) {
+                alert('❌ 无法连接前端服务器: ' + error.message);
+            }
+        }
+
+        // 页面加载时检查当前登录状态
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            const userInfo = localStorage.getItem('userInfo');
+            
+            if (token && userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    document.getElementById('loginStatus').innerHTML = 
+                        `<div class="status success">✅ 已有登录状态！用户: ${user.username || user.email}，免费次数: ${user.freeCount || 0}</div>`;
+                } catch (error) {
+                    document.getElementById('loginStatus').innerHTML = 
+                        '<div class="status warning">登录数据格式错误，请重新设置</div>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

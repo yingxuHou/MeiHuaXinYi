@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜API测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 梅花心易占卜API测试</h1>
+        
+        <div class="form-group">
+            <label for="question">占卜问题：</label>
+            <textarea id="question" rows="3" placeholder="请输入您的问题...">今日运势如何？</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="method">起卦方法：</label>
+            <select id="method">
+                <option value="time">时间起卦</option>
+                <option value="number">数字起卦</option>
+                <option value="manual">手动起卦</option>
+            </select>
+        </div>
+        
+        <button onclick="testDivination()">🎯 开始占卜</button>
+        <button onclick="generateToken()">🔑 生成新Token</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        // 生成开发token
+        function generateDevToken() {
+            const generateDevObjectId = () => {
+                const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+                const randomBytes = Math.random().toString(16).substring(2, 18).padStart(16, '0');
+                return timestamp + randomBytes;
+            };
+
+            const payload = {
+                userId: generateDevObjectId(),
+                email: 'test@example.com',
+                type: 'access',
+                iat: Math.floor(Date.now() / 1000),
+                exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60),
+                isDev: true
+            };
+
+            const header = btoa(JSON.stringify({ alg: 'none', typ: 'JWT' }));
+            const payloadStr = btoa(JSON.stringify(payload));
+            return `${header}.${payloadStr}.dev-signature`;
+        }
+
+        function generateToken() {
+            const token = generateDevToken();
+            showResult(`新生成的开发Token：\n${token}`, 'success');
+        }
+
+        async function testDivination() {
+            const question = document.getElementById('question').value;
+            const method = document.getElementById('method').value;
+            
+            if (!question.trim()) {
+                showResult('请输入占卜问题！', 'error');
+                return;
+            }
+
+            showResult('正在占卜中...', 'loading');
+
+            try {
+                const token = generateDevToken();
+                
+                const response = await fetch('http://localhost:3001/api/divination/dev-perform', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        method: method,
+                        params: {
+                            datetime: new Date().toISOString()
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showResult(`✅ 占卜成功！\n\n${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    showResult(`❌ 占卜失败：\n${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ 请求错误：\n${error.message}`, 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+
+        // 页面加载时生成一个token用于测试
+        window.onload = function() {
+            console.log('🔮 梅花心易占卜API测试页面已加载');
+            console.log('🔑 开发Token:', generateDevToken());
+        };
+    </script>
+</body>
+</html>

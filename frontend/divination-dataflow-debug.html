@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜数据流调试 - 真实API测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .debug-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .debug-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fbbf24;
+        }
+
+        .debug-button {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #1e3a8a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .debug-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .debug-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .data-display {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-title {
+            font-size: 1.2rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .hexagram-comparison {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hexagram-item {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hexagram-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+
+        .hexagram-lines {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .line-yang {
+            color: #fbbf24;
+        }
+
+        .line-yin {
+            color: #1e3a8a;
+        }
+
+        .moving-line {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .log-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .log-success {
+            color: #22c55e;
+        }
+
+        .log-warning {
+            color: #fbbf24;
+        }
+
+        .log-error {
+            color: #ef4444;
+        }
+
+        .log-info {
+            color: #3b82f6;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .json-display {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>占卜数据流调试 - 真实API测试</h1>
+            <p>测试真实API调用、数据适配器、动画组件的数据一致性</p>
+        </div>
+
+        <div class="debug-section">
+            <h2 class="debug-title">API测试配置</h2>
+            <div class="input-group">
+                <label for="apiUrl">API地址:</label>
+                <input type="text" id="apiUrl" value="http://localhost:3000/api/divination/perform" placeholder="API地址">
+            </div>
+            <div class="input-group">
+                <label for="question">占卜问题:</label>
+                <textarea id="question" placeholder="请输入占卜问题...">我的事业运势如何？</textarea>
+            </div>
+            <div class="input-group">
+                <label for="token">JWT Token (可选):</label>
+                <input type="text" id="token" placeholder="Bearer token (可选)">
+            </div>
+            
+            <button class="debug-button" onclick="testRealAPI()">测试真实API</button>
+            <button class="debug-button" onclick="testDataAdapter()">测试数据适配器</button>
+            <button class="debug-button" onclick="testAnimationComponent()">测试动画组件</button>
+            <button class="debug-button" onclick="clearAllData()">清除所有数据</button>
+        </div>
+
+        <div class="debug-section">
+            <h2 class="debug-title">数据流分析</h2>
+            <div id="dataFlowAnalysis" class="data-display" style="display: none;">
+                <div class="data-title">数据流对比</div>
+                <div class="hexagram-comparison">
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">1. 后端API原始数据</div>
+                        <div id="rawApiData" class="json-display"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">2. 数据适配器处理后</div>
+                        <div id="adaptedData" class="json-display"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">3. 动画组件使用</div>
+                        <div id="animationData" class="json-display"></div>
+                    </div>
+                </div>
+                <div id="flowStatus" class="status warning"></div>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h2 class="debug-title">卦象数据对比</h2>
+            <div id="hexagramComparison" class="data-display" style="display: none;">
+                <div class="data-title">三卦数据详细对比</div>
+                <div class="hexagram-comparison">
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">主卦 (ben)</div>
+                        <div id="benComparison" class="hexagram-lines"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">互卦 (hu)</div>
+                        <div id="huComparison" class="hexagram-lines"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">变卦 (bian)</div>
+                        <div id="bianComparison" class="hexagram-lines"></div>
+                    </div>
+                </div>
+                <div id="hexagramStatus" class="status warning"></div>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h2 class="debug-title">调试日志</h2>
+            <div id="debugLog" class="log-section">
+                <div class="log-entry log-info">等待调试数据...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let debugData = {
+            rawApiData: null,
+            adaptedData: null,
+            animationData: null
+        };
+
+        function log(message, type = 'info') {
+            const logSection = document.getElementById('debugLog');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logSection.appendChild(logEntry);
+            logSection.scrollTop = logSection.scrollHeight;
+        }
+
+        async function testRealAPI() {
+            const apiUrl = document.getElementById('apiUrl').value;
+            const question = document.getElementById('question').value;
+            const token = document.getElementById('token').value;
+
+            if (!apiUrl || !question) {
+                log('❌ 请填写API地址和占卜问题', 'error');
+                return;
+            }
+
+            log('🚀 开始测试真实API...', 'info');
+
+            try {
+                const requestData = {
+                    question: question,
+                    method: 'time',
+                    params: {
+                        datetime: new Date().toISOString()
+                    }
+                };
+
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                if (token) {
+                    headers['Authorization'] = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+                }
+
+                log(`📡 发送请求到: ${apiUrl}`, 'info');
+                log(`📝 请求数据: ${JSON.stringify(requestData, null, 2)}`, 'info');
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestData)
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok && responseData.success) {
+                    debugData.rawApiData = responseData.data;
+                    log('✅ API调用成功', 'success');
+                    log(`📊 返回数据ID: ${responseData.data.id}`, 'success');
+                    
+                    // 显示原始数据
+                    document.getElementById('rawApiData').textContent = JSON.stringify(responseData.data, null, 2);
+                    
+                    // 分析数据结构
+                    analyzeApiData(responseData.data);
+                } else {
+                    log(`❌ API调用失败: ${responseData.message || '未知错误'}`, 'error');
+                    log(`📊 响应状态: ${response.status}`, 'error');
+                    log(`📊 响应数据: ${JSON.stringify(responseData, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ API调用异常: ${error.message}`, 'error');
+                console.error('API调用错误:', error);
+            }
+        }
+
+        function analyzeApiData(data) {
+            log('🔍 分析API数据结构...', 'info');
+
+            // 检查必要字段
+            const checks = [
+                { field: 'hexagrams', path: 'hexagrams', required: true },
+                { field: 'hexagrams.ben', path: 'hexagrams.ben', required: true },
+                { field: 'hexagrams.hu', path: 'hexagrams.hu', required: true },
+                { field: 'hexagrams.bian', path: 'hexagrams.bian', required: true },
+                { field: 'movingLine', path: 'movingLine', required: true }
+            ];
+
+            let allPresent = true;
+            checks.forEach(check => {
+                const value = getNestedValue(data, check.path);
+                if (value !== undefined && value !== null) {
+                    log(`✅ ${check.field}: 存在`, 'success');
+                    if (check.field.includes('hexagrams') && value.lines) {
+                        log(`  └─ lines: [${value.lines.join(', ')}]`, 'info');
+                    }
+                } else {
+                    log(`❌ ${check.field}: 缺失`, 'error');
+                    allPresent = false;
+                }
+            });
+
+            if (allPresent) {
+                log('🎉 所有必要字段都存在', 'success');
+            } else {
+                log('⚠️ 部分字段缺失，可能导致数据不一致', 'warning');
+            }
+        }
+
+        function getNestedValue(obj, path) {
+            return path.split('.').reduce((current, key) => current?.[key], obj);
+        }
+
+        function testDataAdapter() {
+            if (!debugData.rawApiData) {
+                log('❌ 请先测试真实API', 'error');
+                return;
+            }
+
+            log('🔧 测试数据适配器...', 'info');
+
+            try {
+                // 模拟数据适配器逻辑
+                const adaptedData = adaptDivinationResult(debugData.rawApiData);
+                debugData.adaptedData = adaptedData;
+
+                log('✅ 数据适配器处理完成', 'success');
+                
+                // 显示适配后的数据
+                document.getElementById('adaptedData').textContent = JSON.stringify(adaptedData, null, 2);
+                
+                // 分析适配结果
+                analyzeAdaptedData(adaptedData);
+            } catch (error) {
+                log(`❌ 数据适配器错误: ${error.message}`, 'error');
+                console.error('数据适配器错误:', error);
+            }
+        }
+
+        function adaptDivinationResult(apiData) {
+            if (!apiData) return null;
+
+            const {
+                id,
+                question,
+                timestamp,
+                createdAt,
+                hexagrams = {},
+                movingLine,
+                analysis = {},
+                interpretation = {},
+                userRating,
+                metadata = {}
+            } = apiData;
+
+            // 确保必要字段存在 - 这里是问题所在！
+            const safeHexagrams = {
+                ben: hexagrams.ben || { id: 1, name: '乾为天', lines: [1,1,1,1,1,1], upperGua: { name: '乾' }, lowerGua: { name: '乾' } },
+                hu: hexagrams.hu || { id: 1, name: '乾为天', lines: [1,1,1,1,1,1], upperGua: { name: '乾' }, lowerGua: { name: '乾' } },
+                bian: hexagrams.bian || { id: 2, name: '坤为地', lines: [0,0,0,0,0,0], upperGua: { name: '坤' }, lowerGua: { name: '坤' } }
+            };
+
+            return {
+                id: id || 'temp_' + Date.now(),
+                question: question || '未知问题',
+                timestamp: timestamp || createdAt || new Date(),
+                
+                // 三卦信息
+                hexagrams: {
+                    ben: safeHexagrams.ben,
+                    hu: safeHexagrams.hu,
+                    bian: safeHexagrams.bian
+                },
+
+                // 动爻信息
+                movingLine: movingLine || 1,
+
+                // 解读信息
+                interpretation: {
+                    summary: interpretation.summary || '专业解读正在生成中...',
+                    detailed: interpretation.detailed || '详细解读正在生成中...',
+                    advice: interpretation.advice || '请耐心等待专业建议...',
+                    precautions: interpretation.precautions || '暂无特别注意事项'
+                }
+            };
+        }
+
+        function analyzeAdaptedData(data) {
+            log('🔍 分析适配后的数据...', 'info');
+
+            // 检查是否使用了默认值
+            const defaultBen = [1,1,1,1,1,1];
+            const defaultHu = [1,1,1,1,1,1];
+            const defaultBian = [0,0,0,0,0,0];
+
+            if (JSON.stringify(data.hexagrams.ben.lines) === JSON.stringify(defaultBen)) {
+                log('⚠️ 主卦使用了默认值！', 'warning');
+            } else {
+                log('✅ 主卦使用真实数据', 'success');
+            }
+
+            if (JSON.stringify(data.hexagrams.hu.lines) === JSON.stringify(defaultHu)) {
+                log('⚠️ 互卦使用了默认值！', 'warning');
+            } else {
+                log('✅ 互卦使用真实数据', 'success');
+            }
+
+            if (JSON.stringify(data.hexagrams.bian.lines) === JSON.stringify(defaultBian)) {
+                log('⚠️ 变卦使用了默认值！', 'warning');
+            } else {
+                log('✅ 变卦使用真实数据', 'success');
+            }
+        }
+
+        function testAnimationComponent() {
+            if (!debugData.adaptedData) {
+                log('❌ 请先测试数据适配器', 'error');
+                return;
+            }
+
+            log('🎬 测试动画组件数据处理...', 'info');
+
+            try {
+                // 模拟动画组件逻辑
+                const animationData = processAnimationData(debugData.adaptedData);
+                debugData.animationData = animationData;
+
+                log('✅ 动画组件处理完成', 'success');
+                
+                // 显示动画数据
+                document.getElementById('animationData').textContent = JSON.stringify(animationData, null, 2);
+                
+                // 进行最终对比
+                performFinalComparison();
+            } catch (error) {
+                log(`❌ 动画组件错误: ${error.message}`, 'error');
+                console.error('动画组件错误:', error);
+            }
+        }
+
+        function processAnimationData(adaptedData) {
+            // 模拟动画组件的数据处理逻辑
+            return {
+                primaryHexagram: adaptedData.hexagrams.ben.lines,
+                mutualHexagram: adaptedData.hexagrams.hu.lines,
+                changeHexagram: adaptedData.hexagrams.bian.lines,
+                movingLine: adaptedData.movingLine,
+                source: 'adapted_data'
+            };
+        }
+
+        function performFinalComparison() {
+            log('🔍 进行最终数据一致性对比...', 'info');
+
+            if (!debugData.rawApiData || !debugData.adaptedData || !debugData.animationData) {
+                log('❌ 缺少必要数据，无法进行对比', 'error');
+                return;
+            }
+
+            // 显示数据流分析
+            document.getElementById('dataFlowAnalysis').style.display = 'block';
+            document.getElementById('hexagramComparison').style.display = 'block';
+
+            // 对比卦象数据
+            const rawBen = debugData.rawApiData.hexagrams?.ben?.lines;
+            const adaptedBen = debugData.adaptedData.hexagrams?.ben?.lines;
+            const animationBen = debugData.animationData.primaryHexagram;
+
+            const rawHu = debugData.rawApiData.hexagrams?.hu?.lines;
+            const adaptedHu = debugData.adaptedData.hexagrams?.hu?.lines;
+            const animationHu = debugData.animationData.mutualHexagram;
+
+            const rawBian = debugData.rawApiData.hexagrams?.bian?.lines;
+            const adaptedBian = debugData.adaptedData.hexagrams?.bian?.lines;
+            const animationBian = debugData.animationData.changeHexagram;
+
+            // 显示对比结果
+            document.getElementById('benComparison').innerHTML = `
+                <div>API: ${formatHexagram(rawBen)}</div>
+                <div>适配: ${formatHexagram(adaptedBen)}</div>
+                <div>动画: ${formatHexagram(animationBen)}</div>
+            `;
+
+            document.getElementById('huComparison').innerHTML = `
+                <div>API: ${formatHexagram(rawHu)}</div>
+                <div>适配: ${formatHexagram(adaptedHu)}</div>
+                <div>动画: ${formatHexagram(animationHu)}</div>
+            `;
+
+            document.getElementById('bianComparison').innerHTML = `
+                <div>API: ${formatHexagram(rawBian)}</div>
+                <div>适配: ${formatHexagram(adaptedBian)}</div>
+                <div>动画: ${formatHexagram(animationBian)}</div>
+            `;
+
+            // 检查一致性
+            let isConsistent = true;
+            let issues = [];
+
+            if (!arraysEqual(rawBen, adaptedBen)) {
+                isConsistent = false;
+                issues.push('主卦：API与适配器不一致');
+            }
+
+            if (!arraysEqual(rawHu, adaptedHu)) {
+                isConsistent = false;
+                issues.push('互卦：API与适配器不一致');
+            }
+
+            if (!arraysEqual(rawBian, adaptedBian)) {
+                isConsistent = false;
+                issues.push('变卦：API与适配器不一致');
+            }
+
+            if (!arraysEqual(adaptedBen, animationBen)) {
+                isConsistent = false;
+                issues.push('主卦：适配器与动画不一致');
+            }
+
+            // 显示状态
+            const statusDiv = document.getElementById('flowStatus');
+            const hexagramStatusDiv = document.getElementById('hexagramStatus');
+
+            if (isConsistent) {
+                statusDiv.textContent = '✅ 数据流完全一致！';
+                statusDiv.className = 'status success';
+                hexagramStatusDiv.textContent = '✅ 所有卦象数据一致！';
+                hexagramStatusDiv.className = 'status success';
+                log('🎉 数据一致性测试通过！', 'success');
+            } else {
+                statusDiv.textContent = `❌ 发现 ${issues.length} 个不一致问题`;
+                statusDiv.className = 'status error';
+                hexagramStatusDiv.textContent = `❌ 发现 ${issues.length} 个卦象不一致问题`;
+                hexagramStatusDiv.className = 'status error';
+                log(`❌ 数据一致性测试失败，发现 ${issues.length} 个问题`, 'error');
+                issues.forEach(issue => log(`  - ${issue}`, 'error'));
+            }
+        }
+
+        function formatHexagram(lines) {
+            if (!lines || !Array.isArray(lines)) return '无数据';
+            return lines.map(line => line === 1 ? '⚊' : '⚋').join('');
+        }
+
+        function arraysEqual(a, b) {
+            if (!a || !b) return false;
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        function clearAllData() {
+            debugData = {
+                rawApiData: null,
+                adaptedData: null,
+                animationData: null
+            };
+            
+            document.getElementById('dataFlowAnalysis').style.display = 'none';
+            document.getElementById('hexagramComparison').style.display = 'none';
+            document.getElementById('debugLog').innerHTML = '<div class="log-entry log-info">调试数据已清除</div>';
+            
+            log('调试数据已清除', 'info');
+        }
+
+        // 页面加载时的提示
+        window.addEventListener('load', function() {
+            log('占卜数据流调试工具已加载', 'info');
+            log('请按顺序测试：1. 真实API → 2. 数据适配器 → 3. 动画组件', 'info');
+        });
+    </script>
+</body>
+</html>

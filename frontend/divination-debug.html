@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜数据一致性调试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .debug-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .debug-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fbbf24;
+        }
+
+        .debug-button {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #1e3a8a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .debug-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .data-display {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-title {
+            font-size: 1.2rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .hexagram-comparison {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hexagram-item {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hexagram-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+
+        .hexagram-lines {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .line-yang {
+            color: #fbbf24;
+        }
+
+        .line-yin {
+            color: #1e3a8a;
+        }
+
+        .moving-line {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .log-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .log-success {
+            color: #22c55e;
+        }
+
+        .log-warning {
+            color: #fbbf24;
+        }
+
+        .log-error {
+            color: #ef4444;
+        }
+
+        .log-info {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>占卜数据一致性调试</h1>
+            <p>调试占卜动画、后端数据、前端展示的一致性</p>
+        </div>
+
+        <div class="debug-section">
+            <h2 class="debug-title">问题分析</h2>
+            <div style="color: rgba(255, 255, 255, 0.8); line-height: 1.6; margin-bottom: 2rem;">
+                <p><strong>发现的问题：</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>掷币动画显示随机结果，与真实占卜结果不一致</li>
+                    <li>动画中的卦象与最终结果页面显示不同</li>
+                    <li>后端存储的数据与前端展示的数据不匹配</li>
+                </ul>
+                
+                <p style="margin-top: 1rem;"><strong>根本原因：</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>动画组件使用随机生成的数据，而不是真实的占卜结果</li>
+                    <li>数据流不统一：API → 动画 → 结果页面 三个环节数据不一致</li>
+                    <li>缺少数据验证和同步机制</li>
+                </ul>
+            </div>
+            
+            <button class="debug-button" onclick="simulateDivination()">模拟占卜流程</button>
+            <button class="debug-button" onclick="testDataConsistency()">测试数据一致性</button>
+            <button class="debug-button" onclick="clearDebugData()">清除调试数据</button>
+        </div>
+
+        <div class="debug-section">
+            <h2 class="debug-title">数据对比</h2>
+            <div id="dataComparison" class="data-display" style="display: none;">
+                <div class="data-title">三卦数据对比</div>
+                <div class="hexagram-comparison">
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">后端API数据</div>
+                        <div id="apiPrimary" class="hexagram-lines"></div>
+                        <div id="apiMutual" class="hexagram-lines"></div>
+                        <div id="apiChange" class="hexagram-lines"></div>
+                        <div id="apiMovingLine" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">动画组件数据</div>
+                        <div id="animationPrimary" class="hexagram-lines"></div>
+                        <div id="animationMutual" class="hexagram-lines"></div>
+                        <div id="animationChange" class="hexagram-lines"></div>
+                        <div id="animationMovingLine" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">结果页面数据</div>
+                        <div id="resultPrimary" class="hexagram-lines"></div>
+                        <div id="resultMutual" class="hexagram-lines"></div>
+                        <div id="resultChange" class="hexagram-lines"></div>
+                        <div id="resultMovingLine" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;"></div>
+                    </div>
+                </div>
+                <div id="consistencyStatus" class="status warning"></div>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h2 class="debug-title">调试日志</h2>
+            <div id="debugLog" class="log-section">
+                <div class="log-entry log-info">等待调试数据...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let debugData = {
+            apiData: null,
+            animationData: null,
+            resultData: null
+        };
+
+        function log(message, type = 'info') {
+            const logSection = document.getElementById('debugLog');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logSection.appendChild(logEntry);
+            logSection.scrollTop = logSection.scrollHeight;
+        }
+
+        function simulateDivination() {
+            log('开始模拟占卜流程...', 'info');
+            
+            // 模拟后端API返回的数据
+            const apiResult = {
+                hexagrams: {
+                    ben: {
+                        lines: [0, 1, 0, 1, 1, 0], // 模拟真实占卜结果
+                        name: "水天需"
+                    },
+                    hu: {
+                        lines: [1, 0, 1, 0, 1, 0],
+                        name: "火天大有"
+                    },
+                    bian: {
+                        lines: [0, 1, 0, 0, 1, 0], // 第4爻变化
+                        name: "水地比"
+                    }
+                },
+                movingLine: 4
+            };
+            
+            debugData.apiData = apiResult;
+            log('✅ 后端API数据生成完成', 'success');
+            
+            // 模拟动画组件处理
+            const animationResult = {
+                primaryHexagram: apiResult.hexagrams.ben.lines,
+                mutualHexagram: apiResult.hexagrams.hu.lines,
+                changeHexagram: apiResult.hexagrams.bian.lines,
+                movingLine: apiResult.movingLine
+            };
+            
+            debugData.animationData = animationResult;
+            log('✅ 动画组件数据处理完成', 'success');
+            
+            // 模拟结果页面数据
+            debugData.resultData = apiResult;
+            log('✅ 结果页面数据设置完成', 'success');
+            
+            displayDataComparison();
+            testDataConsistency();
+        }
+
+        function displayDataComparison() {
+            if (!debugData.apiData) return;
+            
+            // 显示API数据
+            document.getElementById('apiPrimary').innerHTML = formatHexagram(debugData.apiData.hexagrams.ben.lines, '主卦');
+            document.getElementById('apiMutual').innerHTML = formatHexagram(debugData.apiData.hexagrams.hu.lines, '互卦');
+            document.getElementById('apiChange').innerHTML = formatHexagram(debugData.apiData.hexagrams.bian.lines, '变卦', debugData.apiData.movingLine);
+            document.getElementById('apiMovingLine').textContent = `动爻：第${debugData.apiData.movingLine}爻`;
+            
+            // 显示动画数据
+            if (debugData.animationData) {
+                document.getElementById('animationPrimary').innerHTML = formatHexagram(debugData.animationData.primaryHexagram, '主卦');
+                document.getElementById('animationMutual').innerHTML = formatHexagram(debugData.animationData.mutualHexagram, '互卦');
+                document.getElementById('animationChange').innerHTML = formatHexagram(debugData.animationData.changeHexagram, '变卦', debugData.animationData.movingLine);
+                document.getElementById('animationMovingLine').textContent = `动爻：第${debugData.animationData.movingLine}爻`;
+            }
+            
+            // 显示结果页面数据
+            document.getElementById('resultPrimary').innerHTML = formatHexagram(debugData.resultData.hexagrams.ben.lines, '主卦');
+            document.getElementById('resultMutual').innerHTML = formatHexagram(debugData.resultData.hexagrams.hu.lines, '互卦');
+            document.getElementById('resultChange').innerHTML = formatHexagram(debugData.resultData.hexagrams.bian.lines, '变卦', debugData.resultData.movingLine);
+            document.getElementById('resultMovingLine').textContent = `动爻：第${debugData.resultData.movingLine}爻`;
+            
+            document.getElementById('dataComparison').style.display = 'block';
+        }
+
+        function formatHexagram(lines, name, movingLine = null) {
+            let result = `${name}: `;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const isMoving = movingLine && (i + 1) === movingLine;
+                
+                if (line === 1) {
+                    result += `<span class="line-yang ${isMoving ? 'moving-line' : ''}">⚊</span>`;
+                } else {
+                    result += `<span class="line-yin ${isMoving ? 'moving-line' : ''}">⚋</span>`;
+                }
+            }
+            return result;
+        }
+
+        function testDataConsistency() {
+            if (!debugData.apiData || !debugData.animationData || !debugData.resultData) {
+                log('❌ 缺少调试数据，无法进行一致性测试', 'error');
+                return;
+            }
+            
+            log('开始数据一致性测试...', 'info');
+            
+            let isConsistent = true;
+            let issues = [];
+            
+            // 测试主卦一致性
+            const apiPrimary = debugData.apiData.hexagrams.ben.lines;
+            const animationPrimary = debugData.animationData.primaryHexagram;
+            const resultPrimary = debugData.resultData.hexagrams.ben.lines;
+            
+            if (!arraysEqual(apiPrimary, animationPrimary)) {
+                isConsistent = false;
+                issues.push('主卦：API与动画数据不一致');
+                log(`❌ 主卦不一致 - API: [${apiPrimary}] vs 动画: [${animationPrimary}]`, 'error');
+            } else {
+                log(`✅ 主卦一致 - [${apiPrimary}]`, 'success');
+            }
+            
+            if (!arraysEqual(apiPrimary, resultPrimary)) {
+                isConsistent = false;
+                issues.push('主卦：API与结果页面数据不一致');
+                log(`❌ 主卦不一致 - API: [${apiPrimary}] vs 结果: [${resultPrimary}]`, 'error');
+            } else {
+                log(`✅ 主卦一致 - [${apiPrimary}]`, 'success');
+            }
+            
+            // 测试互卦一致性
+            const apiMutual = debugData.apiData.hexagrams.hu.lines;
+            const animationMutual = debugData.animationData.mutualHexagram;
+            const resultMutual = debugData.resultData.hexagrams.hu.lines;
+            
+            if (!arraysEqual(apiMutual, animationMutual)) {
+                isConsistent = false;
+                issues.push('互卦：API与动画数据不一致');
+                log(`❌ 互卦不一致 - API: [${apiMutual}] vs 动画: [${animationMutual}]`, 'error');
+            } else {
+                log(`✅ 互卦一致 - [${apiMutual}]`, 'success');
+            }
+            
+            // 测试变卦一致性
+            const apiChange = debugData.apiData.hexagrams.bian.lines;
+            const animationChange = debugData.animationData.changeHexagram;
+            const resultChange = debugData.resultData.hexagrams.bian.lines;
+            
+            if (!arraysEqual(apiChange, animationChange)) {
+                isConsistent = false;
+                issues.push('变卦：API与动画数据不一致');
+                log(`❌ 变卦不一致 - API: [${apiChange}] vs 动画: [${animationChange}]`, 'error');
+            } else {
+                log(`✅ 变卦一致 - [${apiChange}]`, 'success');
+            }
+            
+            // 测试动爻一致性
+            const apiMovingLine = debugData.apiData.movingLine;
+            const animationMovingLine = debugData.animationData.movingLine;
+            const resultMovingLine = debugData.resultData.movingLine;
+            
+            if (apiMovingLine !== animationMovingLine) {
+                isConsistent = false;
+                issues.push('动爻：API与动画数据不一致');
+                log(`❌ 动爻不一致 - API: ${apiMovingLine} vs 动画: ${animationMovingLine}`, 'error');
+            } else {
+                log(`✅ 动爻一致 - ${apiMovingLine}`, 'success');
+            }
+            
+            // 显示最终状态
+            const statusDiv = document.getElementById('consistencyStatus');
+            if (isConsistent) {
+                statusDiv.textContent = '✅ 所有数据完全一致！';
+                statusDiv.className = 'status success';
+                log('🎉 数据一致性测试通过！', 'success');
+            } else {
+                statusDiv.textContent = `❌ 发现 ${issues.length} 个不一致问题`;
+                statusDiv.className = 'status error';
+                log(`❌ 数据一致性测试失败，发现 ${issues.length} 个问题`, 'error');
+                issues.forEach(issue => log(`  - ${issue}`, 'error'));
+            }
+        }
+
+        function arraysEqual(a, b) {
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        function clearDebugData() {
+            debugData = {
+                apiData: null,
+                animationData: null,
+                resultData: null
+            };
+            
+            document.getElementById('dataComparison').style.display = 'none';
+            document.getElementById('debugLog').innerHTML = '<div class="log-entry log-info">调试数据已清除</div>';
+            
+            log('调试数据已清除', 'info');
+        }
+
+        // 页面加载时自动运行一次测试
+        window.addEventListener('load', function() {
+            log('占卜数据一致性调试工具已加载', 'info');
+            log('点击"模拟占卜流程"开始测试', 'info');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卦象布局测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hexagram-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .hexagram-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hexagrams-container {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            flex-wrap: nowrap;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .hexagram-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            width: calc(33.333% - 1rem);
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .hexagram-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            background: rgba(251, 191, 36, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .hexagram-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .hexagram-lines {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .hexagram-line {
+            position: relative;
+            width: 80px;
+            height: 6px;
+            background: #1e3a8a;
+            border-radius: 3px;
+            transition: all 0.5s ease;
+        }
+
+        .hexagram-line.broken {
+            background: linear-gradient(to right,
+                #1e3a8a 0%, #1e3a8a 45%,
+                transparent 45%, transparent 55%,
+                #1e3a8a 55%, #1e3a8a 100%);
+        }
+
+        .hexagram-line.changing {
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
+            background: #fbbf24;
+        }
+
+        .line-number {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: rgba(30, 58, 138, 0.7);
+            font-weight: 500;
+        }
+
+        .hexagram-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .trigram-info {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .trigram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .trigram-label {
+            font-size: 0.75rem;
+            color: rgba(30, 58, 138, 0.7);
+        }
+
+        .trigram-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .hexagram-number {
+            font-size: 0.875rem;
+            color: rgba(30, 58, 138, 0.8);
+            font-weight: 500;
+        }
+
+        .moving-line-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .moving-line-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .moving-line-value {
+            font-size: 0.875rem;
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hexagrams-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .hexagram-item {
+                width: 100%;
+            }
+
+            .hexagram-line {
+                width: 60px;
+                height: 5px;
+            }
+
+            .trigram-info {
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .hexagrams-container {
+                gap: 1rem;
+                padding: 1.5rem;
+            }
+
+            .hexagram-item {
+                width: calc(33.333% - 0.67rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 2rem; color: #fbbf24;">卦象布局测试</h1>
+        
+        <div class="hexagram-card">
+            <h2 class="card-title">三个卦象水平排列测试</h2>
+            
+            <div class="hexagram-display">
+                <div class="hexagrams-container">
+                    <!-- 主卦 -->
+                    <div class="hexagram-item">
+                        <div class="hexagram-title">主卦（本卦）</div>
+                        <div class="hexagram-visual">
+                            <div class="hexagram-lines">
+                                <div class="hexagram-line">
+                                    <div class="line-number">6</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">5</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">4</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">3</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">2</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">1</div>
+                                </div>
+                            </div>
+                            
+                            <div class="hexagram-info">
+                                <div class="trigram-info">
+                                    <div class="trigram">
+                                        <span class="trigram-label">上卦</span>
+                                        <span class="trigram-name">乾</span>
+                                    </div>
+                                    <div class="trigram">
+                                        <span class="trigram-label">下卦</span>
+                                        <span class="trigram-name">乾</span>
+                                    </div>
+                                </div>
+                                <div class="hexagram-number">第1卦</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 互卦 -->
+                    <div class="hexagram-item">
+                        <div class="hexagram-title">互卦</div>
+                        <div class="hexagram-visual">
+                            <div class="hexagram-lines">
+                                <div class="hexagram-line">
+                                    <div class="line-number">6</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">5</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">4</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">3</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">2</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">1</div>
+                                </div>
+                            </div>
+                            
+                            <div class="hexagram-info">
+                                <div class="trigram-info">
+                                    <div class="trigram">
+                                        <span class="trigram-label">上卦</span>
+                                        <span class="trigram-name">乾</span>
+                                    </div>
+                                    <div class="trigram">
+                                        <span class="trigram-label">下卦</span>
+                                        <span class="trigram-name">乾</span>
+                                    </div>
+                                </div>
+                                <div class="hexagram-number">第1卦</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 变卦 -->
+                    <div class="hexagram-item">
+                        <div class="hexagram-title">变卦</div>
+                        <div class="hexagram-visual">
+                            <div class="hexagram-lines">
+                                <div class="hexagram-line">
+                                    <div class="line-number">6</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">5</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">4</div>
+                                </div>
+                                <div class="hexagram-line changing">
+                                    <div class="line-number">3</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">2</div>
+                                </div>
+                                <div class="hexagram-line">
+                                    <div class="line-number">1</div>
+                                </div>
+                            </div>
+                            
+                            <div class="hexagram-info">
+                                <div class="trigram-info">
+                                    <div class="trigram">
+                                        <span class="trigram-label">上卦</span>
+                                        <span class="trigram-name">乾</span>
+                                    </div>
+                                    <div class="trigram">
+                                        <span class="trigram-label">下卦</span>
+                                        <span class="trigram-name">乾</span>
+                                    </div>
+                                </div>
+                                <div class="hexagram-number">第1卦</div>
+                                <div class="moving-line-info">
+                                    <span class="moving-line-label">动爻：</span>
+                                    <span class="moving-line-value">第3爻</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: rgba(255, 255, 255, 0.7);">
+            <p>✅ 现在三个卦象在同一个框内水平排列</p>
+            <p>📱 在移动端，三个卦象会垂直排列</p>
+            <p>🎨 每个卦象标题有独立的背景色区分</p>
+        </div>
+    </div>
+</body>
+</html>

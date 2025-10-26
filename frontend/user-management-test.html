@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理系统测试 - 梅花心易</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .test-section h3 {
+            color: #fbbf24;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e3a8a;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #10b981;
+        }
+        .error {
+            color: #ef4444;
+        }
+        .info {
+            color: #3b82f6;
+        }
+        .warning {
+            color: #f59e0b;
+        }
+        .user-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .info-card h4 {
+            margin: 0 0 10px 0;
+            color: #fbbf24;
+        }
+        .info-card p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 用户管理系统测试</h1>
+        
+        <!-- 用户注册测试 -->
+        <div class="test-section">
+            <h3>📝 用户注册测试</h3>
+            <div class="form-group">
+                <label>用户名:</label>
+                <input type="text" id="regUsername" placeholder="输入用户名 (3-20字符)" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label>邮箱:</label>
+                <input type="email" id="regEmail" placeholder="输入邮箱地址">
+            </div>
+            <div class="form-group">
+                <label>密码:</label>
+                <input type="password" id="regPassword" placeholder="密码 (包含大小写字母和数字)">
+            </div>
+            <div class="form-group">
+                <label>手机号:</label>
+                <input type="tel" id="regPhone" placeholder="手机号 (可选)">
+            </div>
+            <button class="btn" onclick="testRegister()">🚀 测试注册</button>
+            <button class="btn secondary" onclick="generateRandomUser()">🎲 生成随机用户</button>
+            <div id="registerResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 用户登录测试 -->
+        <div class="test-section">
+            <h3>🔑 用户登录测试</h3>
+            <div class="form-group">
+                <label>邮箱:</label>
+                <input type="email" id="loginEmail" placeholder="登录邮箱">
+            </div>
+            <div class="form-group">
+                <label>密码:</label>
+                <input type="password" id="loginPassword" placeholder="登录密码">
+            </div>
+            <button class="btn" onclick="testLogin()">🔓 测试登录</button>
+            <button class="btn secondary" onclick="copyRegisterInfo()">📋 复制注册信息</button>
+            <div id="loginResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 用户信息管理测试 -->
+        <div class="test-section">
+            <h3>👤 用户信息管理测试</h3>
+            <div class="form-group">
+                <label>昵称:</label>
+                <input type="text" id="nickname" placeholder="设置昵称">
+            </div>
+            <div class="form-group">
+                <label>性别:</label>
+                <select id="gender">
+                    <option value="">请选择</option>
+                    <option value="male">男</option>
+                    <option value="female">女</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>个人简介:</label>
+                <textarea id="bio" placeholder="个人简介" rows="3"></textarea>
+            </div>
+            <button class="btn" onclick="testUpdateProfile()">💾 更新个人资料</button>
+            <button class="btn" onclick="testGetProfile()">📄 获取用户信息</button>
+            <div id="profileResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 生辰八字测试 -->
+        <div class="test-section">
+            <h3>📅 生辰八字测试</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                <div class="form-group">
+                    <label>年:</label>
+                    <input type="number" id="birthYear" placeholder="1990" min="1900" max="2025">
+                </div>
+                <div class="form-group">
+                    <label>月:</label>
+                    <input type="number" id="birthMonth" placeholder="6" min="1" max="12">
+                </div>
+                <div class="form-group">
+                    <label>日:</label>
+                    <input type="number" id="birthDay" placeholder="15" min="1" max="31">
+                </div>
+                <div class="form-group">
+                    <label>时:</label>
+                    <input type="number" id="birthHour" placeholder="14" min="0" max="23">
+                </div>
+            </div>
+            <button class="btn" onclick="testUpdateBirthInfo()">🌟 更新生辰八字</button>
+            <div id="birthResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 当前用户信息显示 -->
+        <div class="test-section">
+            <h3>📊 当前用户状态</h3>
+            <div id="currentUserInfo">
+                <p class="info">请先登录以查看用户信息</p>
+            </div>
+            <button class="btn secondary" onclick="refreshUserInfo()">🔄 刷新信息</button>
+            <button class="btn secondary" onclick="clearToken()">🚪 退出登录</button>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentToken = localStorage.getItem('authToken') || null;
+        let currentUser = null;
+        const API_BASE = 'http://localhost:3001/api';
+
+        // 工具函数
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML = `<span class="${type}">${message}</span>`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        function appendResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML += `<br><span class="${type}">${message}</span>`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        // 生成随机用户信息
+        function generateRandomUser() {
+            const timestamp = Date.now().toString().slice(-6);
+            document.getElementById('regUsername').value = `user_${timestamp}`;
+            document.getElementById('regEmail').value = `user_${timestamp}@test.com`;
+            document.getElementById('regPassword').value = 'Test123456A';
+            document.getElementById('regPhone').value = '13800138000';
+        }
+
+        // 复制注册信息到登录表单
+        function copyRegisterInfo() {
+            document.getElementById('loginEmail').value = document.getElementById('regEmail').value;
+            document.getElementById('loginPassword').value = document.getElementById('regPassword').value;
+        }
+
+        // 测试用户注册
+        async function testRegister() {
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const phone = document.getElementById('regPhone').value;
+
+            if (!username || !email || !password) {
+                showResult('registerResult', '请填写必要信息', 'error');
+                return;
+            }
+
+            showResult('registerResult', '正在注册...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password, phone })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    appendResult('registerResult', '✅ 注册成功!', 'success');
+                    appendResult('registerResult', `用户ID: ${data.data.user.id}`, 'info');
+                    appendResult('registerResult', `用户名: ${data.data.user.username}`, 'info');
+                    
+                    // 保存token
+                    currentToken = data.data.tokens.accessToken;
+                    localStorage.setItem('authToken', currentToken);
+                    
+                    // 自动复制到登录表单
+                    copyRegisterInfo();
+                    
+                    appendResult('registerResult', '🎫 Token已保存，可以直接测试其他功能', 'success');
+                } else {
+                    appendResult('registerResult', `❌ 注册失败: ${data.error?.message || '未知错误'}`, 'error');
+                    if (data.error?.details) {
+                        data.error.details.forEach(detail => {
+                            appendResult('registerResult', `  - ${detail.msg}`, 'error');
+                        });
+                    }
+                }
+            } catch (error) {
+                appendResult('registerResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试用户登录
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showResult('loginResult', '请填写邮箱和密码', 'error');
+                return;
+            }
+
+            showResult('loginResult', '正在登录...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    appendResult('loginResult', '✅ 登录成功!', 'success');
+                    appendResult('loginResult', `用户名: ${data.data.user.username}`, 'info');
+                    appendResult('loginResult', `邮箱: ${data.data.user.email}`, 'info');
+                    
+                    // 保存token和用户信息
+                    currentToken = data.data.tokens.accessToken;
+                    currentUser = data.data.user;
+                    localStorage.setItem('authToken', currentToken);
+                    
+                    appendResult('loginResult', '🎫 Token已更新', 'success');
+                    refreshUserInfo();
+                } else {
+                    appendResult('loginResult', `❌ 登录失败: ${data.error?.message || '未知错误'}`, 'error');
+                }
+            } catch (error) {
+                appendResult('loginResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试更新个人资料
+        async function testUpdateProfile() {
+            if (!currentToken) {
+                showResult('profileResult', '请先登录', 'error');
+                return;
+            }
+
+            const nickname = document.getElementById('nickname').value;
+            const gender = document.getElementById('gender').value;
+            const bio = document.getElementById('bio').value;
+
+            showResult('profileResult', '正在更新个人资料...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/user/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({
+                        profile: { nickname, gender, bio }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    appendResult('profileResult', '✅ 个人资料更新成功!', 'success');
+                    appendResult('profileResult', `昵称: ${data.data.profile?.nickname || '未设置'}`, 'info');
+                    appendResult('profileResult', `性别: ${data.data.profile?.gender || '未设置'}`, 'info');
+                    refreshUserInfo();
+                } else {
+                    appendResult('profileResult', `❌ 更新失败: ${data.error?.message || '未知错误'}`, 'error');
+                }
+            } catch (error) {
+                appendResult('profileResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试获取用户信息
+        async function testGetProfile() {
+            if (!currentToken) {
+                showResult('profileResult', '请先登录', 'error');
+                return;
+            }
+
+            showResult('profileResult', '正在获取用户信息...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    appendResult('profileResult', '✅ 用户信息获取成功!', 'success');
+                    appendResult('profileResult', JSON.stringify(data.data, null, 2), 'info');
+                    currentUser = data.data;
+                    refreshUserInfo();
+                } else {
+                    appendResult('profileResult', `❌ 获取失败: ${data.error?.message || '未知错误'}`, 'error');
+                }
+            } catch (error) {
+                appendResult('profileResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试更新生辰八字
+        async function testUpdateBirthInfo() {
+            if (!currentToken) {
+                showResult('birthResult', '请先登录', 'error');
+                return;
+            }
+
+            const year = parseInt(document.getElementById('birthYear').value);
+            const month = parseInt(document.getElementById('birthMonth').value);
+            const day = parseInt(document.getElementById('birthDay').value);
+            const hour = parseInt(document.getElementById('birthHour').value) || 0;
+
+            if (!year || !month || !day) {
+                showResult('birthResult', '请填写完整的出生日期', 'error');
+                return;
+            }
+
+            showResult('birthResult', '正在更新生辰八字...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/user/birth-info`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({
+                        birthInfo: {
+                            year, month, day, hour,
+                            minute: 0,
+                            timezone: 'Asia/Shanghai'
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    appendResult('birthResult', '✅ 生辰八字更新成功!', 'success');
+                    appendResult('birthResult', `出生日期: ${year}-${month}-${day} ${hour}:00`, 'info');
+                    refreshUserInfo();
+                } else {
+                    appendResult('birthResult', `❌ 更新失败: ${data.error?.message || '未知错误'}`, 'error');
+                }
+            } catch (error) {
+                appendResult('birthResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 刷新用户信息显示
+        function refreshUserInfo() {
+            const container = document.getElementById('currentUserInfo');
+            
+            if (!currentToken) {
+                container.innerHTML = '<p class="info">请先登录以查看用户信息</p>';
+                return;
+            }
+
+            if (currentUser) {
+                container.innerHTML = `
+                    <div class="user-info">
+                        <div class="info-card">
+                            <h4>基本信息</h4>
+                            <p>用户名: ${currentUser.username || '未设置'}</p>
+                            <p>邮箱: ${currentUser.email || '未设置'}</p>
+                            <p>昵称: ${currentUser.profile?.nickname || '未设置'}</p>
+                            <p>性别: ${currentUser.profile?.gender || '未设置'}</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>账户状态</h4>
+                            <p>注册时间: ${new Date(currentUser.createdAt).toLocaleString()}</p>
+                            <p>免费次数: ${currentUser.freeCount || 0}</p>
+                            <p>邮箱验证: ${currentUser.isEmailVerified ? '已验证' : '未验证'}</p>
+                        </div>
+                        <div class="info-card">
+                            <h4>生辰信息</h4>
+                            <p>出生日期: ${currentUser.birthInfo ? 
+                                `${currentUser.birthInfo.year}-${currentUser.birthInfo.month}-${currentUser.birthInfo.day}` : 
+                                '未设置'}</p>
+                            <p>出生时间: ${currentUser.birthInfo ? 
+                                `${currentUser.birthInfo.hour}:${currentUser.birthInfo.minute || 0}` : 
+                                '未设置'}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '<p class="warning">已登录，点击"获取用户信息"查看详细信息</p>';
+            }
+        }
+
+        // 清除token
+        function clearToken() {
+            currentToken = null;
+            currentUser = null;
+            localStorage.removeItem('authToken');
+            refreshUserInfo();
+            alert('已退出登录');
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            if (currentToken) {
+                testGetProfile();
+            }
+            generateRandomUser();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+@import './base.css';
+
+/* 星空主题样式 */
+@import '../styles/starry-theme.css';
+
+/* Element Plus 样式覆盖 */
+@import '../styles/element-overrides.css';
+
+/* 移动端适配 */
+@import '../styles/mobile.css';
+
+/* 自定义组件样式 */
+@import '../styles/components.css';
+
+/* 全局样式重置 */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0f172a;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+#app {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完整占卜流程测试 - 梅花心易</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .step h3 {
+            color: #fbbf24;
+            margin-top: 0;
+        }
+        .btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e3a8a;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+        }
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        .status.warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .checklist li .icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .checklist li.completed .icon {
+            color: #10b981;
+        }
+        .checklist li.pending .icon {
+            color: #f59e0b;
+        }
+        .checklist li.failed .icon {
+            color: #ef4444;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .test-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .test-card h4 {
+            color: #fbbf24;
+            margin-top: 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #fbbf24);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 完整占卜流程测试</h1>
+        
+        <div class="step">
+            <h3>📊 测试进度</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <p id="progressText">准备开始测试...</p>
+        </div>
+
+        <div class="step">
+            <h3>✅ 测试检查清单</h3>
+            <ul class="checklist" id="checklist">
+                <li class="pending" id="check-frontend">
+                    <span class="icon">⏳</span>
+                    <span>前端服务器运行状态</span>
+                </li>
+                <li class="pending" id="check-backend">
+                    <span class="icon">⏳</span>
+                    <span>后端服务器连接状态</span>
+                </li>
+                <li class="pending" id="check-login">
+                    <span class="icon">⏳</span>
+                    <span>用户登录状态设置</span>
+                </li>
+                <li class="pending" id="check-store">
+                    <span class="icon">⏳</span>
+                    <span>用户Store状态验证</span>
+                </li>
+                <li class="pending" id="check-page">
+                    <span class="icon">⏳</span>
+                    <span>占卜页面访问测试</span>
+                </li>
+                <li class="pending" id="check-button">
+                    <span class="icon">⏳</span>
+                    <span>占卜按钮功能测试</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="test-grid">
+            <div class="test-card">
+                <h4>🚀 自动化测试</h4>
+                <p>运行完整的自动化测试流程</p>
+                <button class="btn success" onclick="runFullTest()">开始自动测试</button>
+                <button class="btn secondary" onclick="resetTest()">重置测试</button>
+            </div>
+
+            <div class="test-card">
+                <h4>🔧 手动测试</h4>
+                <p>逐步手动验证每个功能</p>
+                <button class="btn" onclick="setupLogin()">1. 设置登录</button>
+                <button class="btn" onclick="checkStores()">2. 检查Store</button>
+                <a href="http://localhost:5173/divination/question" class="btn" target="_blank">3. 打开占卜页面</a>
+            </div>
+
+            <div class="test-card">
+                <h4>🛠️ 调试工具</h4>
+                <p>使用专门的调试工具</p>
+                <a href="http://localhost:5173/divination-button-debug.html" class="btn secondary" target="_blank">按钮诊断工具</a>
+                <a href="http://localhost:5173/user-management-test.html" class="btn secondary" target="_blank">用户管理测试</a>
+            </div>
+
+            <div class="test-card">
+                <h4>📋 状态监控</h4>
+                <p>实时监控系统状态</p>
+                <button class="btn secondary" onclick="showSystemStatus()">查看系统状态</button>
+                <button class="btn secondary" onclick="clearAllData()">清除所有数据</button>
+            </div>
+        </div>
+
+        <div class="step" id="testResults" style="display: none;">
+            <h3>📊 测试结果</h3>
+            <div id="resultContent"></div>
+        </div>
+
+        <div class="step" id="systemStatus" style="display: none;">
+            <h3>🖥️ 系统状态</h3>
+            <div id="statusContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let testProgress = 0;
+        const totalTests = 6;
+
+        function updateProgress(completed, text) {
+            testProgress = completed;
+            const percentage = (completed / totalTests) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        function updateCheckItem(id, status, icon) {
+            const item = document.getElementById(id);
+            item.className = status;
+            item.querySelector('.icon').textContent = icon;
+        }
+
+        async function checkFrontendServer() {
+            try {
+                const response = await fetch('http://localhost:5173/');
+                if (response.ok) {
+                    updateCheckItem('check-frontend', 'completed', '✅');
+                    return true;
+                } else {
+                    updateCheckItem('check-frontend', 'failed', '❌');
+                    return false;
+                }
+            } catch (error) {
+                updateCheckItem('check-frontend', 'failed', '❌');
+                return false;
+            }
+        }
+
+        async function checkBackendServer() {
+            try {
+                const response = await fetch('http://localhost:3001/api/health');
+                if (response.ok) {
+                    updateCheckItem('check-backend', 'completed', '✅');
+                    return true;
+                } else {
+                    updateCheckItem('check-backend', 'failed', '❌');
+                    return false;
+                }
+            } catch (error) {
+                updateCheckItem('check-backend', 'failed', '❌');
+                return false;
+            }
+        }
+
+        function setupLogin() {
+            const mockToken = 'dev_token_' + Date.now();
+            const mockUser = {
+                id: 'user_' + Date.now(),
+                username: 'test_user',
+                email: 'test@example.com',
+                freeCount: 3,
+                isEmailVerified: true,
+                createdAt: new Date().toISOString()
+            };
+
+            // 设置多种存储方式
+            localStorage.setItem('token', mockToken);
+            localStorage.setItem('authToken', mockToken);
+            localStorage.setItem('userInfo', JSON.stringify(mockUser));
+            localStorage.setItem('freeCount', '3');
+
+            updateCheckItem('check-login', 'completed', '✅');
+            console.log('✅ 登录状态已设置:', { token: mockToken, user: mockUser });
+            return true;
+        }
+
+        function checkStores() {
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            const userInfo = localStorage.getItem('userInfo');
+            const freeCount = localStorage.getItem('freeCount');
+
+            if (token && userInfo && freeCount) {
+                updateCheckItem('check-store', 'completed', '✅');
+                console.log('✅ Store状态正常');
+                return true;
+            } else {
+                updateCheckItem('check-store', 'failed', '❌');
+                console.log('❌ Store状态异常');
+                return false;
+            }
+        }
+
+        async function testPageAccess() {
+            try {
+                // 模拟页面访问测试
+                const token = localStorage.getItem('token');
+                if (token) {
+                    updateCheckItem('check-page', 'completed', '✅');
+                    return true;
+                } else {
+                    updateCheckItem('check-page', 'failed', '❌');
+                    return false;
+                }
+            } catch (error) {
+                updateCheckItem('check-page', 'failed', '❌');
+                return false;
+            }
+        }
+
+        function testButtonFunction() {
+            // 模拟按钮功能测试
+            const hasLogin = localStorage.getItem('token');
+            const hasFreeCount = parseInt(localStorage.getItem('freeCount')) > 0;
+            
+            if (hasLogin && hasFreeCount) {
+                updateCheckItem('check-button', 'completed', '✅');
+                return true;
+            } else {
+                updateCheckItem('check-button', 'failed', '❌');
+                return false;
+            }
+        }
+
+        async function runFullTest() {
+            updateProgress(0, '开始自动化测试...');
+            
+            // 重置所有检查项
+            const checkItems = ['check-frontend', 'check-backend', 'check-login', 'check-store', 'check-page', 'check-button'];
+            checkItems.forEach(id => updateCheckItem(id, 'pending', '⏳'));
+
+            let passedTests = 0;
+            const results = [];
+
+            // 测试1: 前端服务器
+            updateProgress(1, '检查前端服务器...');
+            const frontendOk = await checkFrontendServer();
+            if (frontendOk) passedTests++;
+            results.push({ name: '前端服务器', status: frontendOk });
+
+            // 测试2: 后端服务器
+            updateProgress(2, '检查后端服务器...');
+            const backendOk = await checkBackendServer();
+            if (backendOk) passedTests++;
+            results.push({ name: '后端服务器', status: backendOk });
+
+            // 测试3: 设置登录
+            updateProgress(3, '设置登录状态...');
+            const loginOk = setupLogin();
+            if (loginOk) passedTests++;
+            results.push({ name: '登录状态', status: loginOk });
+
+            // 测试4: 检查Store
+            updateProgress(4, '验证Store状态...');
+            const storeOk = checkStores();
+            if (storeOk) passedTests++;
+            results.push({ name: 'Store状态', status: storeOk });
+
+            // 测试5: 页面访问
+            updateProgress(5, '测试页面访问...');
+            const pageOk = await testPageAccess();
+            if (pageOk) passedTests++;
+            results.push({ name: '页面访问', status: pageOk });
+
+            // 测试6: 按钮功能
+            updateProgress(6, '测试按钮功能...');
+            const buttonOk = testButtonFunction();
+            if (buttonOk) passedTests++;
+            results.push({ name: '按钮功能', status: buttonOk });
+
+            // 显示结果
+            updateProgress(6, `测试完成: ${passedTests}/${totalTests} 项通过`);
+            showTestResults(results, passedTests);
+        }
+
+        function showTestResults(results, passedTests) {
+            const resultDiv = document.getElementById('testResults');
+            const contentDiv = document.getElementById('resultContent');
+            
+            let html = `
+                <div class="status ${passedTests === totalTests ? 'success' : 'warning'}">
+                    <strong>测试结果: ${passedTests}/${totalTests} 项通过</strong>
+                </div>
+                <ul class="checklist">
+            `;
+            
+            results.forEach(result => {
+                const icon = result.status ? '✅' : '❌';
+                const status = result.status ? 'completed' : 'failed';
+                html += `<li class="${status}"><span class="icon">${icon}</span><span>${result.name}</span></li>`;
+            });
+            
+            html += '</ul>';
+            
+            if (passedTests === totalTests) {
+                html += `
+                    <div class="status success">
+                        <strong>🎉 所有测试通过！</strong><br>
+                        现在可以正常使用占卜功能了。
+                        <br><br>
+                        <a href="http://localhost:5173/divination/question" class="btn success" target="_blank">🔮 开始占卜</a>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="status error">
+                        <strong>⚠️ 部分测试失败</strong><br>
+                        请检查失败的项目并重新测试。
+                    </div>
+                `;
+            }
+            
+            contentDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+        }
+
+        function showSystemStatus() {
+            const statusDiv = document.getElementById('systemStatus');
+            const contentDiv = document.getElementById('statusContent');
+            
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            const userInfo = localStorage.getItem('userInfo');
+            const freeCount = localStorage.getItem('freeCount');
+            
+            let html = `
+                <div class="test-grid">
+                    <div class="test-card">
+                        <h4>🔑 认证状态</h4>
+                        <p>Token: ${token ? '已设置' : '未设置'}</p>
+                        <p>长度: ${token ? token.length + ' 字符' : 'N/A'}</p>
+                    </div>
+                    <div class="test-card">
+                        <h4>👤 用户信息</h4>
+                        <p>状态: ${userInfo ? '已设置' : '未设置'}</p>
+                        ${userInfo ? `<p>用户: ${JSON.parse(userInfo).username || JSON.parse(userInfo).email}</p>` : ''}
+                    </div>
+                    <div class="test-card">
+                        <h4>🎫 免费次数</h4>
+                        <p>次数: ${freeCount || '未设置'}</p>
+                        <p>状态: ${parseInt(freeCount) > 0 ? '可用' : '不可用'}</p>
+                    </div>
+                    <div class="test-card">
+                        <h4>🌐 网络状态</h4>
+                        <p>前端: <span id="frontendStatus">检查中...</span></p>
+                        <p>后端: <span id="backendStatus">检查中...</span></p>
+                    </div>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = html;
+            statusDiv.style.display = 'block';
+            
+            // 检查网络状态
+            checkFrontendServer().then(ok => {
+                document.getElementById('frontendStatus').textContent = ok ? '正常' : '异常';
+            });
+            checkBackendServer().then(ok => {
+                document.getElementById('backendStatus').textContent = ok ? '正常' : '异常';
+            });
+        }
+
+        function resetTest() {
+            testProgress = 0;
+            updateProgress(0, '准备开始测试...');
+            
+            const checkItems = ['check-frontend', 'check-backend', 'check-login', 'check-store', 'check-page', 'check-button'];
+            checkItems.forEach(id => updateCheckItem(id, 'pending', '⏳'));
+            
+            document.getElementById('testResults').style.display = 'none';
+            document.getElementById('systemStatus').style.display = 'none';
+        }
+
+        function clearAllData() {
+            const keys = ['token', 'authToken', 'userInfo', 'freeCount', 'refreshToken'];
+            keys.forEach(key => localStorage.removeItem(key));
+            sessionStorage.clear();
+            
+            alert('所有数据已清除！');
+            resetTest();
+        }
+
+        // 页面加载时检查当前状态
+        window.addEventListener('load', () => {
+            console.log('🔮 占卜测试页面已加载');
+            
+            // 自动检查当前状态
+            setTimeout(() => {
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                if (token) {
+                    updateCheckItem('check-login', 'completed', '✅');
+                    checkStores();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

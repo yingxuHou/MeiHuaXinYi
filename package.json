@@ -1,0 +1,66 @@
+{
+  "name": "meihuaxinyi",
+  "version": "1.0.0",
+  "description": "梅花心易 - 基于梅花易数的智能占卜系统",
+  "main": "start-dev.js",
+  "scripts": {
+    "dev": "node start-dev.js",
+    "start": "npm run start:prod",
+    "start:prod": "cd backend && npm run start:prod",
+    "verify": "node verify-setup.js",
+    "auto-start": "node verify-setup.js auto",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "serve": "node start-production.js",
+    "serve:win": "start-production.bat",
+    "serve:win-old": "build-and-start.bat",
+    "serve:ps": "powershell -ExecutionPolicy Bypass -File build-and-start.ps1",
+    "serve:node": "node start-production.js",
+    "preview": "npm run build && npm run start:prod",
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test:api": "cd backend && npm run test:core",
+    "clean": "npm run clean:backend && npm run clean:frontend",
+    "clean:backend": "cd backend && rm -rf node_modules && rm -rf dist",
+    "clean:frontend": "cd frontend && rm -rf node_modules && rm -rf dist",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint"
+  },
+  "keywords": [
+    "梅花易数",
+    "占卜",
+    "易经",
+    "vue",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "梅花心易团队",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/meihuaxinyi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/meihuaxinyi/issues"
+  },
+  "homepage": "https://github.com/your-username/meihuaxinyi#readme"
+}

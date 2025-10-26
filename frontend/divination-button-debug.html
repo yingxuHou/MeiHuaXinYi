@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜按钮诊断工具 - 梅花心易</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .section h3 {
+            color: #fbbf24;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        select option {
+            background: #333;
+            color: white;
+        }
+        .btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e3a8a;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            background: #666;
+        }
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .status-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status-label {
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 8px;
+        }
+        .status-value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .status-value.true {
+            color: #10b981;
+        }
+        .status-value.false {
+            color: #ef4444;
+        }
+        .status-value.warning {
+            color: #f59e0b;
+        }
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+        .test-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .test-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .test-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        .solution-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .solution-box h4 {
+            color: #10b981;
+            margin-top: 0;
+        }
+        .problem-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .problem-box h4 {
+            color: #ef4444;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 占卜按钮诊断工具</h1>
+        
+        <!-- 模拟占卜表单 -->
+        <div class="section">
+            <h3>📝 占卜表单模拟</h3>
+            <div class="form-group">
+                <label for="category">问题分类：</label>
+                <select id="category" onchange="updateStatus()">
+                    <option value="">请选择问题分类</option>
+                    <option value="career">事业发展</option>
+                    <option value="love">感情婚姻</option>
+                    <option value="health">健康状况</option>
+                    <option value="wealth">财运投资</option>
+                    <option value="study">学业考试</option>
+                    <option value="family">家庭关系</option>
+                    <option value="decision">决策选择</option>
+                    <option value="other">其他问题</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="question">您的问题：</label>
+                <textarea 
+                    id="question" 
+                    placeholder="请详细描述您想要占卜的问题..."
+                    maxlength="200"
+                    oninput="updateStatus()"
+                    rows="4"
+                ></textarea>
+                <div class="char-count">字符数：<span id="charCount">0</span>/200</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="freeCount">免费次数：</label>
+                <input type="number" id="freeCount" value="3" min="0" max="10" onchange="updateStatus()">
+            </div>
+            
+            <button id="submitBtn" class="btn" disabled onclick="simulateSubmit()">
+                🔮 开始占卜
+            </button>
+            
+            <div class="test-buttons">
+                <button class="test-btn" onclick="testValidInput()">✅ 测试有效输入</button>
+                <button class="test-btn" onclick="testShortQuestion()">❌ 测试短问题</button>
+                <button class="test-btn" onclick="testNoCategory()">❌ 测试无分类</button>
+                <button class="test-btn" onclick="testNoFreeCount()">❌ 测试无免费次数</button>
+                <button class="test-btn" onclick="clearForm()">🗑️ 清空表单</button>
+            </div>
+        </div>
+
+        <!-- 状态监控 -->
+        <div class="section">
+            <h3>📊 实时状态监控</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-label">分类选择</div>
+                    <div class="status-value" id="categoryStatus">未选择</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">问题内容</div>
+                    <div class="status-value" id="questionStatus">空</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">问题长度</div>
+                    <div class="status-value" id="lengthStatus">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">长度检查 (≥5)</div>
+                    <div class="status-value" id="lengthCheckStatus">false</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">免费次数</div>
+                    <div class="status-value" id="freeCountStatus">3</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">次数检查 (>0)</div>
+                    <div class="status-value" id="freeCountCheckStatus">true</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">canSubmit 结果</div>
+                    <div class="status-value" id="canSubmitStatus">false</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">按钮状态</div>
+                    <div class="status-value" id="buttonStatus">禁用</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户登录状态检查 -->
+        <div class="section">
+            <h3>👤 用户登录状态检查</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-label">登录Token</div>
+                    <div class="status-value" id="tokenStatus">检查中...</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">用户信息</div>
+                    <div class="status-value" id="userInfoStatus">检查中...</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">实际免费次数</div>
+                    <div class="status-value" id="actualFreeCountStatus">检查中...</div>
+                </div>
+            </div>
+            
+            <div class="test-buttons">
+                <button class="test-btn" onclick="checkLoginStatus()">🔍 检查登录状态</button>
+                <button class="test-btn" onclick="simulateLogin()">🔑 模拟登录</button>
+                <button class="test-btn" onclick="clearLoginData()">🚪 清除登录数据</button>
+            </div>
+        </div>
+
+        <!-- 问题诊断和解决方案 -->
+        <div id="problemDiagnosis"></div>
+        <div id="solutionSuggestion"></div>
+    </div>
+
+    <script>
+        // 全局状态
+        let currentState = {
+            category: '',
+            question: '',
+            questionLength: 0,
+            freeCount: 3,
+            canSubmit: false
+        };
+
+        // 更新状态显示
+        function updateStatus() {
+            const category = document.getElementById('category').value;
+            const question = document.getElementById('question').value;
+            const freeCount = parseInt(document.getElementById('freeCount').value) || 0;
+            
+            // 更新状态
+            currentState.category = category;
+            currentState.question = question;
+            currentState.questionLength = question.length;
+            currentState.freeCount = freeCount;
+            
+            // 计算 canSubmit（按照Vue组件的逻辑）
+            const hasCategory = !!category;
+            const hasQuestion = !!question;
+            const lengthValid = question.length >= 5;
+            const freeCountValid = freeCount > 0;
+            currentState.canSubmit = hasCategory && hasQuestion && lengthValid && freeCountValid;
+            
+            // 更新显示
+            document.getElementById('charCount').textContent = question.length;
+            document.getElementById('categoryStatus').textContent = category || '未选择';
+            document.getElementById('categoryStatus').className = `status-value ${hasCategory}`;
+            
+            document.getElementById('questionStatus').textContent = question || '空';
+            document.getElementById('questionStatus').className = `status-value ${hasQuestion}`;
+            
+            document.getElementById('lengthStatus').textContent = question.length;
+            document.getElementById('lengthCheckStatus').textContent = lengthValid;
+            document.getElementById('lengthCheckStatus').className = `status-value ${lengthValid}`;
+            
+            document.getElementById('freeCountStatus').textContent = freeCount;
+            document.getElementById('freeCountCheckStatus').textContent = freeCountValid;
+            document.getElementById('freeCountCheckStatus').className = `status-value ${freeCountValid}`;
+            
+            document.getElementById('canSubmitStatus').textContent = currentState.canSubmit;
+            document.getElementById('canSubmitStatus').className = `status-value ${currentState.canSubmit}`;
+            
+            document.getElementById('buttonStatus').textContent = currentState.canSubmit ? '启用' : '禁用';
+            document.getElementById('buttonStatus').className = `status-value ${currentState.canSubmit}`;
+            
+            // 更新按钮状态
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = !currentState.canSubmit;
+            
+            // 更新按钮文本
+            if (currentState.canSubmit) {
+                submitBtn.textContent = '🔮 开始占卜';
+            } else {
+                if (!hasCategory) {
+                    submitBtn.textContent = '🔮 请选择问题分类';
+                } else if (!lengthValid) {
+                    submitBtn.textContent = `🔮 问题至少需要5个字符 (当前${question.length}字符)`;
+                } else if (!freeCountValid) {
+                    submitBtn.textContent = '🔮 免费次数已用完';
+                } else {
+                    submitBtn.textContent = '🔮 开始占卜';
+                }
+            }
+            
+            // 诊断问题
+            diagnoseProblem();
+        }
+
+        // 诊断问题
+        function diagnoseProblem() {
+            const problems = [];
+            const solutions = [];
+            
+            if (!currentState.category) {
+                problems.push('❌ 未选择问题分类');
+                solutions.push('✅ 请在下拉菜单中选择一个问题分类');
+            }
+            
+            if (!currentState.question) {
+                problems.push('❌ 未输入问题内容');
+                solutions.push('✅ 请在文本框中输入您的占卜问题');
+            } else if (currentState.questionLength < 5) {
+                problems.push(`❌ 问题长度不足 (${currentState.questionLength}/5)`);
+                solutions.push('✅ 请输入至少5个字符的问题描述');
+            }
+            
+            if (currentState.freeCount <= 0) {
+                problems.push('❌ 免费占卜次数不足');
+                solutions.push('✅ 请联系客服或购买占卜次数');
+            }
+            
+            // 显示问题诊断
+            const problemDiv = document.getElementById('problemDiagnosis');
+            if (problems.length > 0) {
+                problemDiv.innerHTML = `
+                    <div class="problem-box">
+                        <h4>🚨 发现的问题</h4>
+                        ${problems.map(p => `<p>${p}</p>`).join('')}
+                    </div>
+                `;
+            } else {
+                problemDiv.innerHTML = `
+                    <div class="solution-box">
+                        <h4>🎉 所有条件满足</h4>
+                        <p>✅ 按钮应该可以正常点击了！</p>
+                    </div>
+                `;
+            }
+            
+            // 显示解决方案
+            const solutionDiv = document.getElementById('solutionSuggestion');
+            if (solutions.length > 0) {
+                solutionDiv.innerHTML = `
+                    <div class="solution-box">
+                        <h4>💡 解决方案</h4>
+                        ${solutions.map(s => `<p>${s}</p>`).join('')}
+                    </div>
+                `;
+            } else {
+                solutionDiv.innerHTML = '';
+            }
+        }
+
+        // 测试函数
+        function testValidInput() {
+            document.getElementById('category').value = 'career';
+            document.getElementById('question').value = '我最近的工作发展如何？';
+            document.getElementById('freeCount').value = '3';
+            updateStatus();
+        }
+
+        function testShortQuestion() {
+            document.getElementById('category').value = 'career';
+            document.getElementById('question').value = '工作';
+            document.getElementById('freeCount').value = '3';
+            updateStatus();
+        }
+
+        function testNoCategory() {
+            document.getElementById('category').value = '';
+            document.getElementById('question').value = '我最近的工作发展如何？';
+            document.getElementById('freeCount').value = '3';
+            updateStatus();
+        }
+
+        function testNoFreeCount() {
+            document.getElementById('category').value = 'career';
+            document.getElementById('question').value = '我最近的工作发展如何？';
+            document.getElementById('freeCount').value = '0';
+            updateStatus();
+        }
+
+        function clearForm() {
+            document.getElementById('category').value = '';
+            document.getElementById('question').value = '';
+            document.getElementById('freeCount').value = '3';
+            updateStatus();
+        }
+
+        function simulateSubmit() {
+            alert('🎉 占卜按钮点击成功！在实际应用中，这里会跳转到占卜加载页面。');
+        }
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+            const userInfo = localStorage.getItem('userInfo');
+            
+            document.getElementById('tokenStatus').textContent = token ? '已设置' : '未设置';
+            document.getElementById('tokenStatus').className = `status-value ${!!token}`;
+            
+            document.getElementById('userInfoStatus').textContent = userInfo ? '已设置' : '未设置';
+            document.getElementById('userInfoStatus').className = `status-value ${!!userInfo}`;
+            
+            if (userInfo) {
+                try {
+                    const user = JSON.parse(userInfo);
+                    const actualFreeCount = user.freeCount || 0;
+                    document.getElementById('actualFreeCountStatus').textContent = actualFreeCount;
+                    document.getElementById('actualFreeCountStatus').className = `status-value ${actualFreeCount > 0}`;
+                    
+                    // 同步到表单
+                    document.getElementById('freeCount').value = actualFreeCount;
+                    updateStatus();
+                } catch (error) {
+                    document.getElementById('actualFreeCountStatus').textContent = '解析失败';
+                    document.getElementById('actualFreeCountStatus').className = 'status-value false';
+                }
+            } else {
+                document.getElementById('actualFreeCountStatus').textContent = '无用户信息';
+                document.getElementById('actualFreeCountStatus').className = 'status-value false';
+            }
+        }
+
+        function simulateLogin() {
+            const mockToken = 'mock_token_' + Date.now();
+            const mockUser = {
+                id: 'mock_user_id',
+                username: 'test_user',
+                email: 'test@example.com',
+                freeCount: 3
+            };
+            
+            localStorage.setItem('authToken', mockToken);
+            localStorage.setItem('userInfo', JSON.stringify(mockUser));
+            
+            alert('模拟登录成功！');
+            checkLoginStatus();
+        }
+
+        function clearLoginData() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('token');
+            localStorage.removeItem('userInfo');
+            
+            alert('登录数据已清除！');
+            checkLoginStatus();
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            updateStatus();
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,895 @@
+/* 梅花心易 - 东方美学主题样式 */
+
+/* ===== 核心配色方案 ===== */
+:root {
+  /* 主色调 - 深蓝色星空紫 */
+  --primary-deep: #2A2357;
+  --primary-medium: #3A3070;
+  --primary-light: #4A3C90;
+
+  /* 鎏金色系 */
+  --gold-primary: #FFD700;
+  --gold-light: #FFF4B8;
+  --gold-dark: #B8860B;
+
+  /* 暖黄色系 */
+  --warm-yellow: #F5C257;
+  --warm-yellow-light: #FFF8E1;
+
+  /* 辅助色 */
+  --purple-gradient-start: #3A3070;
+  --purple-gradient-end: #4A3C90;
+  --pink-purple: #D780E0;
+  --blue-purple: #6A7AFF;
+
+  /* 中性色 */
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --text-muted: #909090;
+  --text-dark: #606060;
+
+  /* 透明度变体 */
+  --glass-light: rgba(255, 255, 255, 0.1);
+  --glass-medium: rgba(255, 255, 255, 0.2);
+  --glass-dark: rgba(0, 0, 0, 0.2);
+  --glass-purple: rgba(58, 48, 112, 0.7);
+}
+
+/* ===== 渐变背景系统 ===== */
+.gradient-cosmic-primary {
+  background: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary-medium) 50%, var(--primary-light) 100%);
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, var(--gold-primary) 0%, var(--warm-yellow) 100%);
+}
+
+.gradient-purple-card {
+  background: linear-gradient(135deg, var(--purple-gradient-start) 0%, var(--purple-gradient-end) 100%);
+}
+
+/* 神秘东方图案背景 */
+.mystic-pattern-oriental {
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD700' fill-opacity='0.03'%3E%3Cpath d='M40 40c0-15-12-27-27-27s-27 12-27 27 12 27 27 27 27-12 27-27zm0 0c0 15 12 27 27 27s27-12 27-27-12-27-27-27-27 12-27 27z'/%3E%3Cpath d='M40 20c11 0 20 9 20 20s-9 20-20 20-20-9-20-20 9-20 20-20z' fill='%23FFD700' fill-opacity='0.02'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ===== 星轨粒子动效系统 ===== */
+.starry-background-enhanced {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 主星空层 */
+.starry-background-enhanced::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, var(--gold-primary), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, var(--gold-light), transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 160px 30px, var(--warm-yellow), transparent),
+    radial-gradient(1px 1px at 200px 50px, var(--gold-primary), transparent);
+  background-repeat: repeat;
+  background-size: 300px 150px;
+  animation: starry-twinkle 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 星轨流动层 */
+.starry-background-enhanced::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 215, 0, 0.1) 50%,
+    transparent 70%
+  );
+  animation: star-trail-flow 8s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ===== 东方美学动画系统 ===== */
+
+/* 优雅浮动动画 */
+.floating-element-oriental {
+  animation: oriental-float 8s ease-in-out infinite;
+}
+
+@keyframes oriental-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+}
+
+/* 金色光环脉冲 */
+.golden-pulse-ring {
+  animation: golden-pulse 3s ease-in-out infinite;
+}
+
+@keyframes golden-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+    box-shadow: 0 0 20px var(--gold-primary);
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+    box-shadow: 0 0 40px var(--gold-primary);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+    box-shadow: 0 0 20px var(--gold-primary);
+  }
+}
+
+/* 星空闪烁动画 */
+@keyframes starry-twinkle {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  33% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  66% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+}
+
+/* 星轨流动动画 */
+@keyframes star-trail-flow {
+  0% {
+    transform: translateX(-20%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+/* ===== 轻拟物化玻璃卡片系统 ===== */
+
+/* 主要玻璃卡片 */
+.oriental-glass-card {
+  background: var(--glass-light);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-medium);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(42, 35, 87, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 深色玻璃卡片 */
+.oriental-glass-card-dark {
+  background: var(--glass-dark);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 215, 0, 0.1);
+}
+
+/* 紫色渐变卡片 */
+.oriental-purple-card {
+  background: var(--glass-purple);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--gold-primary);
+  border-radius: 16px;
+  box-shadow:
+    0 10px 30px rgba(42, 35, 87, 0.5),
+    inset 0 1px 0 rgba(255, 215, 0, 0.2);
+}
+
+/* ===== 神秘发光效果系统 ===== */
+
+/* 金色神秘光晕 */
+.mystic-glow-gold-enhanced {
+  box-shadow:
+    0 0 30px rgba(255, 215, 0, 0.4),
+    0 0 60px rgba(255, 215, 0, 0.2),
+    0 0 90px rgba(255, 215, 0, 0.1),
+    inset 0 0 30px rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+/* 紫色神秘光晕 */
+.mystic-glow-purple {
+  box-shadow:
+    0 0 25px rgba(106, 122, 255, 0.4),
+    0 0 50px rgba(106, 122, 255, 0.2),
+    inset 0 0 25px rgba(106, 122, 255, 0.1);
+  border: 1px solid rgba(106, 122, 255, 0.3);
+}
+
+/* 柔和光影晕染 */
+.soft-glow-aura {
+  position: relative;
+}
+
+.soft-glow-aura::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(45deg,
+    rgba(255, 215, 0, 0.1),
+    rgba(106, 122, 255, 0.1),
+    rgba(255, 215, 0, 0.1)
+  );
+  border-radius: inherit;
+  z-index: -1;
+  filter: blur(8px);
+  opacity: 0.7;
+}
+
+/* ===== 东方美学按钮系统 ===== */
+
+/* 主要行动按钮 - 胶囊形金色渐变 */
+.btn-oriental-primary {
+  background: linear-gradient(135deg, var(--gold-primary) 0%, var(--warm-yellow) 100%);
+  color: var(--primary-deep);
+  font-weight: bold;
+  padding: 16px 32px;
+  border-radius: 24px;
+  border: none;
+  box-shadow:
+    0 8px 24px rgba(255, 215, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  transform: translateZ(0);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.btn-oriental-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 12px 32px rgba(255, 215, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-oriental-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 光脉动效果 */
+.btn-oriental-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.btn-oriental-primary:hover::before {
+  left: 100%;
+}
+
+/* 次要按钮 - 半透明玻璃效果 */
+.btn-oriental-secondary {
+  background: var(--glass-light);
+  backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-medium);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-oriental-secondary:hover {
+  background: var(--glass-medium);
+  transform: translateY(-1px);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+/* 特色卡片悬停效果 */
+.oriental-feature-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+}
+
+.oriental-feature-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 25px 50px rgba(42, 35, 87, 0.3),
+    0 0 30px rgba(255, 215, 0, 0.1);
+}
+
+/* ===== 东方美学输入框系统 ===== */
+
+.input-oriental {
+  background: var(--glass-light);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-medium);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.input-oriental::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.input-oriental:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow:
+    0 0 20px rgba(255, 215, 0, 0.3),
+    inset 0 1px 0 rgba(255, 215, 0, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* 文本域样式 */
+.textarea-oriental {
+  background: var(--glass-light);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-medium);
+  border-radius: 16px;
+  padding: 16px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.textarea-oriental::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.textarea-oriental:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow:
+    0 0 25px rgba(255, 215, 0, 0.3),
+    inset 0 1px 0 rgba(255, 215, 0, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ===== 专用UI组件样式 ===== */
+
+/* 用户头像组件 - 金色罗盘光效 */
+.oriental-avatar {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--gold-primary);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.oriental-avatar::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--gold-primary) 0deg,
+    transparent 90deg,
+    var(--gold-primary) 180deg,
+    transparent 270deg,
+    var(--gold-primary) 360deg
+  );
+  animation: compass-rotate 4s linear infinite;
+  z-index: -1;
+}
+
+.oriental-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 进度条组件 - 琥珀色渐变 */
+.oriental-progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.oriental-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--warm-yellow) 0%, var(--gold-primary) 100%);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.oriental-progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: progress-shine 2s ease-in-out infinite;
+}
+
+/* 月牙图标悬浮效果 */
+.oriental-moon-icon {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  color: var(--gold-primary);
+  font-size: 1.2rem;
+  animation: moon-float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+/* 太极图旋转动画 */
+.oriental-taiji {
+  animation: oriental-rotate 20s linear infinite;
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4));
+}
+
+@keyframes oriental-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes compass-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes progress-shine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes moon-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(5deg);
+  }
+}
+
+/* ===== 卦象和符号系统 ===== */
+
+/* 卦象线条 */
+.oriental-hexagram-line {
+  width: 80px;
+  height: 6px;
+  background: linear-gradient(90deg, var(--gold-primary) 0%, var(--warm-yellow) 100%);
+  margin: 4px 0;
+  border-radius: 3px;
+  box-shadow:
+    0 0 15px rgba(255, 215, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.oriental-hexagram-line.broken {
+  background: linear-gradient(to right,
+    var(--gold-primary) 0%,
+    var(--gold-primary) 42%,
+    transparent 42%,
+    transparent 58%,
+    var(--gold-primary) 58%,
+    var(--gold-primary) 100%
+  );
+}
+
+.oriental-hexagram-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  border-radius: inherit;
+  animation: hexagram-shine 3s ease-in-out infinite;
+}
+
+/* 东方符号装饰 */
+.oriental-symbol {
+  color: rgba(255, 215, 0, 0.2);
+  font-size: 2.5rem;
+  position: absolute;
+  animation: oriental-float 12s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+}
+
+.oriental-symbol.large {
+  font-size: 3.5rem;
+  color: rgba(255, 215, 0, 0.15);
+}
+
+.oriental-symbol.small {
+  font-size: 1.8rem;
+  color: rgba(255, 215, 0, 0.25);
+}
+
+/* 推荐卡片样式 */
+.oriental-recommendation-card {
+  background: var(--glass-light);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-medium);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 12px 0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.oriental-recommendation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--gold-primary), transparent);
+  border-radius: 0 16px 0 60px;
+  opacity: 0.1;
+}
+
+.oriental-recommendation-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 215, 0, 0.3);
+  box-shadow: 0 12px 30px rgba(42, 35, 87, 0.3);
+}
+
+/* 感情运势卡片 */
+.oriental-love-card {
+  background: linear-gradient(135deg,
+    rgba(215, 128, 224, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border: 1px solid rgba(215, 128, 224, 0.2);
+}
+
+/* 事业发展卡片 */
+.oriental-career-card {
+  background: linear-gradient(135deg,
+    rgba(106, 122, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border: 1px solid rgba(106, 122, 255, 0.2);
+}
+
+@keyframes hexagram-shine {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ===== 响应式设计和移动端优化 ===== */
+
+/* 平板设备优化 */
+@media (max-width: 1024px) {
+  .oriental-glass-card {
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+  }
+
+  .oriental-symbol {
+    font-size: 2rem;
+  }
+
+  .oriental-symbol.large {
+    font-size: 2.8rem;
+  }
+}
+
+/* 移动端设备优化 */
+@media (max-width: 768px) {
+  :root {
+    --mobile-padding: 16px;
+  }
+
+  .oriental-glass-card {
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    padding: 16px;
+  }
+
+  .oriental-feature-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  .oriental-symbol {
+    font-size: 1.5rem;
+  }
+
+  .oriental-symbol.large {
+    font-size: 2rem;
+  }
+
+  .oriental-symbol.small {
+    font-size: 1.2rem;
+  }
+
+  .btn-oriental-primary {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+
+  .btn-oriental-secondary {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .oriental-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .oriental-hexagram-line {
+    width: 60px;
+    height: 4px;
+    margin: 3px 0;
+  }
+
+  .oriental-progress {
+    height: 6px;
+  }
+
+  .oriental-recommendation-card {
+    padding: 16px;
+    margin: 10px 0;
+  }
+}
+
+/* 小屏幕设备优化 */
+@media (max-width: 480px) {
+  .oriental-glass-card {
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .btn-oriental-primary {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    border-radius: 20px;
+  }
+
+  .oriental-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .oriental-hexagram-line {
+    width: 50px;
+    height: 3px;
+  }
+
+  .oriental-symbol {
+    font-size: 1.2rem;
+  }
+
+  .oriental-symbol.large {
+    font-size: 1.6rem;
+  }
+}
+
+/* ===== 加载动画和过渡效果 ===== */
+
+/* 东方美学加载动画 */
+.oriental-loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 215, 0, 0.2);
+  border-top: 3px solid var(--gold-primary);
+  border-radius: 50%;
+  animation: oriental-spin 1.2s linear infinite;
+  position: relative;
+}
+
+.oriental-loading-spinner::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: var(--gold-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--gold-primary);
+}
+
+/* 优雅渐入动画 */
+.oriental-fade-in {
+  animation: orientalFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes orientalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 星夜滑动过渡 */
+.oriental-slide-in-right {
+  animation: orientalSlideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes orientalSlideInRight {
+  from {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.oriental-slide-in-left {
+  animation: orientalSlideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes orientalSlideInLeft {
+  from {
+    transform: translateX(-100%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes oriental-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== 性能优化和可访问性 ===== */
+
+/* 减少动画偏好设置 */
+@media (prefers-reduced-motion: reduce) {
+  .oriental-fade-in,
+  .oriental-slide-in-right,
+  .oriental-slide-in-left,
+  .oriental-loading-spinner,
+  .oriental-taiji,
+  .golden-pulse-ring,
+  .floating-element-oriental,
+  .oriental-symbol,
+  .oriental-moon-icon,
+  .starry-background-enhanced::before,
+  .starry-background-enhanced::after,
+  .oriental-hexagram-line::before,
+  .btn-oriental-primary::before {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .oriental-feature-card:hover,
+  .btn-oriental-primary:hover,
+  .btn-oriental-secondary:hover {
+    transform: none !important;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  :root {
+    --gold-primary: #FFFF00;
+    --text-primary: #FFFFFF;
+    --text-secondary: #CCCCCC;
+    --glass-light: rgba(255, 255, 255, 0.2);
+    --glass-medium: rgba(255, 255, 255, 0.4);
+  }
+
+  .oriental-glass-card,
+  .oriental-purple-card {
+    border-width: 2px;
+  }
+}
+
+/* 深色模式优化 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-deep: #1A1A2E;
+    --primary-medium: #16213E;
+    --primary-light: #0F3460;
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+  .btn-oriental-primary,
+  .btn-oriental-secondary,
+  .oriental-feature-card,
+  .oriental-recommendation-card {
+    min-height: 44px; /* 确保触摸目标足够大 */
+  }
+
+  .oriental-feature-card:hover,
+  .oriental-recommendation-card:hover {
+    transform: none; /* 移除悬停效果 */
+  }
+}

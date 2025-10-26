@@ -1,0 +1,77 @@
+/**
+ * 六十四卦数据定义
+ * 基于传统易经六十四卦解析
+ */
+
+// 六十四卦数据
+const HEXAGRAM_DATA = {
+  1: { name: '乾为天', meaning: '带着头盔往前冲', fortune: '吉', advice: '积极进取，但要谨慎行事' },
+  2: { name: '坤为地', meaning: '顺势用柔,不能硬,不要强出头', fortune: '吉', advice: '以柔克刚，顺势而为' },
+  3: { name: '水雷屯', meaning: '小儿子刚出生,来日方长,要把功夫学好,不要急', fortune: '中', advice: '耐心积累，厚积薄发' },
+  4: { name: '山水蒙', meaning: '启蒙,前面的状况看不清楚,知识能力经验不够', fortune: '中', advice: '需要学习和积累经验' },
+  5: { name: '水天需', meaning: '吃吃喝喝,也有等待的意思,放松心情等待', fortune: '吉', advice: '耐心等待，时机未到' },
+  6: { name: '天水讼', meaning: '打官司,争执,口舌之争,对簿公堂', fortune: '凶', advice: '避免争执，以和为贵' },
+  7: { name: '地水师', meaning: '打仗,准备兵马,要准备好', fortune: '中', advice: '充分准备，谨慎行事' },
+  8: { name: '水地比', meaning: '交朋友,找结盟', fortune: '吉', advice: '团结合作，寻求支持' },
+  9: { name: '风天小畜', meaning: '密云不雨,雨要下不下,很闷,也有等待的意思,等的过程会很闷,不如意', fortune: '中', advice: '耐心等待，不要急躁' },
+  10: { name: '天泽履', meaning: '要小心翼翼的去履行,去做,但是还是要做要执行,要小心', fortune: '中', advice: '谨慎行事，小心应对' },
+  11: { name: '地天泰', meaning: '小往大来,贸易出超,小投资大收获,看疾病就是安康', fortune: '大吉', advice: '形势良好，积极行动' },
+  12: { name: '天地否', meaning: '大往小来,大投资小收获', fortune: '凶', advice: '谨慎投资，避免损失' },
+  13: { name: '天火同人', meaning: '有同理心,相互理解', fortune: '吉', advice: '团结合作，相互理解' },
+  14: { name: '火天大有', meaning: '大家都有,大家都有机会', fortune: '大吉', advice: '机会均等，积极争取' },
+  15: { name: '地山谦', meaning: '要谦虚,要忍辱,天地人鬼神都会帮你', fortune: '吉', advice: '谦虚谨慎，以德服人' },
+  16: { name: '雷地豫', meaning: '代表欢乐,对未来的预测要更清楚,备战', fortune: '吉', advice: '乐观积极，做好准备' },
+  17: { name: '泽雷随', meaning: '随机应变', fortune: '中', advice: '灵活应变，顺势而为' },
+  18: { name: '山风蛊', meaning: '水果长虫,烂掉,体制内的改革,把烂的部份切掉,还有救', fortune: '中', advice: '改革除弊，破旧立新' },
+  19: { name: '地泽临', meaning: '君临天下,大驾光临,要亲自参与', fortune: '吉', advice: '亲力亲为，承担责任' },
+  20: { name: '风地观', meaning: '要细心观察跟观望,先看看,不要太早入局', fortune: '中', advice: '仔细观察，谨慎入局' },
+  21: { name: '火雷噬嗑', meaning: '弱肉强食,先下手为强,赢者全拿', fortune: '中', advice: '果断行动，抢占先机' },
+  22: { name: '山火贲', meaning: '包装,粉饰太平,化妆师,外表好看,实际上不见得这样,中看不中用', fortune: '中', advice: '注重实质，不要被表象迷惑' },
+  23: { name: '山地剥', meaning: '被掏空,找,拨开,掀开就真相大白,也有剥落的意思,修行这个卦是好的,脱落执着', fortune: '中', advice: '去除执着，回归本真' },
+  24: { name: '地雷复', meaning: '恢复,果子烂掉,被土覆盖,种子在土里,经过一段时间在发芽,需要等待一段时间才会发芽,也可以理解伤口复原需要时间', fortune: '吉', advice: '耐心等待，终会恢复' },
+  25: { name: '天雷无妄', meaning: '无妄之灾,没有希望,不要有过高的预期就没事', fortune: '中', advice: '降低期望，顺其自然' },
+  26: { name: '山天大畜', meaning: '大收获', fortune: '大吉', advice: '收获丰厚，把握机会' },
+  27: { name: '山雷颐', meaning: '吃东西,重在养生', fortune: '吉', advice: '注重养生，积蓄力量' },
+  28: { name: '泽风大过', meaning: '男欢女爱,死亡之相,有大过错', fortune: '凶', advice: '避免过度，保持平衡' },
+  29: { name: '坎为水', meaning: '下地狱,困难中的困难,两个漩涡,逃出一个还有一个在等你', fortune: '凶', advice: '困难重重，需要坚持' },
+  30: { name: '离为火', meaning: '上天堂,一切光明', fortune: '大吉', advice: '光明前景，积极向上' },
+  31: { name: '泽山咸', meaning: '无心之感,少男少女谈恋爱,前面看对眼,不会太久', fortune: '中', advice: '感情用事，需要理性' },
+  32: { name: '雷风恒', meaning: '恒久,长久,持续', fortune: '吉', advice: '持之以恒，坚持不懈' },
+  33: { name: '天山遯', meaning: '小猪跑路,逃命,躲开', fortune: '中', advice: '适时退避，保存实力' },
+  34: { name: '雷天大壮', meaning: '像是威尔钢,可能会又大又壮,强大后不要欺负别人', fortune: '吉', advice: '力量强大，但要克制' },
+  35: { name: '火地晋', meaning: '进步,前进,进展', fortune: '吉', advice: '积极进取，不断进步' },
+  36: { name: '地火明夷', meaning: '太阳下山,一片黑暗,前途黯淡', fortune: '凶', advice: '困难时期，需要坚持' },
+  37: { name: '风火家人', meaning: '回家,找家人,像一家人,风大房,火二娘,大房接纳二娘', fortune: '吉', advice: '家庭和睦，团结一致' },
+  38: { name: '火泽睽', meaning: '吵架,像是家中二娘跟三娘吵架', fortune: '凶', advice: '避免争执，寻求和解' },
+  39: { name: '水山蹇', meaning: '跛脚', fortune: '凶', advice: '行动困难，需要帮助' },
+  40: { name: '雷水解', meaning: '问题可以解决', fortune: '吉', advice: '困难可解，积极应对' },
+  41: { name: '山泽损', meaning: '损失', fortune: '凶', advice: '避免损失，谨慎行事' },
+  42: { name: '风雷益', meaning: '收获,益处,好处', fortune: '大吉', advice: '收获丰厚，积极行动' },
+  43: { name: '泽天夬', meaning: '就是决战,决斗', fortune: '中', advice: '关键时刻，果断决策' },
+  44: { name: '天风姤', meaning: '危机控管,也是机会', fortune: '中', advice: '危机并存，把握机会' },
+  45: { name: '泽地萃', meaning: '菁英聚集,婚姻跟事业代表第二春', fortune: '吉', advice: '精英汇聚，新的开始' },
+  46: { name: '地风升', meaning: '要懂得借力使力,才可以升起', fortune: '吉', advice: '借力使力，顺势上升' },
+  47: { name: '泽水困', meaning: '没有资源,没有水了,坐困愁城', fortune: '凶', advice: '资源匮乏，需要突破' },
+  48: { name: '水风井', meaning: '要挖井,行动,研究,研发,深挖,可能会失败,井卦失败概率高', fortune: '中', advice: '深入研究，但要注意风险' },
+  49: { name: '泽水革', meaning: '革命,靠外在力量改革,像是没水了,就换地方住', fortune: '中', advice: '改革创新，寻求突破' },
+  50: { name: '火风鼎', meaning: '革固鼎新,可以拿到政权', fortune: '吉', advice: '改革创新，获得成功' },
+  51: { name: '震为雷', meaning: '政权保卫战,变动,大地震,变革', fortune: '中', advice: '重大变革，需要适应' },
+  52: { name: '艮为山', meaning: '两座山挡在前面,停止', fortune: '中', advice: '遇到阻碍，需要停止' },
+  53: { name: '风山渐', meaning: '循序渐进的行动', fortune: '吉', advice: '循序渐进，稳步前进' },
+  54: { name: '雷泽归妹', meaning: '不要急,前面还有两个姐姐没嫁,急的话一场空', fortune: '中', advice: '不要急躁，按顺序来' },
+  55: { name: '雷火丰', meaning: '丰收,大丰收,丰收后容易腐败', fortune: '大吉', advice: '收获丰厚，但要防止腐败' },
+  56: { name: '火山旅', meaning: '流放,失时,失势,失位', fortune: '凶', advice: '失去地位，需要重新开始' },
+  57: { name: '巽为风', meaning: '卧底,低调,卧薪尝胆,等待时机,乞丐赶庙公,要找大师来学习,时机到了取而代之', fortune: '中', advice: '低调行事，等待时机' },
+  58: { name: '兑为泽', meaning: '喜悦,兑现,要用嘴巴说,说好听的话', fortune: '吉', advice: '善于表达，获得喜悦' },
+  59: { name: '风水涣', meaning: '涣散,失去,把手上绑石头的绳子松开,石头就飞出去,好的方向也有可能有很多加盟店,看问题,一般代表不好', fortune: '中', advice: '避免涣散，保持团结' },
+  60: { name: '水泽节', meaning: '节制,就向有绳子绑石头,旋转会在你手上,这是节', fortune: '吉', advice: '懂得节制，控制局面' },
+  61: { name: '风泽中孚', meaning: '信仰,信任,容易获得别人信任', fortune: '吉', advice: '诚信为本，获得信任' },
+  62: { name: '雷山小过', meaning: '小过失,不会死人', fortune: '中', advice: '小有过失，但无大碍' },
+  63: { name: '水火既济', meaning: '成功,但是初吉终乱,水烧开都变水蒸气了', fortune: '吉', advice: '成功在即，但要防止后期混乱' },
+  64: { name: '火水未济', meaning: '失败,没有成功,没有交集', fortune: '凶', advice: '尚未成功，需要继续努力' }
+};
+
+module.exports = {
+  HEXAGRAM_DATA
+};
+

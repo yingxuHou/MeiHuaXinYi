@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>占卜动画同步测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .test-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .test-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fbbf24;
+        }
+
+        .test-button {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: #1e3a8a;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .result-display {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .hexagram-info {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hexagram-item {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hexagram-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+
+        .hexagram-lines {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+
+        .line-yang {
+            color: #fbbf24;
+        }
+
+        .line-yin {
+            color: #1e3a8a;
+        }
+
+        .moving-line {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .status.success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status.info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>占卜动画同步测试</h1>
+            <p>测试动画中的卦象是否与最终结果一致</p>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">测试说明</h2>
+            <p style="margin-bottom: 1rem; color: rgba(255, 255, 255, 0.8);">
+                这个测试页面用于验证占卜动画中的卦象是否与最终结果完全一致。
+            </p>
+            <p style="margin-bottom: 2rem; color: rgba(255, 255, 255, 0.8);">
+                点击下面的按钮生成模拟的占卜结果，然后检查动画中的卦象是否匹配。
+            </p>
+            
+            <button class="test-button" onclick="generateTestResult()">生成测试结果</button>
+            <button class="test-button" onclick="clearResults()">清除结果</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">测试结果</h2>
+            <div id="testResults" class="result-display" style="display: none;">
+                <div class="result-title">模拟占卜结果</div>
+                <div class="hexagram-info">
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">主卦</div>
+                        <div id="primaryHexagram" class="hexagram-lines"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">互卦</div>
+                        <div id="mutualHexagram" class="hexagram-lines"></div>
+                    </div>
+                    <div class="hexagram-item">
+                        <div class="hexagram-name">变卦</div>
+                        <div id="changeHexagram" class="hexagram-lines"></div>
+                    </div>
+                </div>
+                <div id="movingLineInfo" style="margin-top: 1rem; color: rgba(255, 255, 255, 0.8);"></div>
+                <div id="testStatus" class="status info" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2 class="test-title">修复说明</h2>
+            <div style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
+                <p><strong>问题：</strong>占卜动画中显示的卦象与最终结果不一致</p>
+                <p><strong>原因：</strong>动画组件独立生成卦象，没有使用真实的占卜结果</p>
+                <p><strong>修复：</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>修改动画组件，接收真实的占卜结果数据</li>
+                    <li>掷币动画根据真实结果显示阴阳</li>
+                    <li>卦象生成使用真实的主卦、互卦、变卦数据</li>
+                    <li>确保动画与最终结果完全一致</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResult = null;
+
+        function generateTestResult() {
+            // 生成模拟的占卜结果
+            const primaryLines = [];
+            for (let i = 0; i < 6; i++) {
+                primaryLines.push(Math.floor(Math.random() * 2));
+            }
+
+            const movingLine = Math.floor(Math.random() * 6) + 1;
+            
+            const changeLines = [...primaryLines];
+            changeLines[movingLine - 1] = changeLines[movingLine - 1] === 1 ? 0 : 1;
+
+            const mutualLines = [
+                primaryLines[1], // 第2爻
+                primaryLines[2], // 第3爻
+                primaryLines[3], // 第4爻
+                primaryLines[2], // 第3爻
+                primaryLines[3], // 第4爻
+                primaryLines[4]  // 第5爻
+            ];
+
+            testResult = {
+                hexagrams: {
+                    ben: { lines: primaryLines },
+                    hu: { lines: mutualLines },
+                    bian: { lines: changeLines }
+                },
+                movingLine: movingLine
+            };
+
+            displayTestResult();
+        }
+
+        function displayTestResult() {
+            if (!testResult) return;
+
+            const primaryDiv = document.getElementById('primaryHexagram');
+            const mutualDiv = document.getElementById('mutualHexagram');
+            const changeDiv = document.getElementById('changeHexagram');
+            const movingLineDiv = document.getElementById('movingLineInfo');
+            const statusDiv = document.getElementById('testStatus');
+
+            // 显示主卦
+            primaryDiv.innerHTML = formatHexagram(testResult.hexagrams.ben.lines);
+
+            // 显示互卦
+            mutualDiv.innerHTML = formatHexagram(testResult.hexagrams.hu.lines);
+
+            // 显示变卦
+            changeDiv.innerHTML = formatHexagram(testResult.hexagrams.bian.lines, testResult.movingLine);
+
+            // 显示动爻信息
+            movingLineDiv.innerHTML = `动爻：第${testResult.movingLine}爻`;
+
+            // 显示状态
+            statusDiv.textContent = '✅ 测试结果已生成，动画中的卦象应该与此结果完全一致';
+            statusDiv.className = 'status success';
+
+            // 显示结果区域
+            document.getElementById('testResults').style.display = 'block';
+        }
+
+        function formatHexagram(lines, movingLine = null) {
+            let result = '';
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const isMoving = movingLine && (i + 1) === movingLine;
+                
+                if (line === 1) {
+                    result += `<span class="line-yang ${isMoving ? 'moving-line' : ''}">⚊</span>`;
+                } else {
+                    result += `<span class="line-yin ${isMoving ? 'moving-line' : ''}">⚋</span>`;
+                }
+                
+                if (i < lines.length - 1) {
+                    result += '<br>';
+                }
+            }
+            return result;
+        }
+
+        function clearResults() {
+            testResult = null;
+            document.getElementById('testResults').style.display = 'none';
+        }
+
+        // 页面加载时生成一个测试结果
+        window.addEventListener('load', function() {
+            generateTestResult();
+        });
+    </script>
+</body>
+</html>
