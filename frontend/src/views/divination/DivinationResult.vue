@@ -231,9 +231,10 @@
               </h3>
             </template>
             <div class="ai-interpretation-content">
-              <div class="ai-interpretation-text">
-                {{ result.aiInterpretation.content || result.aiInterpretation.summary || 'AI解读内容' }}
-              </div>
+              <div 
+                class="ai-interpretation-text" 
+                v-html="renderMarkdown(result.aiInterpretation.content || result.aiInterpretation.summary || 'AI解读内容')"
+              ></div>
               <div v-if="result.aiInterpretation.confidence" class="ai-confidence">
                 <span class="confidence-label">解读可信度：</span>
                 <span class="confidence-value">{{ Math.round(result.aiInterpretation.confidence * 100) }}%</span>
@@ -386,6 +387,7 @@ import MysticalCard from '@/components/common/MysticalCard.vue'
 import MysticalButton from '@/components/common/MysticalButton.vue'
 import Loading from '@/components/common/Loading.vue'
 import { formatDate, copyToClipboard } from '@/utils'
+import { renderMarkdown } from '@/utils/markdown'
 
 // 路由和状态管理
 const router = useRouter()
@@ -850,6 +852,106 @@ const generateAIInterpretation = async () => {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   border-left: 4px solid #fbbf24;
+}
+
+/* Markdown 样式 */
+.ai-interpretation-text :deep(p) {
+  margin: 0.75rem 0;
+  line-height: 1.8;
+}
+
+.ai-interpretation-text :deep(h1),
+.ai-interpretation-text :deep(h2),
+.ai-interpretation-text :deep(h3),
+.ai-interpretation-text :deep(h4),
+.ai-interpretation-text :deep(h5),
+.ai-interpretation-text :deep(h6) {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 1);
+}
+
+.ai-interpretation-text :deep(h1) {
+  font-size: 1.5rem;
+}
+
+.ai-interpretation-text :deep(h2) {
+  font-size: 1.3rem;
+}
+
+.ai-interpretation-text :deep(h3) {
+  font-size: 1.15rem;
+}
+
+.ai-interpretation-text :deep(h4) {
+  font-size: 1.05rem;
+}
+
+.ai-interpretation-text :deep(ul),
+.ai-interpretation-text :deep(ol) {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.ai-interpretation-text :deep(li) {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.ai-interpretation-text :deep(strong) {
+  font-weight: 600;
+  color: rgba(251, 191, 36, 1);
+}
+
+.ai-interpretation-text :deep(em) {
+  font-style: italic;
+}
+
+.ai-interpretation-text :deep(code) {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #fbbf24;
+}
+
+.ai-interpretation-text :deep(pre) {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.ai-interpretation-text :deep(pre code) {
+  background: transparent;
+  padding: 0;
+}
+
+.ai-interpretation-text :deep(blockquote) {
+  border-left: 4px solid #fbbf24;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+.ai-interpretation-text :deep(a) {
+  color: #fbbf24;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.ai-interpretation-text :deep(a:hover) {
+  color: #fcd34d;
+}
+
+.ai-interpretation-text :deep(hr) {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 1.5rem 0;
 }
 
 .ai-confidence {

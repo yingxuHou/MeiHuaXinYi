@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown 渲染演示</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #fff;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #fbbf24;
+      font-size: 2rem;
+    }
+    
+    .demo-section {
+      margin-bottom: 3rem;
+    }
+    
+    .demo-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #60a5fa;
+      border-bottom: 2px solid #60a5fa;
+      padding-bottom: 0.5rem;
+    }
+    
+    .before, .after {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #fbbf24;
+    }
+    
+    .before h3, .after h3 {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .markdown-raw {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+      color: #f87171;
+    }
+    
+    .markdown-rendered {
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.8;
+    }
+    
+    /* Markdown 样式 */
+    .markdown-rendered p {
+      margin: 0.75rem 0;
+      line-height: 1.8;
+    }
+    
+    .markdown-rendered h1,
+    .markdown-rendered h2,
+    .markdown-rendered h3,
+    .markdown-rendered h4,
+    .markdown-rendered h5,
+    .markdown-rendered h6 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 1);
+    }
+    
+    .markdown-rendered h1 { font-size: 1.5rem; }
+    .markdown-rendered h2 { font-size: 1.3rem; }
+    .markdown-rendered h3 { font-size: 1.15rem; }
+    .markdown-rendered h4 { font-size: 1.05rem; }
+    
+    .markdown-rendered ul,
+    .markdown-rendered ol {
+      margin: 0.75rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    .markdown-rendered li {
+      margin: 0.5rem 0;
+      line-height: 1.6;
+    }
+    
+    .markdown-rendered strong {
+      font-weight: 600;
+      color: #fbbf24;
+    }
+    
+    .markdown-rendered em {
+      font-style: italic;
+    }
+    
+    .markdown-rendered code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #fbbf24;
+    }
+    
+    .markdown-rendered blockquote {
+      border-left: 4px solid #fbbf24;
+      padding-left: 1rem;
+      margin: 1rem 0;
+      color: rgba(255, 255, 255, 0.8);
+      font-style: italic;
+    }
+    
+    .markdown-rendered a {
+      color: #fbbf24;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Markdown 渲染演示</h1>
+    
+    <div class="demo-section">
+      <div class="demo-title">示例 1: 标题和粗体</div>
+      
+      <div class="before">
+        <h3>❌ 之前的显示（原始 Markdown）：</h3>
+        <div class="markdown-raw">### 主要卦象
+
+这是**重要**的内容，包含*斜体*文字。测试正常的文本显示。</div>
+      </div>
+      
+      <div class="after">
+        <h3>✅ 现在的显示（渲染后的 HTML）：</h3>
+        <div class="markdown-rendered">
+          <h3>主要卦象</h3>
+          <p>这是<strong>重要</strong>的内容，包含<em>斜体</em>文字。测试正常的文本显示。</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="demo-section">
+      <div class="demo-title">示例 2: 列表</div>
+      
+      <div class="before">
+        <h3>❌ 之前的显示（原始 Markdown）：</h3>
+        <div class="markdown-raw">**建议事项**：
+- 第一点建议
+- 第二点建议
+- 第三点建议</div>
+      </div>
+      
+      <div class="after">
+        <h3>✅ 现在的显示（渲染后的 HTML）：</h3>
+        <div class="markdown-rendered">
+          <p><strong>建议事项</strong>：</p>
+          <ul>
+            <li>第一点建议</li>
+            <li>第二点建议</li>
+            <li>第三点建议</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="demo-section">
+      <div class="demo-title">示例 3: 复杂内容</div>
+      
+      <div class="before">
+        <h3>❌ 之前的显示（原始 Markdown）：</h3>
+        <div class="markdown-raw">## 卦象分析
+
+**本卦**：乾卦
+**用卦**：坤卦
+
+### 五行关系
+
+体用相生关系显示：
+
+1. 木生火
+2. 火生土
+3. 土生金
+
+> 这是一个重要的提醒
+
+这段包含`代码`的内容。</div>
+      </div>
+      
+      <div class="after">
+        <h3>✅ 现在的显示（渲染后的 HTML）：</h3>
+        <div class="markdown-rendered">
+          <h2>卦象分析</h2>
+          <p><strong>本卦</strong>：乾卦<br>
+          <strong>用卦</strong>：坤卦</p>
+          <h3>五行关系</h3>
+          <p>体用相生关系显示：</p>
+          <ol>
+            <li>木生火</li>
+            <li>火生土</li>
+            <li>土生金</li>
+          </ol>
+          <blockquote>这是一个重要的提醒</blockquote>
+          <p>这段包含<code>代码</code>的内容。</p>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: rgba(251, 191, 36, 0.1); border-radius: 8px;">
+      <p>✨ 在占卜结果页面中，AI解读将以上面的格式显示</p>
+      <p style="margin-top: 0.5rem; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
+        所有 Markdown 语法符号将自动转换为格式化的内容
+      </p>
+    </div>
+  </div>
+</body>
+</html>

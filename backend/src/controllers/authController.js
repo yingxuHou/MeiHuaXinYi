@@ -128,79 +128,153 @@ const register = async (req, res) => {
 };
 
 /**
- * 用户登录（完全无认证版本）
- * 接受任何账号密码都能登录成功，完全跳过所有验证
+ * 用户登录（真实认证版本）
+ * 验证用户名/邮箱和密码，只有注册过的用户才能登录
  */
 const login = async (req, res) => {
   try {
     const { identifier, password, rememberMe } = req.body;
 
-    // 完全跳过认证 - 任何账号密码都能登录
-    console.log('🔓 完全跳过认证模式 - 任何账号密码都能登录');
-    console.log('输入的用户名:', identifier);
-    console.log('输入的密码:', password);
-
-    // 创建模拟用户数据
-    const mockUser = {
-      _id: 'mock-user-id-' + Date.now(),
-      username: identifier || 'anyuser',
-      email: identifier ? `${identifier}@example.com` : 'anyuser@example.com',
-      profile: {
-        nickname: identifier || '任意用户',
-        avatar: null,
-        gender: 'unknown',
-        birthday: null,
-        location: null,
-        bio: '这是任意用户，无需认证'
-      },
-      verification: {
-        email: {
-          isVerified: true
-        },
-        phone: {
-          isVerified: true
+    // 验证输入
+    if (!identifier || !password) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'MISSING_CREDENTIALS',
+          message: '用户名/邮箱和密码不能为空'
         }
-      },
-      isVIP: true, // 设置为VIP用户
-      todayFreeCount: 999, // 设置大量免费次数
-      divination: {
-        paidCount: 0
-      },
-      security: {
-        lastLoginAt: new Date(),
-        loginCount: 1
+      });
+    }
+
+    console.log('🔐 开始用户登录认证...');
+    console.log('输入的用户名/邮箱:', identifier);
+
+    // 规范化identifier：邮箱统一转小写，去除首尾空格
+    const isEmail = /[^\s@]+@[^\s@]+\.[^\s@]+/.test(identifier);
+    const normalizedIdentifier = (identifier || '').trim();
+    const lookupIdentifier = isEmail ? normalizedIdentifier.toLowerCase() : normalizedIdentifier;
+
+    // 根据邮箱或用户名查找用户（包含密码字段）
+    const user = await User.findByEmailOrUsername(lookupIdentifier).select('+password');
+
+    if (!user) {
+      console.log('❌ 用户不存在:', identifier);
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: '用户名/邮箱或密码错误'
+        }
+      });
+    }
+
+    // 检查用户状态
+    if (user.status !== 'active') {
+      console.log('❌ 用户账户已被禁用:', user._id);
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'ACCOUNT_DISABLED',
+          message: '用户账户已被禁用'
+        }
+      });
+    }
+
+    // 检查账户是否被锁定
+    if (user.isLocked) {
+      console.log('❌ 账户已被锁定:', user._id);
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'ACCOUNT_LOCKED',
+          message: '账户已被锁定，请联系管理员'
+        }
+      });
+    }
+
+    // 验证密码
+    const isPasswordValid = await user.comparePassword(password);
+    
+    if (!isPasswordValid) {
+      console.log('❌ 密码错误:', user._id);
+      
+      // 增加登录失败次数
+      user.security.loginAttempts += 1;
+      
+      // 如果失败次数超过5次，锁定账户
+      if (user.security.loginAttempts >= 5) {
+        user.security.lockUntil = Date.now() + 2 * 60 * 60 * 1000; // 锁定2小时
+        await user.save();
+        
+        return res.status(401).json({
+          success: false,
+          error: {
+            code: 'TOO_MANY_ATTEMPTS',
+            message: '登录失败次数过多，账户已锁定2小时'
+          }
+        });
       }
-    };
+      
+      await user.save();
+      
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'INVALID_CREDENTIALS',
+          message: '用户名/邮箱或密码错误'
+        }
+      });
+    }
+
+    // 登录成功，重置登录失败次数
+    const previousLastLoginAt = user.security.lastLoginAt || new Date(0);
+    user.security.loginAttempts = 0;
+    user.security.lockUntil = undefined;
+    user.security.lastLoginAt = new Date();
+    user.usage.lastActiveAt = new Date();
+    
+    // 更新连续登录天数（基于上次登录时间计算）
+    const today = new Date();
+    const daysDiff = Math.floor((today - previousLastLoginAt) / (1000 * 60 * 60 * 24));
+    
+    if (daysDiff === 1) {
+      user.usage.consecutiveLoginDays += 1;
+    } else if (daysDiff > 1) {
+      user.usage.consecutiveLoginDays = 1;
+    }
+    
+    await user.save();
 
     // 生成JWT令牌对
     const tokens = JWTUtils.generateTokenPair({
-      userId: mockUser._id,
-      username: mockUser.username,
-      email: mockUser.email
+      userId: user._id,
+      username: user.username,
+      email: user.email
     });
 
-    console.log('✅ 登录成功，生成令牌:', {
-      userId: mockUser._id,
-      username: mockUser.username
+    console.log('✅ 登录成功:', {
+      userId: user._id,
+      username: user.username
     });
 
     res.json({
       success: true,
-      message: '登录成功（无认证模式）',
+      message: '登录成功',
       data: {
         user: {
-          id: mockUser._id,
-          username: mockUser.username,
-          email: mockUser.email,
-          profile: mockUser.profile,
-          isEmailVerified: mockUser.verification.email.isVerified,
-          isPhoneVerified: mockUser.verification.phone.isVerified,
-          isVIP: mockUser.isVIP,
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          profile: user.profile,
+          isEmailVerified: user.verification.email.isVerified,
+          isPhoneVerified: user.verification.phone.isVerified,
+          isVIP: user.isVIP,
           divination: {
-            freeCount: mockUser.todayFreeCount,
-            paidCount: mockUser.divination.paidCount
+            freeCount: user.todayFreeCount,
+            paidCount: user.divination.paidCount
           },
-          lastLoginAt: mockUser.security.lastLoginAt
+          lastLoginAt: user.security.lastLoginAt,
+          createdAt: user.createdAt
         },
         tokens: {
           accessToken: tokens.accessToken,

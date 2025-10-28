@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown 测试</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked@16.4.1/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.0/purify.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #1e293b;
+      color: #fff;
+    }
+    .test-section {
+      margin: 2rem 0;
+      padding: 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+    }
+    .rendered-content {
+      background: rgba(0,0,0,0.3);
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      line-height: 1.8;
+    }
+    .rendered-content h1 { color: #fbbf24; font-size: 1.5rem; }
+    .rendered-content h2 { color: #fbbf24; font-size: 1.3rem; }
+    .rendered-content h3 { color: #fbbf24; font-size: 1.15rem; }
+    .rendered-content strong { color: #fbbf24; }
+    .rendered-content code { background: rgba(0,0,0,0.5); padding: 0.2rem 0.4rem; border-radius: 4px; color: #fbbf24; }
+    .rendered-content ul, .rendered-content ol { margin-left: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Markdown 渲染测试</h1>
+  
+  <div class="test-section">
+    <h2>测试 1: 基础 Markdown</h2>
+    <div id="test1" class="rendered-content"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>测试 2: 标题和格式</h2>
+    <div id="test2" class="rendered-content"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>测试 3: 列表</h2>
+    <div id="test3" class="rendered-content"></div>
+  </div>
+
+  <script>
+    // 配置 marked
+    marked.setOptions({
+      breaks: true,
+      gfm: true
+    });
+
+    const test1 = `
+### 主要卦象
+这是**重要**的内容，包含*斜体*文字。
+`;
+
+    const test2 = `
+## 卦象分析
+**本卦**：乾卦
+**用卦**：坤卦
+
+这是包含\`代码\`的内容。
+`;
+
+    const test3 = `
+**建议事项**：
+- 第一点建议
+- 第二点建议
+- 第三点建议
+
+1. 有序列表第一项
+2. 有序列表第二项
+`;
+
+    // 渲染函数
+    function renderMarkdown(markdown) {
+      if (!markdown) return '';
+      try {
+        const html = marked.parse(markdown);
+        const cleanHtml = DOMPurify.sanitize(html, {
+          ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'hr'],
+          ALLOWED_ATTR: ['href', 'title', 'alt', 'src', 'class']
+        });
+        return cleanHtml;
+      } catch (error) {
+        console.error('渲染失败:', error);
+        return markdown;
+      }
+    }
+
+    // 渲染内容
+    document.getElementById('test1').innerHTML = renderMarkdown(test1);
+    document.getElementById('test2').innerHTML = renderMarkdown(test2);
+    document.getElementById('test3').innerHTML = renderMarkdown(test3);
+
+    console.log('✅ Markdown 渲染测试完成');
+  </script>
+</body>
+</html>
