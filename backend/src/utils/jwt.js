@@ -73,10 +73,27 @@ class JWTUtils {
    */
   static verifyToken(token, options = {}) {
     try {
+      console.log('🔍 JWT.verify开始验证:', {
+        tokenLength: token.length,
+        tokenPreview: token.substring(0, 30) + '...',
+        jwtSecret: config.auth.jwt.secret.substring(0, 10) + '...',
+        issuer: config.auth.jwt.issuer,
+        audience: config.auth.jwt.audience
+      });
+
       const decoded = jwt.verify(token, config.auth.jwt.secret, {
         issuer: config.auth.jwt.issuer,
         audience: config.auth.jwt.audience,
         ...options
+      });
+
+      console.log('✅ JWT.verify验证成功:', {
+        userId: decoded.userId,
+        tokenType: decoded.type,
+        issuedAt: decoded.iat,
+        expiresAt: decoded.exp,
+        currentTime: Math.floor(Date.now() / 1000),
+        isExpired: decoded.exp < Math.floor(Date.now() / 1000)
       });
 
       return {
@@ -84,6 +101,11 @@ class JWTUtils {
         payload: decoded
       };
     } catch (error) {
+      console.log('❌ JWT.verify验证失败:', {
+        errorName: error.name,
+        errorMessage: error.message,
+        tokenPreview: token.substring(0, 30) + '...'
+      });
       return {
         success: false,
         error: this.getTokenError(error)

@@ -544,6 +544,18 @@ const generateAIInterpretation = async () => {
     generatingAI.value = true
     ElMessage.info('正在生成AI解读...')
     
+    // 🔍 添加详细的调试日志
+    console.log('🔍 AI解读调试信息:', {
+      hasResult: !!result.value,
+      resultId: result.value.id,
+      question: result.value.question,
+      hexagrams: result.value.hexagrams,
+      userStore: userStore,
+      isLoggedIn: userStore.isLoggedIn,
+      hasToken: !!userStore.token,
+      tokenPreview: userStore.token ? userStore.token.substring(0, 50) + '...' : 'null'
+    })
+    
     // ✅ 传递完整的占卜数据到后端
     const options = {
       divinationData: result.value, // 传递完整的占卜结果
@@ -553,7 +565,8 @@ const generateAIInterpretation = async () => {
     console.log('📤 发送占卜数据到后端生成AI解读:', {
       question: result.value.question,
       mainHexagram: result.value.hexagrams?.ben?.name,
-      id: result.value.id
+      id: result.value.id,
+      options: options
     })
     
     const response = await divinationStore.generateAIInterpretation(result.value.id, options)
@@ -567,6 +580,13 @@ const generateAIInterpretation = async () => {
     }
   } catch (error) {
     console.error('生成AI解读失败:', error)
+    console.error('详细错误信息:', {
+      message: error.message,
+      stack: error.stack,
+      response: error.response,
+      status: error.response?.status,
+      data: error.response?.data
+    })
     ElMessage.error('生成AI解读失败: ' + error.message)
   } finally {
     generatingAI.value = false

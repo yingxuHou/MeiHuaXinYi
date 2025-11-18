@@ -114,6 +114,14 @@ const authenticate = async (req, res, next) => {
       });
     }
 
+    // 添加详细的token验证日志
+    console.log('🔍 开始验证token:', {
+      url: req.originalUrl,
+      tokenLength: token.length,
+      tokenStart: token.substring(0, 20) + '...',
+      tokenEnd: token.substring(token.length - 20)
+    });
+
     // 开发环境：支持开发token
     if (process.env.NODE_ENV === 'development' && token.includes('dev-signature')) {
       console.log('🔧 处理开发token...');
@@ -133,13 +141,33 @@ const authenticate = async (req, res, next) => {
     }
 
     // 验证令牌
+    console.log('🔍 调用JWTUtils.verifyToken验证token...');
     const verifyResult = JWTUtils.verifyToken(token);
+    console.log('🔍 JWT验证结果:', {
+      success: verifyResult.success,
+      error: verifyResult.error,
+      hasPayload: !!verifyResult.payload
+    });
+    
     if (!verifyResult.success) {
+      console.log('❌ Token验证失败:', {
+        url: req.originalUrl,
+        error: verifyResult.error,
+        tokenPreview: token.substring(0, 50) + '...'
+      });
       return res.status(401).json({
         success: false,
         error: verifyResult.error
       });
     }
+
+    console.log('✅ Token验证成功:', {
+      url: req.originalUrl,
+      userId: verifyResult.payload.userId,
+      tokenType: verifyResult.payload.type,
+      issuedAt: verifyResult.payload.iat,
+      expiresAt: verifyResult.payload.exp
+    });
 
     const { payload } = verifyResult;
 

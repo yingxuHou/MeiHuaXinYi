@@ -206,6 +206,13 @@ class DeepSeekAPI {
     // 分析问题类型，提供针对性的解读角度
     const questionType = this.analyzeQuestionType(question);
     
+    // 获取当前时间信息
+    const currentTime = new Date();
+    const currentYear = currentTime.getFullYear();
+    const currentMonth = currentTime.getMonth() + 1;
+    const currentDate = currentTime.getDate();
+    const formattedTime = `${currentYear}年${currentMonth}月${currentDate}日`;
+    
     return `你是命理学大师，精通梅花易数。请解读以下占卜：
 
 问题：${question}
@@ -215,6 +222,11 @@ class DeepSeekAPI {
 动爻：${divinationData.movingLine ? `第${divinationData.movingLine}爻` : '无'}
 五行：本卦${divinationData.fiveElements?.ben || '未知'} → 变卦${divinationData.fiveElements?.bian || '未知'}
 运势：${divinationData.fiveElements?.fortune || '未知'}
+
+⚠️ 重要时间提醒：
+- 当前日期：${formattedTime}
+- 请基于当前时间（${currentYear}年）进行分析，不要使用过时的年份
+- 如果提到节气或特定时间，请确保与当前时间相符
 
 请从以下角度分析：
 1. 卦象含义：解释主卦、变卦、互卦的基本含义

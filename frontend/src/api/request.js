@@ -143,12 +143,26 @@ request.interceptors.response.use(
           break
         case 401:
           errorMessage = '登录已过期，请重新登录'
+          // 🔍 添加详细的401错误调试日志
+          console.error('🔍 401认证错误详细调试:', {
+            url: error.config.url,
+            method: error.config.method,
+            hasToken: !!userStore.token,
+            tokenPreview: userStore.token ? userStore.token.substring(0, 50) + '...' : 'null',
+            responseError: data?.error,
+            responseMessage: data?.message,
+            originalError: error
+          })
+          
           // 尝试刷新token
           try {
+            console.log('🔄 尝试刷新token...')
             await userStore.refreshAccessToken()
+            console.log('✅ Token刷新成功，重新发送请求')
             // 重新发送原请求
             return request(error.config)
           } catch (refreshError) {
+            console.error('❌ Token刷新失败:', refreshError)
             // 刷新失败，清除登录状态
             userStore.logout()
             // 跳转到登录页
