@@ -306,7 +306,7 @@ class DivinationService {
 
     // 如果是新的一天，重置免费次数
     if (today.toDateString() !== lastResetDate.toDateString()) {
-      user.usage.freeCountToday = 3;
+      user.usage.freeCountToday = 10;
       user.usage.lastResetDate = today;
       const saveOptions = session ? { session } : {};
       await user.save(saveOptions);

@@ -93,6 +93,8 @@ export const useUserStore = defineStore('user', () => {
 		setFreeCount(fc ?? 0)
 		// 首次登录标记（如果后端未提供，则基于资料完整度判断）
 		isFirstLogin.value = resp.data?.isFirstLogin ?? !hasCompletedProfile.value
+		// 同步最新的占卜次数
+		await syncDivinationCount()
 		return { success: true, data: resp.data }
 	}
 	
@@ -117,6 +119,8 @@ export const useUserStore = defineStore('user', () => {
 		const fc = backendUser?.divination?.freeCount ?? resp.data?.freeCount
 		setFreeCount(fc ?? 0)
 		isFirstLogin.value = true
+		// 同步最新的占卜次数
+		await syncDivinationCount()
 		return { success: true, data: resp.data }
 	}
 	
@@ -154,6 +158,19 @@ export const useUserStore = defineStore('user', () => {
 		setFreeCount(fc ?? freeCount.value)
 		return { success: true, data: resp.data }
 	}
+
+	// 同步占卜次数（从后端获取最新数据）
+	const syncDivinationCount = async () => {
+		if (!token.value) return
+		try {
+			const resp = await authAPI.getDivinationCount()
+			if (resp?.success && resp.data?.freeCount !== undefined) {
+				setFreeCount(resp.data.freeCount)
+			}
+		} catch (error) {
+			console.error('同步占卜次数失败:', error)
+		}
+	}
 	
 	// 登出
 	const logout = async () => {
@@ -188,6 +205,8 @@ export const useUserStore = defineStore('user', () => {
 			// 如果已有token，尝试拉取后端资料刷新本地
 			if (token.value) {
 				await fetchUserInfo().catch(() => {})
+				// 同步最新的占卜次数
+				await syncDivinationCount()
 			}
 		} catch (e) {
 			console.error('初始化用户数据错误:', e)
@@ -212,6 +231,7 @@ export const useUserStore = defineStore('user', () => {
 		fetchUserInfo,
 		logout,
 		initializeUser,
+		syncDivinationCount,
 		setToken,
 		setUserInfo,
 		setFreeCount,

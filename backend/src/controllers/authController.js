@@ -58,6 +58,10 @@ const register = async (req, res) => {
 
     const user = await User.createUser(userData);
 
+    // 确保新用户有10次免费占卜次数（初始化）
+    user.usage.freeCountToday = 10;
+    user.usage.lastResetDate = new Date();
+
     // 生成验证码
     const verificationCode = emailService.generateVerificationCode();
     const emailVerificationToken = user.generateEmailVerificationToken();
@@ -85,6 +89,11 @@ const register = async (req, res) => {
     console.log('📧 注册验证码:', verificationCode);
     console.log('📧 邮箱验证令牌:', emailVerificationToken);
 
+    // 获取当前免费次数（使用实际值，确保正确）
+    const freeCount = user.usage.freeCountToday;
+    console.log('🔍 注册时用户免费次数:', freeCount);
+    console.log('🔍 用户usage对象:', JSON.stringify(user.usage));
+
     res.status(201).json({
       success: true,
       message: '注册成功',
@@ -95,6 +104,10 @@ const register = async (req, res) => {
           email: user.email,
           profile: user.profile,
           isEmailVerified: user.verification.email.isVerified,
+          divination: {
+            freeCount: freeCount,
+            paidCount: user.divination.paidCount
+          },
           createdAt: user.createdAt
         },
         tokens: {
@@ -233,6 +246,14 @@ const login = async (req, res) => {
     user.security.lastLoginAt = new Date();
     user.usage.lastActiveAt = new Date();
     
+    // 重置每日免费次数（如果是新的一天，或新用户首次登录）
+    const wasReset = user.resetDailyFreeCount();
+    // 如果是新用户（免费次数为0或未设置），设置为10
+    if (!user.usage.freeCountToday || user.usage.freeCountToday === 0) {
+      user.usage.freeCountToday = 10;
+      user.usage.lastResetDate = new Date();
+    }
+    
     // 更新连续登录天数（基于上次登录时间计算）
     const today = new Date();
     const daysDiff = Math.floor((today - previousLastLoginAt) / (1000 * 60 * 60 * 24));
@@ -257,6 +278,9 @@ const login = async (req, res) => {
       username: user.username
     });
 
+    // 获取当前免费次数（使用实际值）
+    const freeCount = user.usage.freeCountToday;
+
     res.json({
       success: true,
       message: '登录成功',
@@ -270,7 +294,7 @@ const login = async (req, res) => {
           isPhoneVerified: user.verification.phone.isVerified,
           isVIP: user.isVIP,
           divination: {
-            freeCount: user.todayFreeCount,
+            freeCount: freeCount,
             paidCount: user.divination.paidCount
           },
           lastLoginAt: user.security.lastLoginAt,

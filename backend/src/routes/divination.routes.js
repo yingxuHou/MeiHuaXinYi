@@ -312,20 +312,7 @@ router.post('/perform',
   }
 );
 
-// 获取占卜详情
-router.get('/:id',
-  queryRateLimit,
-  validationRules.getDivinationById,
-  async (req, res, next) => {
-    try {
-      await divinationController.getDivinationById(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-// 获取占卜历史
+// 获取占卜历史（必须在 /:id 之前，避免路由冲突）
 router.get('/history',
   queryRateLimit,
   validationRules.getDivinationHistory,
@@ -338,12 +325,55 @@ router.get('/history',
   }
 );
 
-// 获取占卜统计
+// 获取占卜统计（必须在 /:id 之前，避免路由冲突）
 router.get('/stats',
   queryRateLimit,
   async (req, res, next) => {
     try {
       await divinationController.getDivinationStats(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// AI解读相关路由
+const EnhancedDivinationController = require('../controllers/enhancedDivination.controller');
+const enhancedController = new EnhancedDivinationController();
+
+// 检查AI服务状态（必须在 /:id 之前，避免路由冲突）
+router.get('/ai-status',
+  authMiddleware.authenticate,
+  queryRateLimit,
+  async (req, res, next) => {
+    try {
+      await enhancedController.checkAIStatus(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// 获取解读模板（必须在 /:id 之前，避免路由冲突）
+router.get('/interpretation-templates',
+  authMiddleware.authenticate,
+  queryRateLimit,
+  async (req, res, next) => {
+    try {
+      await enhancedController.getInterpretationTemplates(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// 获取占卜详情（必须在所有具体路由之后）
+router.get('/:id',
+  queryRateLimit,
+  validationRules.getDivinationById,
+  async (req, res, next) => {
+    try {
+      await divinationController.getDivinationById(req, res);
     } catch (error) {
       next(error);
     }
@@ -363,10 +393,6 @@ router.put('/:id/rating',
   }
 );
 
-// AI解读相关路由
-const EnhancedDivinationController = require('../controllers/enhancedDivination.controller');
-const enhancedController = new EnhancedDivinationController();
-
 // 为现有占卜结果生成AI解读
 router.post('/:id/interpretation',
   authMiddleware.authenticate,
@@ -374,32 +400,6 @@ router.post('/:id/interpretation',
   async (req, res, next) => {
     try {
       await enhancedController.generateInterpretation(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-// 检查AI服务状态
-router.get('/ai-status',
-  authMiddleware.authenticate,
-  queryRateLimit,
-  async (req, res, next) => {
-    try {
-      await enhancedController.checkAIStatus(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-// 获取解读模板
-router.get('/interpretation-templates',
-  authMiddleware.authenticate,
-  queryRateLimit,
-  async (req, res, next) => {
-    try {
-      await enhancedController.getInterpretationTemplates(req, res);
     } catch (error) {
       next(error);
     }

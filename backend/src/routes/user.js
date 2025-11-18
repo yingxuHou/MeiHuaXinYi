@@ -75,24 +75,27 @@ router.delete('/account', authenticate, validateDeleteAccount, userController.de
  * @desc    获取用户占卜次数信息
  * @access  Private
  */
-router.get('/divination-count', authenticate, (req, res) => {
+router.get('/divination-count', authenticate, async (req, res) => {
   try {
     const user = req.user;
     
     // 重置每日免费次数
     const wasReset = user.resetDailyFreeCount();
     if (wasReset) {
-      user.save();
+      await user.save();
     }
+
+    // 获取当前免费次数（使用实际值而不是虚拟字段，因为虚拟字段可能不准确）
+    const freeCount = user.usage.freeCountToday;
 
     res.json({
       success: true,
       data: {
-        freeCount: user.todayFreeCount,
+        freeCount: freeCount,
         paidCount: user.divination.paidCount,
         totalCount: user.divination.totalCount,
-        lastResetDate: user.divination.lastResetDate,
-        canDivination: user.todayFreeCount > 0 || user.divination.paidCount > 0
+        lastResetDate: user.usage.lastResetDate,
+        canDivination: freeCount > 0 || user.divination.paidCount > 0
       }
     });
   } catch (error) {
@@ -138,7 +141,7 @@ router.post('/consume-divination', authenticate, async (req, res) => {
       message: '占卜次数消费成功',
       data: {
         consumedType: result.type,
-        remainingFreeCount: user.divination.freeCount,
+        remainingFreeCount: user.usage.freeCountToday,
         remainingPaidCount: user.divination.paidCount,
         totalCount: user.divination.totalCount
       }

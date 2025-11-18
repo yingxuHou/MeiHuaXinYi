@@ -299,9 +299,13 @@ const startCareerDivination = () => {
 }
 
 // 组件挂载时初始化
-onMounted(() => {
+onMounted(async () => {
   // 设置当前路由
   appStore.setCurrentRoute('home')
+  // 如果用户已登录，同步最新的占卜次数
+  if (userStore.isLoggedIn) {
+    await userStore.syncDivinationCount()
+  }
 })
 </script>
 

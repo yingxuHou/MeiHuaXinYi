@@ -229,7 +229,7 @@ class ModelManager {
             usage: {
               divinationCount: 0,
               consultationCount: 0,
-              freeCountToday: 3,
+              freeCountToday: 10,
               lastResetDate: new Date(),
               lastActiveAt: new Date(),
               totalLoginDays: 0,

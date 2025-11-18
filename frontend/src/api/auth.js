@@ -59,5 +59,10 @@ export const authAPI = {
 			newPassword: data.newPassword,
 			confirmPassword: data.confirmPassword
 		})
+	},
+
+	// 获取占卜次数信息
+	async getDivinationCount() {
+		return axios.get('/user/divination-count')
 	}
 }

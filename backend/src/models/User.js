@@ -252,7 +252,7 @@ const userSchema = new mongoose.Schema({
     },
     freeCountToday: {
       type: Number,
-      default: 3,
+      default: 10,
       min: 0,
       max: 10
     },

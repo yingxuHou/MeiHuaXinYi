@@ -87,7 +87,7 @@ class SubscriptionMiddleware {
 
         // 如果是新的一天，重置免费次数
         if (today.toDateString() !== lastResetDate.toDateString()) {
-          user.usage.freeCountToday = 3; // 每日3次免费占卜
+          user.usage.freeCountToday = 10; // 每日10次免费占卜
           user.usage.lastResetDate = today;
           await user.save();
         }

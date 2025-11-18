@@ -36,7 +36,7 @@ const getCurrentUser = async (req, res) => {
           isVIP: user.isVIP,
           membership: user.membership,
           divination: {
-            freeCount: user.todayFreeCount,
+            freeCount: user.usage.freeCountToday,
             totalCount: user.divination.totalCount,
             paidCount: user.divination.paidCount
           },

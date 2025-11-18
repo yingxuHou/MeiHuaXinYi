@@ -82,7 +82,17 @@ request.interceptors.response.use(
     
     // 检查业务状态码
     if (response.data && response.data.success === false) {
-      const errorMessage = response.data.error?.message || response.data.message || '请求失败'
+      let errorMessage = response.data.error?.message || response.data.message || '请求失败'
+      
+      // 如果是验证错误，提取详细的验证错误信息
+      if (response.data.error?.code === 'VALIDATION_ERROR' && response.data.error?.details) {
+        const details = response.data.error.details
+        // 提取第一个验证错误作为主要错误信息
+        if (Array.isArray(details) && details.length > 0) {
+          const firstError = details[0]
+          errorMessage = firstError.msg || firstError.message || errorMessage
+        }
+      }
       
       // 显示错误消息
       ElMessage.error(errorMessage)
@@ -91,10 +101,15 @@ request.interceptors.response.use(
       appStore.addError({
         message: errorMessage,
         type: 'business',
-        code: response.data.error?.code || response.data.code
+        code: response.data.error?.code || response.data.code,
+        details: response.data.error?.details
       })
       
-      return Promise.reject(new Error(errorMessage))
+      // 创建一个包含详细信息的错误对象
+      const error = new Error(errorMessage)
+      error.code = response.data.error?.code || response.data.code
+      error.details = response.data.error?.details
+      return Promise.reject(error)
     }
     
     return response.data
@@ -113,7 +128,18 @@ request.interceptors.response.use(
       
       switch (status) {
         case 400:
-          errorMessage = data?.message || '请求参数错误'
+          // 如果是验证错误，提取详细的验证错误信息
+          if (data?.error?.code === 'VALIDATION_ERROR' && data?.error?.details) {
+            const details = data.error.details
+            if (Array.isArray(details) && details.length > 0) {
+              const firstError = details[0]
+              errorMessage = firstError.msg || firstError.message || data?.error?.message || '请求参数错误'
+            } else {
+              errorMessage = data?.error?.message || data?.message || '请求参数错误'
+            }
+          } else {
+            errorMessage = data?.error?.message || data?.message || '请求参数错误'
+          }
           break
         case 401:
           errorMessage = '登录已过期，请重新登录'

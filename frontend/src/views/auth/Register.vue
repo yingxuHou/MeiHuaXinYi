@@ -51,7 +51,7 @@
 						<el-input
 							v-model="registerForm.password"
 							:type="showPassword ? 'text' : 'password'"
-							placeholder="请输入密码（至少6位，包含大小写和数字）"
+							placeholder="请输入密码（6-128位，必须包含大写字母、小写字母和数字）"
 							size="large"
 							:prefix-icon="Lock"
 							clearable
@@ -229,17 +229,21 @@ const registerRules = {
 		}, trigger: 'blur' }
 	],
 	password: [
-		{ required: true, message: '请输入密码', trigger: 'blur' },
-		{ validator: (rule, value, callback) => {
-			if (!value) return callback(new Error('请输入密码'))
-			// 与后端一致：至少6位，且包含小写、大写、数字
-			const backendRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,128}$/
-			if (!backendRule.test(value)) {
-				return callback(new Error('密码需至少6位，且包含大写字母、小写字母和数字'))
-			}
-			callback()
-		}, trigger: 'blur' }
-	],
+			{ required: true, message: '请输入密码', trigger: 'blur' },
+			{ validator: (rule, value, callback) => {
+				if (!value) return callback(new Error('请输入密码'))
+				// 长度检查
+				if (value.length < 6 || value.length > 128) {
+					return callback(new Error('密码长度必须在6-128个字符之间'))
+				}
+				// 与后端一致：必须包含小写、大写、数字
+				const backendRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/
+				if (!backendRule.test(value)) {
+					return callback(new Error('密码必须包含至少一个小写字母、一个大写字母和一个数字'))
+				}
+				callback()
+			}, trigger: 'blur' }
+		],
 	confirmPassword: [
 		{ required: true, message: '请再次输入密码', trigger: 'blur' },
 		{ validator: (rule, value, callback) => {
@@ -316,7 +320,24 @@ const handleRegister = async () => {
 			}
 		}
 	} catch (error) {
-		ElMessage.error(error.message || '注册失败')
+		// 如果有详细的验证错误信息，优先显示
+		let errorMessage = error.message || '注册失败'
+		
+		// 如果是验证错误，尝试提取更详细的错误信息
+		if (error.details && Array.isArray(error.details) && error.details.length > 0) {
+			// 找到密码相关的错误
+			const passwordError = error.details.find(d => d.param === 'password' || d.path === 'password')
+			if (passwordError) {
+				errorMessage = passwordError.msg || passwordError.message || errorMessage
+			} else {
+				// 显示第一个错误
+				const firstError = error.details[0]
+				errorMessage = firstError.msg || firstError.message || errorMessage
+			}
+		}
+		
+		ElMessage.error(errorMessage)
+		console.error('注册失败:', error)
 	} finally {
 		loading.value = false
 	}

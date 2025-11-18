@@ -126,6 +126,11 @@ class DivinationController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        logger.warn('占卜历史参数验证失败', {
+          userId: req.user?.id,
+          errors: errors.array(),
+          query: req.query
+        });
         return res.status(400).json({
           success: false,
           message: '请求参数验证失败',
@@ -412,37 +417,44 @@ const validationRules = {
   // 获取历史记录验证
   getDivinationHistory: [
     query('page')
-      .optional()
+      .optional({ nullable: true, checkFalsy: true })
+      .toInt()
       .isInt({ min: 1 })
       .withMessage('页码必须是正整数'),
     
     query('limit')
-      .optional()
+      .optional({ nullable: true, checkFalsy: true })
+      .toInt()
       .isInt({ min: 1, max: 50 })
       .withMessage('每页数量必须是1-50的整数'),
     
     query('startDate')
-      .optional()
+      .optional({ nullable: true, checkFalsy: true })
+      .trim()
       .isISO8601()
       .withMessage('开始日期格式无效'),
     
     query('endDate')
-      .optional()
+      .optional({ nullable: true, checkFalsy: true })
+      .trim()
       .isISO8601()
       .withMessage('结束日期格式无效'),
     
     query('method')
-      .optional()
+      .optional({ nullable: true, checkFalsy: true })
+      .trim()
       .isIn(['time', 'number', 'manual'])
       .withMessage('起卦方法必须是time、number或manual'),
     
     query('sortBy')
-      .optional()
+      .optional({ nullable: true, checkFalsy: true })
+      .trim()
       .isIn(['createdAt', 'question', 'method'])
       .withMessage('排序字段无效'),
     
     query('sortOrder')
-      .optional()
+      .optional({ nullable: true, checkFalsy: true })
+      .trim()
       .isIn(['asc', 'desc'])
       .withMessage('排序方向必须是asc或desc')
   ],
