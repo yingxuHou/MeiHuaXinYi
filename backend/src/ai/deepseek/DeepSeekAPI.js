@@ -55,53 +55,139 @@ class DeepSeekAPI {
   }
 
   /**
-   * 生成AI回答
+   * 生成AI回答（带智能重试机制）
    * @param {string} prompt - 提示词
    * @param {Object} options - 可选参数
    * @returns {Promise<Object>} AI回答结果
    */
   async generateResponse(prompt, options = {}) {
-    try {
-      const requestData = {
-        model: options.model || this.config.model,
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: options.maxTokens || this.config.maxTokens,
-        temperature: options.temperature || this.config.temperature,
-        stream: false
-      };
+    const maxRetries = options.maxRetries || 2;
+    const baseTimeout = options.timeout || this.config.timeout;
+    let lastError;
 
-      const response = await this.client.post('/chat/completions', requestData);
+    // 记录请求开始时间
+    const requestStartTime = Date.now();
+    logger.info('DeepSeek AI请求开始', {
+      promptLength: prompt.length,
+      maxRetries,
+      timeout: baseTimeout,
+      model: options.model || this.config.model
+    });
 
-      if (response.data && response.data.choices && response.data.choices.length > 0) {
-        const result = {
-          content: response.data.choices[0].message.content,
-          usage: response.data.usage,
-          model: response.data.model,
-          timestamp: new Date().toISOString()
+    for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+      try {
+        // 动态调整超时时间：每次重试增加超时时间
+        const dynamicTimeout = baseTimeout * (1 + (attempt - 1) * 0.5);
+        
+        // 更新客户端超时配置
+        this.client.defaults.timeout = dynamicTimeout;
+
+        const requestData = {
+          model: options.model || this.config.model,
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          max_tokens: options.maxTokens || this.config.maxTokens,
+          temperature: options.temperature || this.config.temperature,
+          stream: false
         };
 
-        logger.info('DeepSeek AI回答生成成功', {
-          promptLength: prompt.length,
-          responseLength: result.content.length,
-          tokensUsed: result.usage
+        logger.info(`DeepSeek AI请求尝试 ${attempt}/${maxRetries + 1}`, {
+          timeout: dynamicTimeout,
+          promptPreview: prompt.substring(0, 50) + '...'
         });
 
-        return result;
-      } else {
-        throw new Error('DeepSeek API返回格式异常');
+        const response = await this.client.post('/chat/completions', requestData);
+
+        if (response.data && response.data.choices && response.data.choices.length > 0) {
+          const result = {
+            content: response.data.choices[0].message.content,
+            usage: response.data.usage,
+            model: response.data.model,
+            timestamp: new Date().toISOString(),
+            attempt: attempt,
+            totalDuration: Date.now() - requestStartTime
+          };
+
+          logger.info('DeepSeek AI回答生成成功', {
+            attempt,
+            promptLength: prompt.length,
+            responseLength: result.content.length,
+            tokensUsed: result.usage,
+            totalDuration: `${result.totalDuration}ms`
+          });
+
+          return result;
+        } else {
+          throw new Error('DeepSeek API返回格式异常');
+        }
+      } catch (error) {
+        lastError = error;
+        const isLastAttempt = attempt === maxRetries + 1;
+        
+        logger.warn(`DeepSeek AI请求失败 (尝试 ${attempt}/${maxRetries + 1})`, {
+          error: error.message,
+          code: error.code,
+          isTimeout: error.code === 'ECONNABORTED',
+          isLastAttempt,
+          responseStatus: error.response?.status
+        });
+
+        // 如果不是最后一次尝试，且是可重试的错误，则等待后重试
+        if (!isLastAttempt && this.shouldRetry(error)) {
+          const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000); // 指数退避，最大5秒
+          logger.info(`等待 ${delay}ms 后重试...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          continue;
+        }
+        
+        // 如果是最后一次尝试或不可重试的错误，直接抛出
+        break;
       }
-    } catch (error) {
-      logger.error('DeepSeek AI回答生成失败', {
-        error: error.message,
-        prompt: prompt.substring(0, 100) + '...'
-      });
-      throw new Error(`DeepSeek AI服务错误: ${error.message}`);
     }
+
+    // 所有尝试都失败了
+    const totalDuration = Date.now() - requestStartTime;
+    logger.error('DeepSeek AI回答生成失败（所有重试均失败）', {
+      totalAttempts: maxRetries + 1,
+      totalDuration: `${totalDuration}ms`,
+      finalError: lastError.message,
+      prompt: prompt.substring(0, 100) + '...'
+    });
+    
+    throw new Error(`DeepSeek AI服务错误: ${lastError.message}`);
+  }
+
+  /**
+   * 判断是否应该重试
+   * @param {Error} error - 错误对象
+   * @returns {boolean} 是否应该重试
+   */
+  shouldRetry(error) {
+    // 超时错误
+    if (error.code === 'ECONNABORTED') {
+      return true;
+    }
+    
+    // 网络错误
+    if (error.message.includes('Network Error') || error.message.includes('timeout')) {
+      return true;
+    }
+    
+    // 5xx服务器错误
+    if (error.response && error.response.status >= 500) {
+      return true;
+    }
+    
+    // 429 限流错误
+    if (error.response && error.response.status === 429) {
+      return true;
+    }
+    
+    return false;
   }
 
   /**

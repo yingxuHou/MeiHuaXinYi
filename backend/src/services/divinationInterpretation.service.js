@@ -12,54 +12,139 @@ class DivinationInterpretationService {
   }
 
   /**
-   * 为占卜结果生成AI解读
+   * 为占卜结果生成AI解读（带性能监控）
    * @param {Object} divinationResult - 占卜结果
    * @param {Object} options - 可选参数
    * @returns {Promise<Object>} AI解读结果
    */
   async generateAIInterpretation(divinationResult, options = {}) {
+    const serviceStartTime = Date.now();
+    let aiServiceStartTime;
+    let aiServiceDuration;
+    
     try {
       logger.info('开始生成AI占卜解读', {
         question: divinationResult.question?.substring(0, 50) + '...',
-        method: divinationResult.method
+        method: divinationResult.method,
+        options: {
+          temperature: options.temperature,
+          maxTokens: options.maxTokens,
+          service: options.service
+        }
       });
 
       // 构建占卜数据
+      const dataExtractionStart = Date.now();
       const divinationData = this.extractDivinationData(divinationResult);
+      const dataExtractionDuration = Date.now() - dataExtractionStart;
+      
+      logger.info('占卜数据提取完成', {
+        dataExtractionDuration: `${dataExtractionDuration}ms`,
+        mainHexagram: divinationData.mainHexagram,
+        hasMovingLine: !!divinationData.movingLine
+      });
       
       // 生成AI解读
+      aiServiceStartTime = Date.now();
       const interpretation = await this.aiManager.generateDivinationInterpretation(
         divinationData,
         divinationResult.question,
-        options
+        {
+          ...options,
+          timeout: 180000, // 确保AI服务有足够的超时时间
+          maxRetries: 2 // 增加重试次数
+        }
       );
+      aiServiceDuration = Date.now() - aiServiceStartTime;
 
       // 格式化解读结果
+      const formatStartTime = Date.now();
       const formattedInterpretation = this.formatInterpretation(interpretation, divinationResult);
+      const formatDuration = Date.now() - formatStartTime;
+      
+      const totalDuration = Date.now() - serviceStartTime;
 
       logger.info('AI占卜解读生成成功', {
         question: divinationResult.question?.substring(0, 50) + '...',
-        interpretationLength: formattedInterpretation.content.length
+        interpretationLength: formattedInterpretation.content.length,
+        totalDuration: `${totalDuration}ms`,
+        dataExtractionDuration: `${dataExtractionDuration}ms`,
+        aiServiceDuration: `${aiServiceDuration}ms`,
+        formatDuration: `${formatDuration}ms`,
+        aiProvider: interpretation.model || 'unknown'
       });
 
       return {
         success: true,
-        data: formattedInterpretation
+        data: {
+          ...formattedInterpretation,
+          metadata: {
+            ...formattedInterpretation.metadata,
+            performanceMetrics: {
+              totalDuration,
+              dataExtractionDuration,
+              aiServiceDuration,
+              formatDuration
+            }
+          }
+        }
       };
 
     } catch (error) {
+      const totalDuration = Date.now() - serviceStartTime;
+      const errorType = this.classifyError(error);
+      
       logger.error('生成AI占卜解读失败', {
         error: error.message,
-        question: divinationResult.question?.substring(0, 50) + '...'
+        errorType,
+        code: error.code,
+        question: divinationResult.question?.substring(0, 50) + '...',
+        totalDuration: `${totalDuration}ms`,
+        aiServiceDuration: aiServiceDuration ? `${aiServiceDuration}ms` : 'N/A',
+        isTimeout: error.code === 'ECONNABORTED' || error.message.includes('timeout')
       });
 
       // 返回降级解读
       return {
         success: false,
-        data: this.generateFallbackInterpretation(divinationResult),
+        data: {
+          ...this.generateFallbackInterpretation(divinationResult),
+          metadata: {
+            ...this.generateFallbackInterpretation(divinationResult).metadata,
+            fallbackReason: errorType,
+            originalError: error.message,
+            performanceMetrics: {
+              totalDuration,
+              aiServiceDuration: aiServiceDuration || 0,
+              dataExtractionDuration: 0,
+              formatDuration: 0
+            }
+          }
+        },
         error: error.message
       };
     }
+  }
+
+  /**
+   * 分类错误类型
+   * @param {Error} error - 错误对象
+   * @returns {string} 错误类型
+   */
+  classifyError(error) {
+    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+      return 'TIMEOUT';
+    }
+    if (error.message.includes('所有AI服务都不可用')) {
+      return 'SERVICE_UNAVAILABLE';
+    }
+    if (error.message.includes('DeepSeek API')) {
+      return 'AI_SERVICE_ERROR';
+    }
+    if (error.message.includes('网络') || error.code === 'NETWORK_ERROR') {
+      return 'NETWORK_ERROR';
+    }
+    return 'UNKNOWN_ERROR';
   }
 
   /**

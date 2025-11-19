@@ -135,14 +135,47 @@ class EnhancedDivinationController {
   }
 
   /**
-   * 为现有占卜结果生成AI解读
+   * 为现有占卜结果生成AI解读（带性能监控和超时处理）
    * POST /api/divination/:id/interpretation
    */
   async generateInterpretation(req, res) {
+    const controllerStartTime = Date.now();
+    let dbQueryDuration = 0;
+    let aiServiceDuration = 0;
+    
+    // 设置响应超时处理
+    const responseTimeout = setTimeout(() => {
+      logger.error('解读请求响应超时', {
+        elapsed: Date.now() - controllerStartTime,
+        divinationId: req.params.id,
+        userId: req.user?.id
+      });
+      
+      if (!res.headersSent) {
+        res.status(408).json({
+          success: false,
+          message: '请求处理超时，请稍后重试',
+          code: 'REQUEST_TIMEOUT'
+        });
+      }
+    }, 200000); // 200秒超时，比AI服务稍长
+
     try {
       const { id } = req.params;
       const { customPrompt, options, divinationData } = req.body;
       const userId = req.user?.id;
+
+      logger.info('开始处理AI解读请求', {
+        divinationId: id,
+        userId,
+        hasCustomPrompt: !!customPrompt,
+        hasDivinationData: !!divinationData,
+        options: {
+          temperature: options?.temperature,
+          maxTokens: options?.maxTokens,
+          service: options?.service
+        }
+      });
 
       // ✅ 优先使用前端传来的完整占卜数据（避免数据库查找）
       if (divinationData) {
@@ -152,19 +185,42 @@ class EnhancedDivinationController {
         });
 
         try {
+          const aiServiceStart = Date.now();
           const interpretation = await this.interpretationService.generateAIInterpretation(
             divinationData,
-            options || {}
+            {
+              ...options,
+              timeout: 180000, // 确保AI服务有足够时间
+              maxRetries: 2
+            }
           );
+          aiServiceDuration = Date.now() - aiServiceStart;
+
+          clearTimeout(responseTimeout);
+          
+          const totalDuration = Date.now() - controllerStartTime;
+          
+          logger.info('AI解读请求完成（使用前端数据）', {
+            totalDuration: `${totalDuration}ms`,
+            aiServiceDuration: `${aiServiceDuration}ms`,
+            success: interpretation.success
+          });
 
           return res.json({
             success: true,
             data: interpretation.data,
-            message: 'AI解读生成完成（使用真实数据）'
+            message: 'AI解读生成完成（使用真实数据）',
+            performanceMetrics: {
+              totalDuration,
+              aiServiceDuration,
+              dbQueryDuration
+            }
           });
         } catch (error) {
           logger.error('基于传入数据生成AI解读失败', {
-            error: error.message
+            error: error.message,
+            code: error.code,
+            isTimeout: error.code === 'ECONNABORTED'
           });
           throw error;
         }
@@ -173,72 +229,162 @@ class EnhancedDivinationController {
       // 如果没有提供数据，尝试从数据库获取
       let divinationResult;
       try {
+        const dbQueryStart = Date.now();
         // 尝试获取真实的占卜结果
-        divinationResult = await this.divinationService.getDivinationById(id, userId);
+        const dbResult = await this.divinationService.getDivinationById(id, userId);
+        dbQueryDuration = Date.now() - dbQueryStart;
         
-        if (!divinationResult.success) {
+        if (!dbResult.success) {
           throw new Error('占卜记录不存在');
         }
         
-        divinationResult = divinationResult.data;
+        divinationResult = dbResult.data;
+        
+        logger.info('数据库查询完成', {
+          dbQueryDuration: `${dbQueryDuration}ms`,
+          divinationId: id
+        });
       } catch (error) {
         logger.warn('无法获取占卜结果，尝试使用模拟数据', {
           error: error.message,
-          divinationId: id
+          divinationId: id,
+          dbQueryDuration: `${dbQueryDuration}ms`
         });
+        
+        clearTimeout(responseTimeout);
         
         // 使用模拟数据作为最后降级方案
         return res.status(400).json({
           success: false,
           message: '无法找到占卜数据。请确保已提供完整的占卜数据或访问正确的占卜记录。',
-          suggestion: '建议在前端传递完整的占卜结果数据到 divinationData 参数'
+          suggestion: '建议在前端传递完整的占卜结果数据到 divinationData 参数',
+          performanceMetrics: {
+            totalDuration: Date.now() - controllerStartTime,
+            dbQueryDuration,
+            aiServiceDuration
+          }
         });
       }
 
       // 使用从数据库获取的数据生成AI解读
       let interpretation;
-      if (customPrompt) {
-        // 自定义解读
-        interpretation = await this.interpretationService.generateCustomInterpretation(
-          divinationResult,
-          customPrompt,
-          options || {}
-        );
-      } else {
-        // 标准解读
-        interpretation = await this.interpretationService.generateAIInterpretation(
-          divinationResult,
-          options || {}
-        );
+      const aiServiceStart = Date.now();
+      
+      try {
+        if (customPrompt) {
+          // 自定义解读
+          interpretation = await this.interpretationService.generateCustomInterpretation(
+            divinationResult,
+            customPrompt,
+            {
+              ...options,
+              timeout: 180000,
+              maxRetries: 2
+            }
+          );
+        } else {
+          // 标准解读
+          interpretation = await this.interpretationService.generateAIInterpretation(
+            divinationResult,
+            {
+              ...options,
+              timeout: 180000,
+              maxRetries: 2
+            }
+          );
+        }
+        aiServiceDuration = Date.now() - aiServiceStart;
+      } catch (error) {
+        aiServiceDuration = Date.now() - aiServiceStart;
+        throw error;
       }
+
+      clearTimeout(responseTimeout);
+      
+      const totalDuration = Date.now() - controllerStartTime;
 
       if (!interpretation.success) {
         logger.warn('AI解读生成失败', {
           userId,
           divinationId: id,
-          error: interpretation.error
+          error: interpretation.error,
+          totalDuration: `${totalDuration}ms`,
+          aiServiceDuration: `${aiServiceDuration}ms`,
+          dbQueryDuration: `${dbQueryDuration}ms`
+        });
+      } else {
+        logger.info('AI解读请求完成（使用数据库数据）', {
+          totalDuration: `${totalDuration}ms`,
+          aiServiceDuration: `${aiServiceDuration}ms`,
+          dbQueryDuration: `${dbQueryDuration}ms`,
+          success: interpretation.success
         });
       }
 
       res.json({
         success: true,
         data: interpretation.data,
-        message: customPrompt ? '自定义解读生成完成' : 'AI解读生成完成'
+        message: customPrompt ? '自定义解读生成完成' : 'AI解读生成完成',
+        performanceMetrics: {
+          totalDuration,
+          aiServiceDuration,
+          dbQueryDuration
+        }
       });
 
     } catch (error) {
+      clearTimeout(responseTimeout);
+      
+      const totalDuration = Date.now() - controllerStartTime;
+      const errorType = this.classifyError(error);
+      
       logger.error('生成AI解读失败', {
         userId: req.user?.id,
         divinationId: req.params.id,
-        error: error.message
+        error: error.message,
+        errorType,
+        code: error.code,
+        totalDuration: `${totalDuration}ms`,
+        aiServiceDuration: `${aiServiceDuration}ms`,
+        dbQueryDuration: `${dbQueryDuration}ms`,
+        isTimeout: error.code === 'ECONNABORTED' || error.message.includes('timeout')
       });
 
-      res.status(500).json({
-        success: false,
-        message: '生成AI解读失败',
-        error: process.env.NODE_ENV === 'development' ? error.message : '请稍后重试'
-      });
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          message: '生成AI解读失败',
+          error: process.env.NODE_ENV === 'development' ? error.message : '请稍后重试',
+          errorType,
+          performanceMetrics: {
+            totalDuration,
+            aiServiceDuration,
+            dbQueryDuration
+          }
+        });
+      }
     }
+  }
+
+  /**
+   * 分类错误类型
+   * @param {Error} error - 错误对象
+   * @returns {string} 错误类型
+   */
+  classifyError(error) {
+    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+      return 'TIMEOUT';
+    }
+    if (error.message.includes('所有AI服务都不可用')) {
+      return 'SERVICE_UNAVAILABLE';
+    }
+    if (error.message.includes('DeepSeek API')) {
+      return 'AI_SERVICE_ERROR';
+    }
+    if (error.message.includes('占卜记录不存在')) {
+      return 'DIVINATION_NOT_FOUND';
+    }
+    return 'UNKNOWN_ERROR';
   }
 
   /**

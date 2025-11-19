@@ -103,7 +103,7 @@ const config = {
       model: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
       maxTokens: parseInt(process.env.DEEPSEEK_MAX_TOKENS) || 4000,
       temperature: parseFloat(process.env.DEEPSEEK_TEMPERATURE) || 0.7,
-      timeout: 120000 // 增加到120秒
+      timeout: 200000 // 增加到200秒，与前端180秒超时匹配并留有余量
     },
     claude: {
       apiKey: process.env.CLAUDE_API_KEY,
