@@ -17,6 +17,7 @@ class MongoDBConnection {
     this.connectionAttempts = 0;
     this.maxRetries = 5;
     this.retryDelay = 5000; // 5秒
+    this.isShuttingDown = false; // 添加关闭标志
   }
 
   /**
@@ -157,8 +158,8 @@ class MongoDBConnection {
       console.warn('⚠️ MongoDB Atlas 连接断开');
       this.isConnected = false;
 
-      // 在生产环境中尝试重连
-      if (config.app.isProduction && this.connectionAttempts < this.maxRetries) {
+      // 只在真正的连接错误时才重连，避免在应用关闭时重连
+      if (config.app.isProduction && this.connectionAttempts < this.maxRetries && !process.exitCode) {
         console.log('🔄 尝试重新连接...');
         setTimeout(() => this.connect(), this.retryDelay);
       }
@@ -192,6 +193,8 @@ class MongoDBConnection {
     // 优雅关闭处理
     const gracefulShutdown = async (signal) => {
       console.log(`📡 收到 ${signal} 信号，正在优雅关闭...`);
+      // 设置标志，防止重连
+      this.isShuttingDown = true;
       await this.disconnect();
       process.exit(0);
     };
@@ -515,8 +518,18 @@ class DatabaseManager {
       // 先连接MongoDB（必需）
       await this.mongodb.connect();
 
-      // 再连接Redis（可选，开发环境下失败不影响启动）
-      await this.redis.connect();
+      // 检查MongoDB连接状态
+      if (!this.mongodb.isConnected) {
+        throw new Error('MongoDB连接失败');
+      }
+
+      // 再连接Redis（可选，失败不影响启动）
+      try {
+        await this.redis.connect();
+      } catch (redisError) {
+        console.warn('⚠️ Redis连接失败，但应用将继续运行:', redisError.message);
+        // Redis连接失败不影响整体启动
+      }
 
       const mongoStatus = this.mongodb.isConnected ? '✅' : '❌';
       const redisStatus = this.redis.isConnected ? '✅' : '⚠️';
