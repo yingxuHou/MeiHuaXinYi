@@ -337,35 +337,6 @@ router.get('/stats',
   }
 );
 
-// AI解读相关路由
-const EnhancedDivinationController = require('../controllers/enhancedDivination.controller');
-const enhancedController = new EnhancedDivinationController();
-
-// 检查AI服务状态（必须在 /:id 之前，避免路由冲突）
-router.get('/ai-status',
-  authMiddleware.authenticate,
-  queryRateLimit,
-  async (req, res, next) => {
-    try {
-      await enhancedController.checkAIStatus(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-// 获取解读模板（必须在 /:id 之前，避免路由冲突）
-router.get('/interpretation-templates',
-  authMiddleware.authenticate,
-  queryRateLimit,
-  async (req, res, next) => {
-    try {
-      await enhancedController.getInterpretationTemplates(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 
 // 获取占卜详情（必须在所有具体路由之后）
 router.get('/:id',
@@ -393,18 +364,6 @@ router.put('/:id/rating',
   }
 );
 
-// 为现有占卜结果生成AI解读
-router.post('/:id/interpretation',
-  authMiddleware.authenticate,
-  queryRateLimit,
-  async (req, res, next) => {
-    try {
-      await enhancedController.generateInterpretation(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 
 
 

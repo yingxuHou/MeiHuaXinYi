@@ -47,16 +47,20 @@ const createApp = async () => {
   // API路由
   try {
     // 认证路由
-    const authRoutes = require('./routes/auth');
-    app.use(`${API_PREFIX}/auth`, authRoutes);
+    // const authRoutes = require('./routes/auth');
+    // app.use(`${API_PREFIX}/auth`, authRoutes);
 
     // 用户路由
-    const userRoutes = require('./routes/user');
-    app.use(`${API_PREFIX}/user`, userRoutes);
+    // const userRoutes = require('./routes/user');
+    // app.use(`${API_PREFIX}/user`, userRoutes);
 
     // 占卜路由
-    const divinationRoutes = require('./routes/divination.routes');
-    app.use(`${API_PREFIX}/divination`, divinationRoutes);
+    // const divinationRoutes = require('./routes/divination.routes');
+    // app.use(`${API_PREFIX}/divination`, divinationRoutes);
+    
+    // 暂时禁用增强版占卜路由
+    // const enhancedDivinationRoutes = require('./routes/enhancedDivination.routes');
+    // app.use(`${API_PREFIX}/divination`, enhancedDivinationRoutes);
 
     console.log('✅ API路由配置完成');
   } catch (error) {
@@ -161,29 +165,32 @@ const createApp = async () => {
 
   // 生产环境下处理Vue Router的history模式（SPA fallback）
   if (config.app.isProduction) {
-    app.get('*', (req, res, next) => {
-      // 如果请求的是API路由，跳过处理
-      if (req.path.startsWith('/api/')) {
-        return next();
-      }
+    // 暂时禁用Vue Router的history模式支持
+    console.log('⚠️ Vue Router history模式支持已禁用（暂时）');
+    
+    // app.get('*', (req, res, next) => {
+    //   // 如果请求的是API路由，跳过处理
+    //   if (req.path.startsWith('/api/')) {
+    //     return next();
+    //   }
 
-      // 对于所有非API请求，返回index.html让前端路由处理
-      const indexPath = path.join(__dirname, '../../frontend/dist/index.html');
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          console.error('❌ 发送index.html失败:', err);
-          res.status(500).json({
-            success: false,
-            error: {
-              code: 'STATIC_FILE_ERROR',
-              message: '静态文件服务错误'
-            }
-          });
-        }
-      });
-    });
+    //   // 对于所有非API请求，返回index.html让前端路由处理
+    //   const indexPath = path.join(__dirname, '../../frontend/dist/index.html');
+    //   res.sendFile(indexPath, (err) => {
+    //     if (err) {
+    //       console.error('❌ 发送index.html失败:', err);
+    //       res.status(500).json({
+    //         success: false,
+    //         error: {
+    //           code: 'STATIC_FILE_ERROR',
+    //           message: '静态文件服务错误'
+    //         }
+    //       });
+    //     }
+    //   });
+    // });
 
-    console.log('✅ Vue Router history模式支持已启用');
+    // console.log('✅ Vue Router history模式支持已启用');
   }
 
   // 配置错误处理中间件（必须在最后）

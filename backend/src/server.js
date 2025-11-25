@@ -63,6 +63,7 @@ const startServer = async () => {
     return server;
   } catch (error) {
     console.error('❌ 服务器启动失败:', error.message);
+    console.error('❌ 错误堆栈:', error.stack);
     process.exit(1);
   }
 };

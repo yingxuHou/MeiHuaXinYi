@@ -27,7 +27,7 @@ const performDivinationValidation = [
   body('method')
     .notEmpty()
     .withMessage('起卦方法不能为空')
-    .isIn(['时间起卦', '数字起卦', '手动起卦'])
+    .isIn(['time', 'number', 'manual'])
     .withMessage('起卦方法无效'),
   body('params')
     .optional()
@@ -70,7 +70,7 @@ const batchInterpretationValidation = [
  * 执行占卜并生成AI解读
  * POST /api/divination/perform-with-ai
  */
-router.post('/perform-with-ai', 
+router.post('/perform-with-ai',
   authMiddleware.authenticate,
   performDivinationValidation,
   controller.performDivinationWithAI.bind(controller)

@@ -349,7 +349,7 @@ class RedisConnection {
       console.log('⚠️ Redis 已被环境变量禁用，跳过连接');
       this.isConnected = false;
       this.client = null;
-      return;
+      return Promise.resolve();
     }
 
     // 在Zeabur环境中直接禁用Redis，因为本地Redis不可用
@@ -357,7 +357,7 @@ class RedisConnection {
       console.log('⚠️ 生产环境检测到，跳过Redis连接（Zeabur平台不支持本地Redis）');
       this.isConnected = false;
       this.client = null;
-      return;
+      return Promise.resolve();
     }
 
     try {
@@ -420,6 +420,9 @@ class RedisConnection {
       // Redis是可选的，不应该阻止应用启动
       // 无论在什么环境下，都不抛出错误
     }
+    
+    // 始终返回成功，不阻止应用启动
+    return Promise.resolve();
   }
 
   /**
@@ -484,7 +487,8 @@ class RedisConnection {
    */
   getClient() {
     if (!this.isConnected || !this.client) {
-      throw new Error('Redis 未连接');
+      console.warn('⚠️ Redis 未连接，返回null');
+      return null;
     }
     return this.client;
   }

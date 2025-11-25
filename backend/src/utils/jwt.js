@@ -175,6 +175,11 @@ class JWTUtils {
 
       try {
         const redisClient = redis.getClient();
+        if (!redisClient) {
+          console.warn('Redis客户端不可用，跳过令牌黑名单操作');
+          return true;
+        }
+        
         const ttl = exp - Math.floor(Date.now() / 1000);
 
         if (ttl > 0) {
@@ -209,6 +214,11 @@ class JWTUtils {
 
       try {
         const redisClient = redis.getClient();
+        if (!redisClient) {
+          console.warn('Redis客户端不可用，假设令牌未被列入黑名单');
+          return false;
+        }
+        
         const result = await redisClient.get(`blacklist:${decoded.payload.jti}`);
         return result === '1';
       } catch (error) {
@@ -297,6 +307,10 @@ class JWTUtils {
 
       try {
         const redisClient = redis.getClient();
+        if (!redisClient) {
+          console.warn('Redis客户端不可用，跳过用户令牌撤销操作');
+          return true;
+        }
 
         // 在Redis中标记用户令牌失效时间
         const revokeTime = Math.floor(Date.now() / 1000);
@@ -325,6 +339,11 @@ class JWTUtils {
 
       try {
         const redisClient = redis.getClient();
+        if (!redisClient) {
+          console.warn('Redis客户端不可用，假设令牌未被撤销');
+          return false;
+        }
+        
         const revokeTime = await redisClient.get(`user_token_revoke:${userId}`);
 
         if (!revokeTime) {
