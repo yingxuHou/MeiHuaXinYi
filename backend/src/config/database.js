@@ -352,6 +352,14 @@ class RedisConnection {
       return;
     }
 
+    // 在Zeabur环境中直接禁用Redis，因为本地Redis不可用
+    if (config.app.isProduction) {
+      console.log('⚠️ 生产环境检测到，跳过Redis连接（Zeabur平台不支持本地Redis）');
+      this.isConnected = false;
+      this.client = null;
+      return;
+    }
+
     try {
       console.log('🔄 正在连接 Redis...');
 
@@ -373,10 +381,18 @@ class RedisConnection {
         retryDelayOnFailover: 0,
         maxRetriesPerRequest: 0,
         // 添加更多快速失败配置
+        enableOfflineQueue: false, // 禁用离线队列
+        lazyConnect: true, // 延迟连接
+        // 完全禁用重连机制
+        enableAutoPipelining: false,
         maxRetriesPerRequest: 0,
         retryDelayOnFailover: 0,
-        enableOfflineQueue: false, // 禁用离线队列
-        lazyConnect: true // 延迟连接
+        // 添加错误处理配置
+        showFriendlyErrorStack: false,
+        // 禁用所有重连和重试
+        retryDelayOnFailover: 0,
+        retryDelayOnClusterDown: 0,
+        maxRetriesPerRequest: 0
       });
 
       // 尝试连接Redis，设置超时
@@ -415,6 +431,9 @@ class RedisConnection {
       return;
     }
 
+    // 移除所有可能导致未处理错误的事件监听器
+    // 只保留必要的连接成功事件
+    
     this.client.on('connect', () => {
       console.log('🔄 Redis 连接建立');
     });
@@ -424,19 +443,20 @@ class RedisConnection {
       this.isConnected = true;
     });
 
-    this.client.on('error', (error) => {
-      // 只记录警告，不输出错误
-      console.warn('⚠️ Redis 连接问题，应用将在无Redis模式下运行');
-      this.isConnected = false;
-    });
+    // 完全移除error事件监听器，防止未处理的错误事件
+    // this.client.on('error', (error) => {
+    //   console.warn('⚠️ Redis 连接问题，应用将在无Redis模式下运行');
+    //   this.isConnected = false;
+    // });
 
     this.client.on('close', () => {
       this.isConnected = false;
     });
 
-    this.client.on('reconnecting', () => {
-      console.log('🔄 Redis 正在重连...');
-    });
+    // 移除重连事件监听器
+    // this.client.on('reconnecting', () => {
+    //   console.log('🔄 Redis 正在重连...');
+    // });
 
     // 优雅关闭
     process.on('SIGINT', async () => {
