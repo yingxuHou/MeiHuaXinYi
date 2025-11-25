@@ -341,30 +341,48 @@ class RedisConnection {
    * 连接到Redis
    */
   async connect() {
+    // 检查环境变量，判断是否需要禁用Redis
+    if (process.env.DISABLE_REDIS === 'true' || process.env.REDIS_ENABLED === 'false') {
+      console.log('⚠️ Redis 已被环境变量禁用，跳过连接');
+      this.isConnected = false;
+      this.client = null;
+      return;
+    }
+
     try {
       console.log('🔄 正在连接 Redis...');
 
+      // 配置快速失败的Redis客户端
       this.client = new Redis({
         host: config.database.redis.host,
         port: config.database.redis.port,
         password: config.database.redis.password,
         db: config.database.redis.db,
         lazyConnect: true,
-        // 开发环境下快速失败
-        retryDelayOnClusterDown: config.app.isDevelopment ? 100 : 100,
-        retryDelayOnFailover: config.app.isDevelopment ? 100 : 100,
-        maxRetriesPerRequest: config.app.isDevelopment ? 0 : 3,
-        connectTimeout: config.app.isDevelopment ? 1000 : 10000,
-        commandTimeout: config.app.isDevelopment ? 1000 : 5000,
-        // 禁用自动重连（开发环境）
+        // 快速失败配置 - 1秒超时，禁用重试
+        retryDelayOnClusterDown: 100,
+        retryDelayOnFailover: 100,
+        maxRetriesPerRequest: 0, // 禁用重试
+        connectTimeout: 1000, // 1秒连接超时
+        commandTimeout: 1000, // 1秒命令超时
         enableAutoPipelining: false,
-        // 开发环境下禁用重连
-        retryDelayOnFailover: config.app.isDevelopment ? 0 : 100,
-        maxRetriesPerRequest: config.app.isDevelopment ? 0 : 3
+        // 禁用自动重连
+        retryDelayOnFailover: 0,
+        maxRetriesPerRequest: 0,
+        // 添加更多快速失败配置
+        maxRetriesPerRequest: 0,
+        retryDelayOnFailover: 0,
+        enableOfflineQueue: false, // 禁用离线队列
+        lazyConnect: true // 延迟连接
       });
 
-      // 连接Redis
-      await this.client.connect();
+      // 尝试连接Redis，设置超时
+      const connectPromise = this.client.connect();
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Redis连接超时')), 2000); // 2秒超时
+      });
+
+      await Promise.race([connectPromise, timeoutPromise]);
       this.isConnected = true;
 
       console.log('✅ Redis 连接成功');
@@ -378,17 +396,22 @@ class RedisConnection {
       console.warn('⚠️ 应用将在无Redis模式下运行');
       this.isConnected = false;
       this.client = null;
-    //   // 在开发环境下不抛出错误，允许应用继续运行
-    //   if (config.app.isProduction) {
-    //     throw error;
-    //   }
-    // }
+      
+      // 完全移除错误抛出逻辑
+      // Redis是可选的，不应该阻止应用启动
+      // 无论在什么环境下，都不抛出错误
+    }
   }
 
   /**
    * 设置事件监听器
    */
   setupEventListeners() {
+    // 如果没有客户端，不设置事件监听器
+    if (!this.client) {
+      return;
+    }
+
     this.client.on('connect', () => {
       console.log('🔄 Redis 连接建立');
     });
@@ -399,22 +422,12 @@ class RedisConnection {
     });
 
     this.client.on('error', (error) => {
-      // 在开发环境下减少错误日志输出
-      if (config.app.isDevelopment) {
-        // 只在第一次错误时输出
-        if (this.isConnected) {
-          console.warn('⚠️ Redis 连接中断，应用将在无Redis模式下运行');
-        }
-      } else {
-        console.error('❌ Redis 连接错误:', error.message);
-      }
+      // 只记录警告，不输出错误
+      console.warn('⚠️ Redis 连接问题，应用将在无Redis模式下运行');
       this.isConnected = false;
     });
 
     this.client.on('close', () => {
-      if (config.app.isDevelopment && this.isConnected) {
-        console.warn('⚠️ Redis 连接关闭');
-      }
       this.isConnected = false;
     });
 
@@ -471,10 +484,13 @@ class RedisConnection {
    */
   async ping() {
     try {
+      if (!this.client || !this.isConnected) {
+        return false;
+      }
       const result = await this.client.ping();
       return result === 'PONG';
     } catch (error) {
-      console.error('Redis ping 失败:', error.message);
+      console.warn('Redis ping 失败:', error.message);
       return false;
     }
   }
