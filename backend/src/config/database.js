@@ -378,11 +378,11 @@ class RedisConnection {
       console.warn('⚠️ 应用将在无Redis模式下运行');
       this.isConnected = false;
       this.client = null;
-      // 在开发环境下不抛出错误，允许应用继续运行
-      if (config.app.isProduction) {
-        throw error;
-      }
-    }
+    //   // 在开发环境下不抛出错误，允许应用继续运行
+    //   if (config.app.isProduction) {
+    //     throw error;
+    //   }
+    // }
   }
 
   /**
