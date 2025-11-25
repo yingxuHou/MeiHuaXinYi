@@ -173,14 +173,19 @@ class JWTUtils {
         return true; // 返回true避免阻塞登出流程
       }
 
-      const redisClient = redis.getClient();
-      const ttl = exp - Math.floor(Date.now() / 1000);
+      try {
+        const redisClient = redis.getClient();
+        const ttl = exp - Math.floor(Date.now() / 1000);
 
-      if (ttl > 0) {
-        await redisClient.setex(`blacklist:${jti}`, ttl, '1');
+        if (ttl > 0) {
+          await redisClient.setex(`blacklist:${jti}`, ttl, '1');
+        }
+
+        return true;
+      } catch (error) {
+        console.warn('Redis操作失败，跳过令牌黑名单操作:', error.message);
+        return true; // 返回true避免阻塞流程
       }
-
-      return true;
     } catch (error) {
       console.error('令牌黑名单添加失败:', error.message);
       return false;
@@ -202,9 +207,14 @@ class JWTUtils {
         return false; // Redis不可用时假设令牌未被列入黑名单
       }
 
-      const redisClient = redis.getClient();
-      const result = await redisClient.get(`blacklist:${decoded.payload.jti}`);
-      return result === '1';
+      try {
+        const redisClient = redis.getClient();
+        const result = await redisClient.get(`blacklist:${decoded.payload.jti}`);
+        return result === '1';
+      } catch (error) {
+        console.warn('Redis操作失败，假设令牌未被列入黑名单:', error.message);
+        return false; // 假设令牌未被列入黑名单
+      }
     } catch (error) {
       console.error('令牌黑名单检查失败:', error.message);
       return false;
@@ -285,13 +295,18 @@ class JWTUtils {
         return true; // 返回true避免阻塞流程
       }
 
-      const redisClient = redis.getClient();
+      try {
+        const redisClient = redis.getClient();
 
-      // 在Redis中标记用户令牌失效时间
-      const revokeTime = Math.floor(Date.now() / 1000);
-      await redisClient.set(`user_token_revoke:${userId}`, revokeTime);
+        // 在Redis中标记用户令牌失效时间
+        const revokeTime = Math.floor(Date.now() / 1000);
+        await redisClient.set(`user_token_revoke:${userId}`, revokeTime);
 
-      return true;
+        return true;
+      } catch (error) {
+        console.warn('Redis操作失败，跳过用户令牌撤销操作:', error.message);
+        return true; // 返回true避免阻塞流程
+      }
     } catch (error) {
       console.error('撤销用户令牌失败:', error.message);
       return false;
@@ -308,14 +323,19 @@ class JWTUtils {
         return false; // Redis不可用时假设令牌未被撤销
       }
 
-      const redisClient = redis.getClient();
-      const revokeTime = await redisClient.get(`user_token_revoke:${userId}`);
+      try {
+        const redisClient = redis.getClient();
+        const revokeTime = await redisClient.get(`user_token_revoke:${userId}`);
 
-      if (!revokeTime) {
-        return false;
+        if (!revokeTime) {
+          return false;
+        }
+
+        return parseInt(revokeTime) > tokenIssuedAt;
+      } catch (error) {
+        console.warn('Redis操作失败，假设令牌未被撤销:', error.message);
+        return false; // 假设令牌未被撤销
       }
-
-      return parseInt(revokeTime) > tokenIssuedAt;
     } catch (error) {
       console.error('检查用户令牌撤销状态失败:', error.message);
       return false;
