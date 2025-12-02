@@ -1,10 +1,9 @@
 /**
- * 梅花心易 - 数据库连接配置 v2.0
- * MongoDB Atlas + Redis 云原生连接管理
+ * 梅花心易 - 数据库连接配置 v2.1
+ * MongoDB Atlas 数据库连接管理
  */
 
 const mongoose = require('mongoose');
-const Redis = require('ioredis');
 const config = require('./index');
 
 /**
@@ -331,197 +330,6 @@ class MongoDBConnection {
   }
 }
 
-/**
- * Redis 连接管理类
- */
-class RedisConnection {
-  constructor() {
-    this.client = null;
-    this.isConnected = false;
-  }
-
-  /**
-   * 连接到Redis
-   */
-  async connect() {
-    // 检查环境变量，判断是否需要禁用Redis
-    if (process.env.DISABLE_REDIS === 'true' || process.env.REDIS_ENABLED === 'false') {
-      console.log('⚠️ Redis 已被环境变量禁用，跳过连接');
-      this.isConnected = false;
-      this.client = null;
-      return Promise.resolve();
-    }
-
-    // 在Zeabur环境中直接禁用Redis，因为本地Redis不可用
-    if (config.app.isProduction) {
-      console.log('⚠️ 生产环境检测到，跳过Redis连接（Zeabur平台不支持本地Redis）');
-      this.isConnected = false;
-      this.client = null;
-      return Promise.resolve();
-    }
-
-    try {
-      console.log('🔄 正在连接 Redis...');
-
-      // 配置快速失败的Redis客户端
-      this.client = new Redis({
-        host: config.database.redis.host,
-        port: config.database.redis.port,
-        password: config.database.redis.password,
-        db: config.database.redis.db,
-        lazyConnect: true,
-        // 快速失败配置 - 1秒超时，禁用重试
-        retryDelayOnClusterDown: 100,
-        retryDelayOnFailover: 100,
-        maxRetriesPerRequest: 0, // 禁用重试
-        connectTimeout: 1000, // 1秒连接超时
-        commandTimeout: 1000, // 1秒命令超时
-        enableAutoPipelining: false,
-        // 禁用自动重连
-        retryDelayOnFailover: 0,
-        maxRetriesPerRequest: 0,
-        // 添加更多快速失败配置
-        enableOfflineQueue: false, // 禁用离线队列
-        lazyConnect: true, // 延迟连接
-        // 完全禁用重连机制
-        enableAutoPipelining: false,
-        maxRetriesPerRequest: 0,
-        retryDelayOnFailover: 0,
-        // 添加错误处理配置
-        showFriendlyErrorStack: false,
-        // 禁用所有重连和重试
-        retryDelayOnFailover: 0,
-        retryDelayOnClusterDown: 0,
-        maxRetriesPerRequest: 0
-      });
-
-      // 尝试连接Redis，设置超时
-      const connectPromise = this.client.connect();
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Redis连接超时')), 2000); // 2秒超时
-      });
-
-      await Promise.race([connectPromise, timeoutPromise]);
-      this.isConnected = true;
-
-      console.log('✅ Redis 连接成功');
-      console.log(`📊 Redis: ${config.database.redis.host}:${config.database.redis.port}`);
-
-      // 设置事件监听器
-      this.setupEventListeners();
-
-    } catch (error) {
-      console.warn('⚠️ Redis 连接失败:', error.message);
-      console.warn('⚠️ 应用将在无Redis模式下运行');
-      this.isConnected = false;
-      this.client = null;
-      
-      // 完全移除错误抛出逻辑
-      // Redis是可选的，不应该阻止应用启动
-      // 无论在什么环境下，都不抛出错误
-    }
-    
-    // 始终返回成功，不阻止应用启动
-    return Promise.resolve();
-  }
-
-  /**
-   * 设置事件监听器
-   */
-  setupEventListeners() {
-    // 如果没有客户端，不设置事件监听器
-    if (!this.client) {
-      return;
-    }
-
-    // 移除所有可能导致未处理错误的事件监听器
-    // 只保留必要的连接成功事件
-    
-    this.client.on('connect', () => {
-      console.log('🔄 Redis 连接建立');
-    });
-
-    this.client.on('ready', () => {
-      console.log('✅ Redis 准备就绪');
-      this.isConnected = true;
-    });
-
-    // 完全移除error事件监听器，防止未处理的错误事件
-    // this.client.on('error', (error) => {
-    //   console.warn('⚠️ Redis 连接问题，应用将在无Redis模式下运行');
-    //   this.isConnected = false;
-    // });
-
-    this.client.on('close', () => {
-      this.isConnected = false;
-    });
-
-    // 移除重连事件监听器
-    // this.client.on('reconnecting', () => {
-    //   console.log('🔄 Redis 正在重连...');
-    // });
-
-    // 优雅关闭
-    process.on('SIGINT', async () => {
-      await this.disconnect();
-    });
-  }
-
-  /**
-   * 断开Redis连接
-   */
-  async disconnect() {
-    try {
-      if (this.client) {
-        await this.client.quit();
-        console.log('👋 Redis 连接已关闭');
-        this.isConnected = false;
-      }
-    } catch (error) {
-      console.error('❌ Redis 断开连接失败:', error.message);
-    }
-  }
-
-  /**
-   * 获取Redis客户端
-   */
-  getClient() {
-    if (!this.isConnected || !this.client) {
-      console.warn('⚠️ Redis 未连接，返回null');
-      return null;
-    }
-    return this.client;
-  }
-
-  /**
-   * 获取连接状态
-   */
-  getStatus() {
-    return {
-      isConnected: this.isConnected,
-      status: this.client ? this.client.status : 'disconnected',
-      host: config.database.redis.host,
-      port: config.database.redis.port,
-      db: config.database.redis.db
-    };
-  }
-
-  /**
-   * 测试Redis连接
-   */
-  async ping() {
-    try {
-      if (!this.client || !this.isConnected) {
-        return false;
-      }
-      const result = await this.client.ping();
-      return result === 'PONG';
-    } catch (error) {
-      console.warn('Redis ping 失败:', error.message);
-      return false;
-    }
-  }
-}
 
 /**
  * 数据库管理器
@@ -529,7 +337,6 @@ class RedisConnection {
 class DatabaseManager {
   constructor() {
     this.mongodb = new MongoDBConnection();
-    this.redis = new RedisConnection();
   }
 
   /**
@@ -539,7 +346,7 @@ class DatabaseManager {
     try {
       console.log('🚀 正在初始化数据库连接...');
 
-      // 先连接MongoDB（必需）
+      // 连接MongoDB（必需）
       await this.mongodb.connect();
 
       // 检查MongoDB连接状态
@@ -547,19 +354,7 @@ class DatabaseManager {
         throw new Error('MongoDB连接失败');
       }
 
-      // 再连接Redis（可选，失败不影响启动）
-      try {
-        await this.redis.connect();
-      } catch (redisError) {
-        console.warn('⚠️ Redis连接失败，但应用将继续运行:', redisError.message);
-        // Redis连接失败不影响整体启动
-      }
-
-      const mongoStatus = this.mongodb.isConnected ? '✅' : '❌';
-      const redisStatus = this.redis.isConnected ? '✅' : '⚠️';
-
-      console.log(`${mongoStatus} MongoDB: ${this.mongodb.isConnected ? '已连接' : '连接失败'}`);
-      console.log(`${redisStatus} Redis: ${this.redis.isConnected ? '已连接' : '未连接'}`);
+      console.log(`✅ MongoDB: ${this.mongodb.isConnected ? '已连接' : '连接失败'}`);
 
       // 只要MongoDB连接成功就算成功
       if (this.mongodb.isConnected) {
@@ -579,13 +374,10 @@ class DatabaseManager {
    */
   async disconnectAll() {
     console.log('🔄 正在关闭数据库连接...');
-    
-    await Promise.all([
-      this.mongodb.disconnect(),
-      this.redis.disconnect()
-    ]);
 
-    console.log('👋 所有数据库连接已关闭');
+    await this.mongodb.disconnect();
+
+    console.log('👋 数据库连接已关闭');
   }
 
   /**
@@ -593,8 +385,7 @@ class DatabaseManager {
    */
   getStatus() {
     return {
-      mongodb: this.mongodb.getStatus(),
-      redis: this.redis.getStatus()
+      mongodb: this.mongodb.getStatus()
     };
   }
 
@@ -605,12 +396,6 @@ class DatabaseManager {
     const startTime = Date.now();
     const status = {
       mongodb: {
-        status: false,
-        latency: 0,
-        error: null,
-        details: {}
-      },
-      redis: {
         status: false,
         latency: 0,
         error: null,
@@ -646,39 +431,13 @@ class DatabaseManager {
         status.mongodb.latency = Date.now() - mongoStartTime;
       }
 
-      // 检查Redis（如果Redis客户端存在）
-      const redisStartTime = Date.now();
-      try {
-        if (this.redis.client && this.redis.isConnected) {
-          const redisPing = await this.redis.ping();
-          status.redis.status = redisPing;
-          status.redis.latency = Date.now() - redisStartTime;
-          status.redis.details = {
-            host: this.redis.getStatus().host,
-            port: this.redis.getStatus().port,
-            db: this.redis.getStatus().db
-          };
-        } else {
-          status.redis.status = false;
-          status.redis.error = 'Redis客户端未连接';
-          status.redis.latency = Date.now() - redisStartTime;
-        }
-      } catch (error) {
-        status.redis.status = false;
-        status.redis.error = error.message;
-        status.redis.latency = Date.now() - redisStartTime;
-      }
-
-      // 整体状态（只要MongoDB正常就算健康）
+      // 整体状态（MongoDB正常就算健康）
       status.overall.status = status.mongodb.status;
       status.overall.duration = Date.now() - startTime;
 
       // 添加性能警告
       if (status.mongodb.latency > 1000) {
         status.mongodb.warning = 'MongoDB响应时间较慢';
-      }
-      if (status.redis.latency > 500) {
-        status.redis.warning = 'Redis响应时间较慢';
       }
 
     } catch (error) {
@@ -704,9 +463,6 @@ class DatabaseManager {
         connection: this.mongodb.getStatus(),
         stats: mongoStats
       },
-      redis: {
-        connection: this.redis.getStatus()
-      },
       system: {
         nodeVersion: process.version,
         platform: process.platform,
@@ -722,6 +478,5 @@ const databaseManager = new DatabaseManager();
 
 module.exports = {
   databaseManager,
-  mongodb: databaseManager.mongodb,
-  redis: databaseManager.redis
+  mongodb: databaseManager.mongodb
 };

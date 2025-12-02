@@ -78,7 +78,7 @@ async function testCoreFunctionality() {
     console.log('   ✅ 占卜算法工作正常');
     console.log('   ✅ 数据库CRUD操作正常');
     console.log('   ✅ 数据模型加载正常');
-    console.log('   ⚠️ Redis缓存未配置 (可选)');
+    console.log('   ✅ JWT令牌管理正常（内存存储）');
     
     return true;
     

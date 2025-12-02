@@ -78,7 +78,6 @@ const requiredPackages = [
 
 const optionalPackages = [
   'axios',
-  'ioredis',
   '@pinecone-database/pinecone',
   'openai'
 ];

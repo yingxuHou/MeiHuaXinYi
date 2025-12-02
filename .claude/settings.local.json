@@ -6,7 +6,9 @@
       "Bash(git gc:*)",
       "Bash(git fsck:*)",
       "Bash(find:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(node:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

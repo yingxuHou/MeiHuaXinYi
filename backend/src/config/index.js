@@ -66,15 +66,6 @@ const config = {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000
       }
-    },
-    redis: {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT) || 6379,
-      password: process.env.REDIS_PASSWORD || undefined,
-      db: parseInt(process.env.REDIS_DB) || 0,
-      retryDelayOnFailover: 100,
-      enableReadyCheck: true,
-      maxRetriesPerRequest: 3
     }
   },
 
@@ -247,7 +238,6 @@ config.printInfo = () => {
   console.log(`  环境: ${config.app.env}`);
   console.log(`  端口: ${config.app.port}`);
   console.log(`  MongoDB: ${config.database.mongodb.uri.replace(/\/\/.*@/, '//***:***@')}`);
-  console.log(`  Redis: ${config.database.redis.host}:${config.database.redis.port}`);
 };
 
 module.exports = config;

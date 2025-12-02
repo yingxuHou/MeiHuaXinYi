@@ -74,7 +74,6 @@ class DatabaseConnectionTest {
       const status = databaseManager.getStatus();
       console.log('📊 连接状态:');
       console.log(`   MongoDB: ${status.mongodb.isConnected ? '✅ 已连接' : '❌ 未连接'}`);
-      console.log(`   Redis: ${status.redis.isConnected ? '✅ 已连接' : '⚠️ 未连接'}`);
       console.log(`   集群: ${status.mongodb.cluster}`);
       console.log(`   数据库: ${status.mongodb.name}`);
       
@@ -99,16 +98,11 @@ class DatabaseConnectionTest {
       
       console.log('📊 健康检查结果:');
       console.log(`   MongoDB: ${healthStatus.mongodb.status ? '✅ 健康' : '❌ 异常'} (${healthStatus.mongodb.latency}ms)`);
-      console.log(`   Redis: ${healthStatus.redis.status ? '✅ 健康' : '⚠️ 异常'} (${healthStatus.redis.latency}ms)`);
       console.log(`   整体状态: ${healthStatus.overall.status ? '✅ 健康' : '❌ 异常'}`);
       console.log(`   检查耗时: ${healthStatus.overall.duration}ms`);
-      
+
       if (healthStatus.mongodb.error) {
         console.warn(`   MongoDB错误: ${healthStatus.mongodb.error}`);
-      }
-      
-      if (healthStatus.redis.error) {
-        console.warn(`   Redis错误: ${healthStatus.redis.error}`);
       }
       
       this.testResults.health = healthStatus.overall.status;
