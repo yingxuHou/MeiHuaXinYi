@@ -50,7 +50,7 @@ const config = {
     name: process.env.APP_NAME || '梅花心易',
     version: process.env.APP_VERSION || '1.0.0',
     env: process.env.NODE_ENV || 'development',
-    port: parseInt(process.env.PORT) || (process.env.NODE_ENV === 'production' ? 3000 : 3001),
+    port: parseInt(process.env.PORT) || 8080,
     isDevelopment: process.env.NODE_ENV === 'development',
     isProduction: process.env.NODE_ENV === 'production',
     isTest: process.env.NODE_ENV === 'test'
