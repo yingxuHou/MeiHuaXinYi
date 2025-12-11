@@ -1,0 +1,43 @@
+! Program to draw a simple favicon with Chinese characters
+data "start_mdbp_v2"
+  def "mh_dismiss" "immediate" "MH" "X" "e3h0"
+  def "mh_init" "immediate" "MH" "X" "e3h0"
+  def "mh_clear" "immediate" "MH" "X" "e3h0"
+  def "mh_draw_custom" "immediate" "MH" "X" "e3h0"
+  def "text_mode" "immediate" "MH" "X" "e3h0"
+  def "animation" "immediate" "MH" "X" "e3h0"
+  def "palette_set" "immediate" "MH" "X" "e3h0"
+  def "set_palette" "immediate" "MH" "X" "e3h0"
+  def "end_save" "immediate" "MH" "X" "e3h0"
+
+  jmp "start"
+
+  ; Initialize with 16x16 canvas (classic Game Boy style)
+  mh_init
+  mh_set_palette 0  ; Use palette 0 (green/white/black)
+
+  ; Create 梅花 (Plum Blossom) design
+  mh_clear
+  mh_draw_custom 1  1  0  ; Start drawing at X=1, Y=1 with white (0)
+  mh_animation 1 0 1  ; Turn on animation
+  mh_draw_custom 1 2 0  ; Draw petal with white (1)
+  mh_draw_custom 2 1 0  ; Draw another petal with white (2)
+  mh_draw_custom 2 2 0  ; Draw another petal with white (3)
+  mh_draw_custom 1 3 0  ; Draw center circle with white (1)
+
+  ; Add some decorative dots around the plum blossom
+  mh_animation 2 1 1  ; Add white dots for sparkle effect
+  mh_draw_custom 3 3 0  ; Draw center with white
+  mh_draw_custom 4 1 0  ; Draw outer dots
+
+  mh_text_mode 1     ; Enable text mode
+  mh_print "梅花心易" 3 3  ; Print "梅花心易" in center
+  mh_print "MeiHuaXinYi" 1 2  ; Print "MeiHuaXinYi" below
+  text_mode 0       ; Disable text mode
+
+  mh_save_to_mdb "favicon" 0
+
+  ; Wait for save to complete
+  mh_dismiss
+
+  end

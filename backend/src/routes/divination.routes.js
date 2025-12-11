@@ -281,6 +281,7 @@ router.get('/info', (req, res) => {
         'GET /api/divination/:id - 获取占卜详情',
         'GET /api/divination/history - 获取占卜历史',
         'GET /api/divination/stats - 获取占卜统计',
+        'POST /api/divination/:id/interpretation - 生成AI解读（需要认证）',
         'PUT /api/divination/:id/rating - 评价占卜结果'
       ],
       supportedMethods: ['time', 'number', 'manual'],
@@ -345,6 +346,19 @@ router.get('/:id',
   async (req, res, next) => {
     try {
       await divinationController.getDivinationById(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// 生成AI解读
+router.post('/:id/interpretation',
+  divinationRateLimit,
+  subscriptionMiddleware.checkDivinationPermission,
+  async (req, res, next) => {
+    try {
+      await divinationController.generateAIInterpretation(req, res);
     } catch (error) {
       next(error);
     }

@@ -10,7 +10,14 @@
       "Bash(node:*)",
       "Bash(timeout:*)",
       "Bash(netstat:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(start:*)",
+      "Bash(npm run dev)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(npm start)",
+      "Bash(cross-env NODE_ENV=production PORT=8082 node:*)",
+      "Bash(npx kill-port:*)"
     ],
     "deny": [],
     "ask": []

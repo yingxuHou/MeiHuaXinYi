@@ -47,17 +47,17 @@ const createApp = async () => {
   // API路由
   try {
     // 认证路由
-    // const authRoutes = require('./routes/auth');
-    // app.use(`${API_PREFIX}/auth`, authRoutes);
+    const authRoutes = require('./routes/auth');
+    app.use(`${API_PREFIX}/auth`, authRoutes);
 
     // 用户路由
-    // const userRoutes = require('./routes/user');
-    // app.use(`${API_PREFIX}/user`, userRoutes);
+    const userRoutes = require('./routes/user');
+    app.use(`${API_PREFIX}/user`, userRoutes);
 
     // 占卜路由
-    // const divinationRoutes = require('./routes/divination.routes');
-    // app.use(`${API_PREFIX}/divination`, divinationRoutes);
-    
+    const divinationRoutes = require('./routes/divination.routes');
+    app.use(`${API_PREFIX}/divination`, divinationRoutes);
+
     // 暂时禁用增强版占卜路由
     // const enhancedDivinationRoutes = require('./routes/enhancedDivination.routes');
     // app.use(`${API_PREFIX}/divination`, enhancedDivinationRoutes);
@@ -78,8 +78,15 @@ const createApp = async () => {
       lastModified: true
     }));
 
+    // 设置自定义favicon.ico
+    app.get('/favicon.ico', (req, res) => {
+      const faviconPath = path.join(__dirname, '../../public/favicon.ico');
+      res.sendFile(faviconPath);
+    });
+
     console.log('✅ 生产环境静态文件服务已启用');
     console.log(`📁 静态文件路径: ${frontendDistPath}`);
+    console.log('🎋 自定义favicon.ico已配置');
   }
 
   // 健康检查路由

@@ -197,9 +197,9 @@ async function startDevelopment() {
   console.log('🎉 开发环境启动完成！');
   console.log('=' .repeat(50));
   console.log('📱 前端地址: http://localhost:5173');
-  console.log('🔧 后端地址: http://localhost:3001');
-  console.log('💚 健康检查: http://localhost:3001/api/health');
-  console.log('📚 API文档: http://localhost:3001/api');
+  console.log('🔧 后端地址: http://localhost:8080');
+  console.log('💚 健康检查: http://localhost:8080/api/health');
+  console.log('📚 API文档: http://localhost:8080/api');
   console.log('=' .repeat(50));
   console.log('💡 提示:');
   console.log('   - 按 Ctrl+C 停止所有服务');

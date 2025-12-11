@@ -151,10 +151,12 @@ const config = {
         'http://localhost:3000',
         'http://localhost:5173',  // Vite默认端口
         'http://localhost:5174',  // Vite备用端口
+        'http://localhost:5175',  // Vite备用端口2
         'http://localhost:8080',  // Vue CLI默认端口
+        'http://127.0.0.1:3000',
         'http://127.0.0.1:5173',
         'http://127.0.0.1:5174',
-        'http://127.0.0.1:3000'
+        'http://127.0.0.1:5175'
       ],
       credentials: true,
       optionsSuccessStatus: 200,

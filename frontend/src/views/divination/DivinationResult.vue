@@ -539,44 +539,64 @@ onMounted(() => {
 // AI解读相关方法
 const generateAIInterpretation = async () => {
   try {
-    if (!result.value) return
-    
+    // 🔐 检查认证状态
+    if (!userStore.isLoggedIn || !userStore.token) {
+      console.error('❌ 用户未登录或token无效:', {
+        isLoggedIn: userStore.isLoggedIn,
+        hasToken: !!userStore.token,
+        userInfo: userStore.userInfo
+      })
+      ElMessage.error('请先登录后再使用AI解读功能')
+      // 跳转到登录页面
+      router.push('/login')
+      return
+    }
+
+    if (!result.value) {
+      ElMessage.error('没有可解读的占卜结果')
+      return
+    }
+
     generatingAI.value = true
     ElMessage.info('正在生成AI解读...')
-    
+
     // 🔍 添加详细的调试日志
     console.log('🔍 AI解读调试信息:', {
       hasResult: !!result.value,
       resultId: result.value.id,
       question: result.value.question,
       hexagrams: result.value.hexagrams,
-      userStore: userStore,
-      isLoggedIn: userStore.isLoggedIn,
-      hasToken: !!userStore.token,
-      tokenPreview: userStore.token ? userStore.token.substring(0, 50) + '...' : 'null'
+      userStore: {
+        isLoggedIn: userStore.isLoggedIn,
+        hasToken: !!userStore.token,
+        tokenPreview: userStore.token ? userStore.token.substring(0, 50) + '...' : 'null',
+        userId: userStore.userInfo?.id
+      }
     })
-    
-    // ✅ 传递完整的占卜数据到后端
+
+    // ✅ 传递完整的占卜数据到后端，特别是对于临时ID
     const options = {
       divinationData: result.value, // 传递完整的占卜结果
       question: result.value.question || '您的问题是什么？'
     }
-    
+
     console.log('📤 发送占卜数据到后端生成AI解读:', {
+      id: result.value.id,
+      isTempId: result.value.id.startsWith('div_') || result.value.id.startsWith('temp_') || result.value.id.startsWith('dev_'),
       question: result.value.question,
       mainHexagram: result.value.hexagrams?.ben?.name,
-      id: result.value.id,
       options: options
     })
-    
+
     const response = await divinationStore.generateAIInterpretation(result.value.id, options)
-    
+
     if (response.success) {
       // 更新结果中的AI解读
-      result.value.aiInterpretation = response.data
-      ElMessage.success('AI解读生成成功')
+      result.value.aiInterpretation = response.data.aiInterpretation
+      ElMessage.success(response.message || 'AI解读生成成功')
     } else {
-      ElMessage.error('AI解读生成失败')
+      console.error('❌ AI解读生成失败:', response)
+      ElMessage.error(response.message || 'AI解读生成失败')
     }
   } catch (error) {
     console.error('生成AI解读失败:', error)
@@ -585,9 +605,22 @@ const generateAIInterpretation = async () => {
       stack: error.stack,
       response: error.response,
       status: error.response?.status,
-      data: error.response?.data
+      data: error.response?.data,
+      code: error.code,
+      details: error.details
     })
-    ElMessage.error('生成AI解读失败: ' + error.message)
+
+    // 🔍 处理特定错误
+    if (error.response?.status === 401) {
+      ElMessage.error('登录已过期，请重新登录')
+      router.push('/login')
+    } else if (error.response?.status === 403) {
+      ElMessage.error('没有权限使用AI解读功能')
+    } else if (error.response?.status === 404 && error.response?.data?.code === 'MISSING_DIVINATION_DATA') {
+      ElMessage.error('占卜数据不完整，请重新占卜')
+    } else {
+      ElMessage.error(error.message || '生成AI解读失败，请稍后重试')
+    }
   } finally {
     generatingAI.value = false
   }

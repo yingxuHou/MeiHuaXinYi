@@ -345,6 +345,175 @@ class DivinationController {
       });
     }
   }
+
+  /**
+   * 生成AI解读
+   * POST /api/divination/:id/interpretation
+   */
+  async generateAIInterpretation(req, res) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: '请求参数验证失败',
+          errors: errors.array()
+        });
+      }
+
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      // 记录请求日志
+      logger.info('AI解读请求', {
+        userId,
+        divinationId: id,
+        ip: req.ip,
+        isTempId: id.startsWith('div_') || id.startsWith('temp_') || id.startsWith('dev_')
+      });
+
+      let divination = null;
+
+      // 处理不同类型的ID
+      if (id.startsWith('div_') || id.startsWith('temp_') || id.startsWith('dev_')) {
+        // 临时ID：从前端请求体获取占卜数据
+        const { divinationData } = req.body;
+
+        if (!divinationData) {
+          return res.status(400).json({
+            success: false,
+            message: '临时ID需要提供占卜数据',
+            code: 'MISSING_DIVINATION_DATA'
+          });
+        }
+
+        // 构建占卜数据对象
+        divination = {
+          success: true,
+          data: {
+            id: id,
+            userId: userId,
+            question: divinationData.question,
+            method: divinationData.method || 'time',
+            hexagrams: divinationData.hexagrams || {},
+            movingLine: divinationData.movingLine,
+            analysis: divinationData.analysis || {},
+            interpretation: divinationData.interpretation || {},
+            aiInterpretation: null,
+            aiInterpretationStatus: 'pending',
+            timestamp: divinationData.timestamp || new Date().toISOString(),
+            metadata: {
+              isTemp: true,
+              originalId: id
+            }
+          }
+        };
+
+        logger.info('使用前端提供的占卜数据', {
+          divinationId: id,
+          question: divination.data.question?.substring(0, 50) + '...'
+        });
+      } else {
+        // 正常MongoId：从数据库获取
+        divination = await this.divinationService.getDivinationById(id, userId);
+
+        if (!divination.success) {
+          return res.status(404).json({
+            success: false,
+            message: '占卜记录不存在',
+            code: 'DIVINATION_NOT_FOUND'
+          });
+        }
+
+        // 检查是否已有AI解读
+        if (divination.data.aiInterpretation) {
+          return res.json({
+            success: true,
+            message: 'AI解读已存在',
+            data: {
+              aiInterpretation: divination.data.aiInterpretation,
+              aiInterpretationStatus: 'completed'
+            }
+          });
+        }
+      }
+
+      // 生成AI解读
+      const interpretationResult = await this.interpretationService.generateAIInterpretation(
+        divination.data,
+        {
+          temperature: 0.7,
+          maxTokens: 4000
+        }
+      );
+
+      if (interpretationResult.success) {
+        // 只有非临时ID才更新数据库
+        if (!id.startsWith('div_') && !id.startsWith('temp_') && !id.startsWith('dev_')) {
+          try {
+            await this.divinationService.updateAIInterpretation(id, userId, interpretationResult.data);
+          } catch (dbError) {
+            logger.warn('更新数据库AI解读失败', {
+              error: dbError.message,
+              divinationId: id
+            });
+          }
+        }
+
+        // 记录成功日志
+        logger.info('AI解读生成成功', {
+          userId,
+          divinationId: id,
+          interpretationLength: interpretationResult.data.content?.length || 0,
+          isTempId: id.startsWith('div_') || id.startsWith('temp_') || id.startsWith('dev_')
+        });
+
+        res.json({
+          success: true,
+          message: 'AI解读生成成功',
+          data: {
+            aiInterpretation: interpretationResult.data,
+            aiInterpretationStatus: 'completed'
+          }
+        });
+      } else {
+        // 记录失败日志
+        logger.error('AI解读生成失败', {
+          userId,
+          divinationId: id,
+          error: interpretationResult.error,
+          isTempId: id.startsWith('div_') || id.startsWith('temp_') || id.startsWith('dev_')
+        });
+
+        // 返回降级解读而不是错误
+        const fallbackInterpretation = await this.interpretationService.generateFallbackInterpretation(divination.data);
+
+        res.json({
+          success: true,
+          message: 'AI解读服务暂不可用，已提供基础解读',
+          data: {
+            aiInterpretation: fallbackInterpretation,
+            aiInterpretationStatus: 'fallback'
+          }
+        });
+      }
+
+    } catch (error) {
+      logger.error('AI解读处理失败', {
+        userId: req.user?.id,
+        divinationId: req.params.id,
+        error: error.message,
+        stack: error.stack
+      });
+
+      res.status(500).json({
+        success: false,
+        message: '服务器内部错误',
+        code: 'INTERNAL_SERVER_ERROR',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  }
 }
 
 /**
@@ -412,6 +581,22 @@ const validationRules = {
     param('id')
       .isMongoId()
       .withMessage('占卜ID格式无效')
+  ],
+
+  // 生成AI解读验证
+  generateAIInterpretation: [
+    param('id')
+      .isString()
+      .withMessage('占卜ID必须是字符串')
+      .isLength({ min: 1 })
+      .withMessage('占卜ID不能为空')
+      .custom((value) => {
+        // 支持MongoId格式和临时ID格式
+        const mongoIdPattern = /^[0-9a-fA-F]{24}$/;
+        const tempIdPattern = /^(div_|temp_|dev_)/;
+        return mongoIdPattern.test(value) || tempIdPattern.test(value);
+      })
+      .withMessage('占卜ID格式无效，应为MongoId或临时ID')
   ],
 
   // 获取历史记录验证

@@ -101,6 +101,49 @@ class DivinationService {
    */
   async getDivinationById(divinationId, userId) {
     try {
+      // 如果是开发模式的ID，返回模拟数据
+      if (divinationId.startsWith('dev_')) {
+        // 返回一个模拟的占卜记录
+        return {
+          success: true,
+          data: {
+            id: divinationId,
+            question: '开发模式占卜问题',
+            method: 'time',
+            hexagrams: {
+              ben: { name: '乾为天', id: 1 },
+              hu: { name: '坤为地', id: 2 },
+              bian: { name: '泽天夬', id: 43 }
+            },
+            movingLine: 4,
+            analysis: {
+              wuxing: {
+                ben: '金',
+                hu: '土',
+                relationships: {},
+                fortune: '大吉'
+              },
+              fortune: '大吉',
+              timing: '时机适宜'
+            },
+            interpretation: {
+              summary: '开发模式解读',
+              detailed: '这是一个开发模式的占卜解读',
+              advice: '建议继续开发'
+            },
+            userRating: null,
+            aiInterpretation: null,
+            aiInterpretationStatus: 'pending',
+            createdAt: new Date(),
+            metadata: {
+              processingTime: 50,
+              algorithmVersion: 'dev-v1.0',
+              isDev: true
+            }
+          }
+        };
+      }
+
       const divination = await Divination.findOne({
         _id: divinationId,
         userId: userId
@@ -350,6 +393,55 @@ class DivinationService {
     const divination = new Divination(divinationData);
     const saveOptions = session ? { session } : {};
     return await divination.save(saveOptions);
+  }
+
+  /**
+   * 更新AI解读
+   * @param {string} divinationId - 占卜ID
+   * @param {string} userId - 用户ID
+   * @param {Object} aiInterpretation - AI解读数据
+   * @returns {Object} 更新结果
+   */
+  async updateAIInterpretation(divinationId, userId, aiInterpretation) {
+    try {
+      // 如果是开发模式的占卜记录，直接返回成功
+      if (divinationId.startsWith('dev_')) {
+        return {
+          success: true,
+          message: '开发模式：AI解读更新成功（虚拟）',
+          data: aiInterpretation
+        };
+      }
+
+      // 更新数据库中的占卜记录
+      const divination = await Divination.findOneAndUpdate(
+        {
+          _id: divinationId,
+          userId: userId
+        },
+        {
+          $set: {
+            'aiInterpretation': aiInterpretation,
+            'aiInterpretationStatus': 'completed',
+            'aiInterpretationCreatedAt': new Date()
+          }
+        },
+        { new: true }
+      );
+
+      if (!divination) {
+        throw new Error('占卜记录不存在或无权访问');
+      }
+
+      return {
+        success: true,
+        message: 'AI解读更新成功',
+        data: aiInterpretation
+      };
+
+    } catch (error) {
+      throw new Error(`更新AI解读失败: ${error.message}`);
+    }
   }
 
   /**
