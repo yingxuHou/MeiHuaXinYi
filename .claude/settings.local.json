@@ -17,7 +17,9 @@
       "Bash(taskkill:*)",
       "Bash(npm start)",
       "Bash(cross-env NODE_ENV=production PORT=8082 node:*)",
-      "Bash(npx kill-port:*)"
+      "Bash(npx kill-port:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
