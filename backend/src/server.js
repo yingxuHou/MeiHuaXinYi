@@ -24,12 +24,12 @@ const startServer = async () => {
     // 创建HTTP服务器
     const server = http.createServer(app);
 
-    // 启动服务器
-    server.listen(config.app.port, () => {
+    // 启动服务器 - 绑定到 0.0.0.0 以支持容器化部署
+    server.listen(config.app.port, '0.0.0.0', () => {
       console.log('🎉 服务器启动成功!');
-      console.log(`📡 服务地址: http://localhost:${config.app.port}`);
-      console.log(`🔗 API文档: http://localhost:${config.app.port}/api`);
-      console.log(`💚 健康检查: http://localhost:${config.app.port}/api/health`);
+      console.log(`📡 服务地址: http://0.0.0.0:${config.app.port}`);
+      console.log(`🔗 API文档: http://0.0.0.0:${config.app.port}/api`);
+      console.log(`💚 健康检查: http://0.0.0.0:${config.app.port}/api/health`);
       console.log('='.repeat(50));
     });
 
