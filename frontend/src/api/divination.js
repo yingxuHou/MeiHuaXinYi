@@ -15,9 +15,12 @@ import request from './request'
  * @returns {Promise} 占卜结果
  */
 export const performDivination = (data) => {
-  // 方案A：直接使用测试端点，确保真实API调用
+  // 使用正式的占卜端点，而非测试端点
+  // 开发环境使用 dev-perform（跳过数据库），生产环境使用 perform
+  const endpoint = import.meta.env.DEV ? '/divination/dev-perform' : '/divination/perform';
+
   return request({
-    url: '/divination/test',
+    url: endpoint,
     method: 'POST',
     data
   })

@@ -270,10 +270,17 @@ class DivinationController {
         ip: req.ip
       });
 
-      // 直接调用外部算法API，不保存到数据库
-      const result = await this.divinationService.callExternalAlgorithmAPI(
-        question, method, params, options
-      );
+      // 直接调用本地算法，不保存到数据库
+      const MeihuaDivinationCore = require('../algorithms/core/meihuaDivinationCore');
+      const divinationCore = new MeihuaDivinationCore();
+
+      const algorithmResult = await divinationCore.performDivination(question, {
+        method,
+        params,
+        user: options.user
+      });
+
+      const result = algorithmResult;
 
       // 记录成功日志
       logger.info('测试占卜完成', {
