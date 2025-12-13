@@ -295,8 +295,7 @@ export function adaptDivinationParams(formData) {
   return {
     question,
     method,
-    params,
-    location: otherParams.location || null
+    params
   }
 }
 
