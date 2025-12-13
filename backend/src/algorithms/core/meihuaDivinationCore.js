@@ -5,7 +5,6 @@
 
 const BaguaSystem = require('./baguaSystem');
 const FiveElementsSystem = require('./fiveElementsSystem');
-const { HOUR_TO_NUMBER } = require('../data/baguaData');
 const { HEXAGRAM_DATA } = require('../data/hexagramData');
 const { getCurrentTimeInfo, getHourNumber } = require('../utils/timeUtils');
 
@@ -295,11 +294,22 @@ class MeihuaDivinationCore {
     const bianHexagramInfo = this.getHexagramInfo(bianHexagram.id);
     const huHexagramInfo = this.getHexagramInfo(huGuaAnalysis.huHexagram.id);
 
+    // 生成综合解读
+    const interpretationData = this.generateInterpretation({
+      primaryHexagramInfo,
+      bianHexagramInfo,
+      huHexagramInfo,
+      wuxingAnalysis,
+      tiYongAnalysis,
+      movingLine: primaryAnalysis.movingLine
+    });
+
     return {
       id: this.generateDivinationId(),
       question,
+      method: options.method || 'time',
       timestamp: new Date(),
-      
+
       // 三卦信息
       hexagrams: {
         ben: {
@@ -318,32 +328,42 @@ class MeihuaDivinationCore {
           lines: bianGua
         }
       },
-      
+
       // 动爻信息
       movingLine: primaryAnalysis.movingLine,
-      
-      // 体用分析
-      tiYong: {
-        ...tiYongAnalysis,
-        analysis: wuxingAnalysis
+
+      // 分析部分（符合数据库Schema结构）
+      analysis: {
+        wuxing: {
+          ben: wuxingAnalysis.ti.element,
+          hu: wuxingAnalysis.yong.element,
+          bian: wuxingAnalysis.bian?.element || wuxingAnalysis.ti.element, // 如果没有变卦五行，用体卦
+          relationships: {
+            benToHu: wuxingAnalysis.relationship,
+            benToBian: wuxingAnalysis.bian?.relationship || wuxingAnalysis.relationship,
+            huToBian: wuxingAnalysis.bian?.relationship || wuxingAnalysis.relationship
+          },
+          fortune: wuxingAnalysis.fortune?.level || '中平',
+          timing: wuxingAnalysis.timing || '时机平和'
+        },
+        compatibility: wuxingAnalysis.relationship?.strength === 'strong' ? 0.8 :
+                     wuxingAnalysis.relationship?.strength === 'weak' ? 0.3 : 0.5,
+        elements: {
+          favorable: wuxingAnalysis.favorableElements || [],
+          unfavorable: wuxingAnalysis.unfavorableElements || [],
+          neutral: []
+        }
       },
-      
-      // 五行分析
-      wuxing: wuxingAnalysis,
-      
-      // 互卦分析
-      huGuaAnalysis: huGuaAnalysis,
-      
-      // 综合解读
-      interpretation: this.generateInterpretation({
-        primaryHexagramInfo,
-        bianHexagramInfo,
-        huHexagramInfo,
-        wuxingAnalysis,
-        tiYongAnalysis,
-        movingLine: primaryAnalysis.movingLine
-      }),
-      
+
+      // 解读部分（符合数据库Schema结构）
+      interpretation: {
+        summary: interpretationData.summary || '占卜解读待生成',
+        detailed: this.generateDetailedInterpretation(interpretationData, primaryHexagramInfo, bianHexagramInfo),
+        advice: interpretationData.basic?.current?.advice || '建议谨慎行事',
+        timing: wuxingAnalysis.timing || '时机平和',
+        precautions: '占卜结果仅供参考，最终决定需结合实际情况'
+      },
+
       // 元数据
       metadata: {
         timeInfo: primaryAnalysis.currentTimeInfo,
@@ -352,7 +372,9 @@ class MeihuaDivinationCore {
         hourName: primaryAnalysis.currentTimeInfo.hourName,
         outerGuaNumber: primaryAnalysis.outerGuaNumber,
         innerGuaNumber: primaryAnalysis.innerGuaNumber,
-        calculationTime: new Date()
+        calculationTime: new Date(),
+        processingTime: 50,
+        algorithmVersion: 'v2.0'
       }
     };
   }
@@ -372,11 +394,48 @@ class MeihuaDivinationCore {
   }
 
   /**
+   * 生成详细解读
+   * @param {Object} interpretationData - 解读数据
+   * @param {Object} primaryHexagramInfo - 本卦信息
+   * @param {Object} bianHexagramInfo - 变卦信息
+   * @returns {string} 详细解读
+   */
+  generateDetailedInterpretation(interpretationData, primaryHexagramInfo, bianHexagramInfo) {
+    const { basic, tiYong, movingLine } = interpretationData;
+
+    let detailed = `【本卦解析：${basic.current.hexagram}】\n`;
+    detailed += `当前状态：${basic.current.meaning}\n`;
+    detailed += `运势：${basic.current.fortune}\n\n`;
+
+    detailed += `【变卦预示：${basic.result.hexagram}】\n`;
+    detailed += `发展趋势：${basic.result.meaning}\n`;
+    detailed += `未来运势：${basic.result.fortune}\n\n`;
+
+    detailed += `【互卦过程：${basic.process.hexagram}】\n`;
+    detailed += `发展过程：${basic.process.meaning}\n\n`;
+
+    detailed += `【体用关系分析】\n`;
+    detailed += `体用关系：${tiYong.relationship}\n`;
+    detailed += `五行作用：${tiYong.meaning}\n`;
+    detailed += `综合运势：${tiYong.fortune}\n\n`;
+
+    detailed += `【动爻分析】\n`;
+    detailed += `动爻位置：第${movingLine.position}爻\n`;
+    detailed += `动爻含义：${movingLine.meaning}\n`;
+    detailed += `对卦象影响：${movingLine.influence}\n\n`;
+
+    detailed += `【综合建议】\n`;
+    detailed += `${basic.current.advice}\n`;
+
+    return detailed;
+  }
+
+  /**
    * 生成占卜ID
    * @returns {string} 占卜ID
    */
   generateDivinationId() {
-    return `div_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `div_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
   /**

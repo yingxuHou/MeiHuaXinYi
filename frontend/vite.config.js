@@ -20,7 +20,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'https://meihua-api.zeabur.app',
+        target: 'http://localhost:8081',
         changeOrigin: true,
         secure: false,
       },

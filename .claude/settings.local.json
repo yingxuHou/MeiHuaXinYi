@@ -19,7 +19,11 @@
       "Bash(cross-env NODE_ENV=production PORT=8082 node:*)",
       "Bash(npx kill-port:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(cmd:*)",
+      "Bash(cross-env PORT=8081 npm run dev:*)",
+      "Bash(PORT=8081 npm run dev:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []
