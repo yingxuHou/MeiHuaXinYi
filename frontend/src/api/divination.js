@@ -19,6 +19,14 @@ export const performDivination = (data) => {
   // 开发环境使用 dev-perform（跳过数据库），生产环境使用 perform
   const endpoint = import.meta.env.DEV ? '/divination/dev-perform' : '/divination/perform';
 
+  // 🔍 添加调试日志
+  console.log('🚀 发送占卜请求:', {
+    endpoint,
+    method: 'POST',
+    hasAuth: true,
+    data: JSON.stringify(data, null, 2)
+  });
+
   return request({
     url: endpoint,
     method: 'POST',

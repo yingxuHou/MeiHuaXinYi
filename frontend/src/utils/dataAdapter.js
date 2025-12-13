@@ -264,8 +264,16 @@ export function adaptDivinationParams(formData) {
 
   switch (method) {
     case 'time':
+      // 确保时间格式严格符合ISO8601标准
+      let datetime = otherParams.datetime || new Date().toISOString();
+      // 移除毫秒部分，但避免重复的Z
+      if (datetime.includes('.')) {
+        datetime = datetime.split('.')[0] + 'Z';
+      } else if (!datetime.endsWith('Z')) {
+        datetime = datetime + 'Z';
+      }
       params = {
-        datetime: otherParams.datetime || new Date().toISOString()
+        datetime: datetime
       }
       break
     

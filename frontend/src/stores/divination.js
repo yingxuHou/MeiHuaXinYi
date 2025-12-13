@@ -74,6 +74,9 @@ export const useDivinationStore = defineStore('divination', () => {
       // 适配参数格式
       const apiParams = adaptDivinationParams(divinationData)
 
+      // 🔍 添加调试日志
+      console.log('🔧 适配后的API参数:', JSON.stringify(apiParams, null, 2));
+
       // 直接调用真实API，移除模拟进度条
       const response = await performDivination(apiParams)
 
