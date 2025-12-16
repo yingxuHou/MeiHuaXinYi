@@ -182,6 +182,44 @@ class BaguaSystem {
   }
 
   /**
+   * 根据八卦编号获取自然属性
+   * @param {number} baguaNumber - 八卦编号 (1-8)
+   * @returns {string} 自然属性
+   */
+  getBaguaNature(baguaNumber) {
+    const natureMap = {
+      1: '天', // 乾
+      2: '地', // 坤
+      3: '雷', // 震
+      4: '水', // 坎
+      5: '山', // 艮
+      6: '风', // 巽
+      7: '火', // 离
+      8: '泽'  // 兑
+    };
+    return natureMap[baguaNumber] || '未知';
+  }
+
+  /**
+   * 根据八卦名称获取自然属性
+   * @param {string} baguaName - 八卦名称
+   * @returns {string} 自然属性
+   */
+  getNatureByName(baguaName) {
+    const nameToNatureMap = {
+      '乾': '天',
+      '坤': '地',
+      '震': '雷',
+      '坎': '水',
+      '艮': '山',
+      '巽': '风',
+      '离': '火',
+      '兑': '泽'
+    };
+    return nameToNatureMap[baguaName] || baguaName;
+  }
+
+  /**
    * 获取所有八卦数据
    * @returns {Object} 所有八卦数据
    */
