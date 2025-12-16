@@ -294,12 +294,7 @@ router.get('/info', (req, res) => {
   });
 });
 
-/**
- * 需要认证的API路由
- */
-router.use(authMiddleware.authenticate); // 以下所有API都需要认证
-
-// 测试占卜修复状态
+// 测试占卜修复状态（公开端点，无需认证）
 router.get('/test-fix', (req, res) => {
   res.json({
     success: true,
@@ -314,6 +309,11 @@ router.get('/test-fix', (req, res) => {
     }
   });
 });
+
+/**
+ * 需要认证的API路由
+ */
+router.use(authMiddleware.authenticate); // 以下所有API都需要认证
 
 // 执行占卜
 router.post('/perform',
