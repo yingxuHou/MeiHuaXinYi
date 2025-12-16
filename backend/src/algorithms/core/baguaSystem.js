@@ -146,6 +146,32 @@ class BaguaSystem {
   }
 
   /**
+   * 根据八卦编号获取三爻数组
+   * @param {number} baguaNumber - 八卦编号 (1-8)
+   * @returns {Array} 三爻数组
+   */
+  getBaguaLines(baguaNumber) {
+    if (baguaNumber < 1 || baguaNumber > 8) {
+      throw new Error('八卦编号必须在1-8之间');
+    }
+
+    // 根据八卦编号返回对应的三爻数组
+    // 这里使用先天八卦的排列
+    const baguaLinesMap = {
+      1: [1, 1, 1], // 乾
+      2: [0, 0, 0], // 坤
+      3: [0, 0, 1], // 震
+      4: [0, 1, 0], // 坎
+      5: [1, 0, 0], // 艮
+      6: [1, 1, 0], // 巽
+      7: [1, 0, 1], // 离
+      8: [0, 1, 1]  // 兑
+    };
+
+    return baguaLinesMap[baguaNumber];
+  }
+
+  /**
    * 获取所有八卦数据
    * @returns {Object} 所有八卦数据
    */

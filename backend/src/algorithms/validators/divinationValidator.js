@@ -87,8 +87,8 @@ class DivinationValidator {
     }
 
     // 验证其他选项
-    if (options.method && !['time', 'number'].includes(options.method)) {
-      errors.push('起卦方法必须是time或number');
+    if (options.method && !['time', 'number', 'manual'].includes(options.method)) {
+      errors.push('起卦方法必须是time、number或manual');
     }
 
     return {

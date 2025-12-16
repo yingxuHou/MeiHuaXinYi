@@ -26,10 +26,13 @@ class MeihuaAlgorithmManager {
    * @returns {Promise<Object>} 占卜结果
    */
   async performDivination(question, options = {}) {
-    // 验证输入
+    // 验证输入 - 修正验证参数格式
     const validation = this.validator.validateDivinationRequest({
       question,
-      options
+      options: {
+        method: options.method,
+        hour: options.hour
+      }
     });
 
     if (!validation.isValid) {

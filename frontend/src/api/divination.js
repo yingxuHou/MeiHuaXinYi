@@ -15,17 +15,33 @@ import request from './request'
  * @returns {Promise} 占卜结果
  */
 export const performDivination = (data) => {
-  // 使用正式的占卜端点，而非测试端点
-  // 开发环境使用 dev-perform（跳过数据库），生产环境使用 perform
-  const endpoint = import.meta.env.DEV ? '/divination/dev-perform' : '/divination/perform';
-
-  // 🔍 添加调试日志
-  console.log('🚀 发送占卜请求:', {
-    endpoint,
-    method: 'POST',
-    hasAuth: true,
-    data: JSON.stringify(data, null, 2)
+  // 🔍 添加详细的请求数据验证
+  console.log('🚀 performDivination 调用前检查:', {
+    data,
+    dataType: typeof data,
+    paramsType: typeof data?.params,
+    paramsValue: data?.params,
+    datetimeType: typeof data?.params?.datetime,
+    datetimeValue: data?.params?.datetime
   });
+
+  // 开发环境额外的验证
+  if (import.meta.env.DEV) {
+    if (!data || typeof data !== 'object') {
+      console.error('❌ data 必须是对象');
+      throw new Error('占卜数据必须是对象');
+    }
+    if (!data.params || typeof data.params !== 'object') {
+      console.error('❌ params 必须是对象');
+      throw new Error('占卜参数必须是对象');
+    }
+    if (data.method === 'time' && !data.params?.datetime) {
+      console.error('❌ time方法需要datetime参数');
+      throw new Error('时间起卦需要datetime参数');
+    }
+  }
+
+  const endpoint = import.meta.env.DEV ? '/divination/dev-perform' : '/divination/perform';
 
   return request({
     url: endpoint,

@@ -23,27 +23,38 @@ class MeihuaDivinationCore {
   async performDivination(question, options = {}) {
     try {
       console.log('🔮 开始执行占卜算法...');
-      
+      console.log('📝 占卜方法:', options.method || 'random');
+
       // 步骤①：生成主卦
-      const primaryGua = this.generatePrimaryHexagram();
+      let primaryGua;
+      if (options.method === 'manual' && options.params) {
+        // 手动起卦
+        primaryGua = this.generatePrimaryHexagramManual(options.params);
+      } else if (options.method === 'number' && options.params) {
+        // 数字起卦
+        primaryGua = this.generatePrimaryHexagramNumber(options.params);
+      } else {
+        // 时间起卦或随机起卦
+        primaryGua = this.generatePrimaryHexagramTime(options.params);
+      }
       console.log('📊 主卦生成:', primaryGua);
-      
+
       // 步骤②：分析主卦，计算动爻
       const primaryAnalysis = this.analyzePrimaryGua(primaryGua, options.hour);
       console.log('🔍 主卦分析:', { movingLine: primaryAnalysis.movingLine, outerGuaNumber: primaryAnalysis.outerGuaNumber, innerGuaNumber: primaryAnalysis.innerGuaNumber });
-      
+
       // 步骤③：生成变卦
       const bianGua = this.generateBianGua(primaryGua, primaryAnalysis.movingLine);
       console.log('🔄 变卦生成:', bianGua);
-      
+
       // 步骤④：生成互卦
       const huGua = this.generateHuGua(primaryGua);
       console.log('🔗 互卦生成:', huGua);
-      
+
       // 步骤⑤：确定体用关系
       const tiYongAnalysis = this.determineTiYong(primaryAnalysis.movingLine, primaryGua);
       console.log('⚖️ 体用关系:', { ti: tiYongAnalysis.ti, yong: tiYongAnalysis.yong, tiIsOuter: tiYongAnalysis.tiIsOuter });
-      
+
       // 步骤⑥：五行分析
       const wuxingAnalysis = this.analyzeFiveElements(tiYongAnalysis.ti, tiYongAnalysis.yong);
       console.log('🌿 五行分析:', wuxingAnalysis);
@@ -562,6 +573,134 @@ class MeihuaDivinationCore {
     };
     
     return HOUR_NAMES[hourNumber] || '子时';
+  }
+
+  /**
+   * 时间起卦生成主卦
+   * @param {Object} params - 时间参数
+   * @returns {Array} 主卦数组
+   */
+  generatePrimaryHexagramTime(params = {}) {
+    if (params.datetime) {
+      // 使用指定时间
+      const date = new Date(params.datetime);
+      const timeInfo = this.getTimeFromDate(date);
+      return this.generateHexagramFromTime(timeInfo);
+    } else {
+      // 使用当前时间
+      return this.generatePrimaryHexagram();
+    }
+  }
+
+  /**
+   * 数字起卦生成主卦
+   * @param {Object} params - 数字参数
+   * @returns {Array} 主卦数组
+   */
+  generatePrimaryHexagramNumber(params) {
+    const { numbers } = params;
+    if (!numbers || numbers.length < 2) {
+      throw new Error('数字起卦需要至少2个数字');
+    }
+
+    const primaryGua = [];
+
+    // 使用数字生成爻
+    for (let i = 0; i < 6; i++) {
+      const numIndex = i % numbers.length;
+      const number = numbers[numIndex];
+      // 根据数字的奇偶性决定阴爻阳爻
+      primaryGua[i] = number % 2 === 0 ? 0 : 1;
+    }
+
+    return primaryGua;
+  }
+
+  /**
+   * 手动起卦生成主卦
+   * @param {Object} params - 手动参数
+   * @returns {Array} 主卦数组
+   */
+  generatePrimaryHexagramManual(params) {
+    const { upperGua, lowerGua, movingLine } = params;
+
+    if (!upperGua || !lowerGua || !movingLine) {
+      throw new Error('手动起卦需要上卦、下卦和动爻参数');
+    }
+
+    // 将上卦和下卦转换为三爻数组
+    const upperLines = this.baguaSystem.getBaguaLines(upperGua);
+    const lowerLines = this.baguaSystem.getBaguaLines(lowerGua);
+
+    // 构建六爻数组 [下卦1爻, 下卦2爻, 下卦3爻, 上卦1爻, 上卦2爻, 上卦3爻]
+    const primaryGua = [
+      lowerLines[0],
+      lowerLines[1],
+      lowerLines[2],
+      upperLines[0],
+      upperLines[1],
+      upperLines[2]
+    ];
+
+    return primaryGua;
+  }
+
+  /**
+   * 从日期时间获取时间信息
+   * @param {Date} date - 日期对象
+   * @returns {Object} 时间信息
+   */
+  getTimeFromDate(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+
+    return {
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      hourNumber: getHourNumber(hour)
+    };
+  }
+
+  /**
+   * 根据时间信息生成主卦
+   * @param {Object} timeInfo - 时间信息
+   * @returns {Array} 主卦数组
+   */
+  generateHexagramFromTime(timeInfo) {
+    // 使用年月日时的数字来生成卦
+    // 这里使用简单的随机方法，实际应用中可能需要更复杂的算法
+    const seed = timeInfo.year + timeInfo.month + timeInfo.day + timeInfo.hourNumber;
+    const random = this.seededRandom(seed);
+
+    const primaryGua = [];
+    for (let i = 0; i < 6; i++) {
+      primaryGua[i] = random() > 0.5 ? 1 : 0;
+    }
+
+    return primaryGua;
+  }
+
+  /**
+   * 种子随机数生成器
+   * @param {number} seed - 种子
+   * @returns {Function} 随机数生成函数
+   */
+  seededRandom(seed) {
+    let m = 0x80000000; // 2**31
+    let a = 1103515245;
+    let c = 12345;
+    let state = seed ? seed : Math.floor(Math.random() * (m - 1));
+
+    return function() {
+      state = (a * state + c) % m;
+      return state / (m - 1);
+    };
   }
 }
 
