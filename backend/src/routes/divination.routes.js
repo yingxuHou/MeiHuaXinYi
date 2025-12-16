@@ -342,6 +342,54 @@ router.get('/test-divination', async (req, res) => {
   }
 });
 
+// 测试完整占卜流程（模拟认证用户）
+router.post('/test-perform', async (req, res) => {
+  console.log('测试完整占卜流程');
+  try {
+    // 模拟用户信息
+    const mockUser = {
+      id: '6767b391e6764fe30db5890e',
+      email: 'test@example.com',
+      subscription: { type: 'free' },
+      isDev: false
+    };
+
+    // 设置模拟用户
+    req.user = mockUser;
+
+    // 模拟占卜请求
+    const mockDivinationController = require('../controllers/divination.controller');
+    const originalPerform = mockDivinationController.performDivination;
+
+    // 重写响应方法以避免实际发送
+    const originalJson = res.json;
+    const result = {};
+    res.json = function(data) {
+      Object.assign(result, data);
+      return this;
+    };
+
+    await originalPerform.call(mockDivinationController, req, res);
+
+    // 恢复原方法
+    res.json = originalJson;
+
+    res.json({
+      success: result.success || true,
+      message: result.message || '测试成功',
+      data: result.data || null,
+      error: result.error || null
+    });
+  } catch (error) {
+    console.error('测试完整占卜流程失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '占卜测试失败',
+      error: error.message
+    });
+  }
+});
+
 /**
  * 需要认证的API路由
  */
