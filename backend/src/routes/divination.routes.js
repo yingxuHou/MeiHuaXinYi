@@ -310,6 +310,35 @@ router.get('/test-fix', (req, res) => {
   });
 });
 
+// 测试占卜算法（公开端点，无需认证，仅用于调试）
+router.get('/test-divination', async (req, res) => {
+  const algorithmManager = require('../algorithms').algorithmManager;
+  try {
+    const result = await algorithmManager.performDivination('测试工作发展', {
+      method: 'time',
+      params: {
+        datetime: new Date().toISOString()
+      }
+    });
+
+    res.json({
+      success: true,
+      message: '占卜算法测试成功',
+      result: {
+        hexagrams: result.hexagrams,
+        movingLine: result.movingLine,
+        fortune: result.wuxing?.fortune?.level || '未知'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: '占卜算法测试失败',
+      error: error.message
+    });
+  }
+});
+
 /**
  * 需要认证的API路由
  */
