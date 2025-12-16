@@ -23,9 +23,14 @@ class DivinationController {
    */
   async performDivination(req, res) {
     try {
+      console.log('🔮 占卜控制器被调用');
+      console.log('用户:', req.user?.id || '未知');
+      console.log('请求体:', req.body);
+
       // 验证请求参数
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.log('❌ 请求参数验证失败:', errors.array());
         return res.status(400).json({
           success: false,
           message: '请求参数验证失败',
