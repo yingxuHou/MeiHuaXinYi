@@ -152,7 +152,12 @@ class DivinationService {
 
       // 确保所有错误都有明确的错误信息
       if (error.message.includes('validation failed')) {
-        throw new Error('占卜数据验证失败，请稍后重试');
+        logger.error('验证失败详细信息:', {
+          originalError: error.message,
+          stack: error.stack,
+          userId
+        });
+        throw new Error('占卜数据验证失败: ' + error.message);
       } else if (error.message.includes('用户不存在')) {
         throw new Error('用户信息验证失败，请重新登录');
       } else if (error.message.includes('免费占卜次数')) {

@@ -17,8 +17,7 @@ const baguaSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: true,
-    enum: ['乾', '兑', '离', '震', '巽', '坎', '艮', '坤']
+    required: true
   },
   symbol: {
     type: String,
