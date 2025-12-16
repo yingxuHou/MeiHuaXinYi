@@ -299,6 +299,22 @@ router.get('/info', (req, res) => {
  */
 router.use(authMiddleware.authenticate); // 以下所有API都需要认证
 
+// 测试占卜修复状态
+router.get('/test-fix', (req, res) => {
+  res.json({
+    success: true,
+    message: '占卜API修复已部署',
+    timestamp: new Date().toISOString(),
+    version: '1.0.1',
+    features: {
+      timeMethod: true,
+      numberMethod: true,
+      manualMethod: true,
+      validation: true
+    }
+  });
+});
+
 // 执行占卜
 router.post('/perform',
   divinationRateLimit,

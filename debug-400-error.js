@@ -6,7 +6,7 @@
 const axios = require('axios');
 
 // 配置
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:8080/api';
 
 // 模拟前端请求的数据
 const testDivinationData = {
@@ -30,13 +30,21 @@ async function testEndpoints() {
       headers: {
         'Authorization': `Bearer ${devToken}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 10000
     });
     console.log('✅ /dev-perform 成功:', response1.status, response1.data.success ? '成功' : '失败');
   } catch (error1) {
-    console.log('❌ /dev-perform 失败:', error1.response?.status, error1.response?.data?.message || error1.message);
-    if (error1.response?.status === 400) {
-      console.log('🔍 400错误详情:', JSON.stringify(error1.response.data, null, 2));
+    console.log('❌ /dev-perform 失败:');
+    if (error1.response) {
+      console.log('  状态码:', error1.response.status);
+      console.log('  错误消息:', error1.response.data?.message || '无消息');
+      console.log('  完整响应:', JSON.stringify(error1.response.data, null, 2));
+    } else if (error1.request) {
+      console.log('  网络错误:', error1.message);
+      console.log('  请求已发送但无响应');
+    } else {
+      console.log('  请求配置错误:', error1.message);
     }
   }
 
@@ -49,13 +57,21 @@ async function testEndpoints() {
       headers: {
         'Authorization': `Bearer ${devToken}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 10000
     });
     console.log('✅ /perform 成功:', response2.status, response2.data.success ? '成功' : '失败');
   } catch (error2) {
-    console.log('❌ /perform 失败:', error2.response?.status, error2.response?.data?.message || error2.message);
-    if (error2.response?.status === 400) {
-      console.log('🔍 400错误详情:', JSON.stringify(error2.response.data, null, 2));
+    console.log('❌ /perform 失败:');
+    if (error2.response) {
+      console.log('  状态码:', error2.response.status);
+      console.log('  错误消息:', error2.response.data?.message || '无消息');
+      console.log('  完整响应:', JSON.stringify(error2.response.data, null, 2));
+    } else if (error2.request) {
+      console.log('  网络错误:', error2.message);
+      console.log('  请求已发送但无响应');
+    } else {
+      console.log('  请求配置错误:', error2.message);
     }
   }
 
@@ -67,13 +83,21 @@ async function testEndpoints() {
     const response3 = await axios.post(`${API_BASE_URL}/divination/dev-perform`, testDivinationData, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 10000
     });
     console.log('✅ /dev-perform 无token 成功:', response3.status, response3.data.success ? '成功' : '失败');
   } catch (error3) {
-    console.log('❌ /dev-perform 无token 失败:', error3.response?.status, error3.response?.data?.message || error3.message);
-    if (error3.response?.status === 401) {
-      console.log('🔍 认证失败详情:', JSON.stringify(error3.response.data, null, 2));
+    console.log('❌ /dev-perform 无token 失败:');
+    if (error3.response) {
+      console.log('  状态码:', error3.response.status);
+      console.log('  错误消息:', error3.response.data?.message || '无消息');
+      console.log('  完整响应:', JSON.stringify(error3.response.data, null, 2));
+    } else if (error3.request) {
+      console.log('  网络错误:', error3.message);
+      console.log('  请求已发送但无响应');
+    } else {
+      console.log('  请求配置错误:', error3.message);
     }
   }
 
@@ -85,13 +109,21 @@ async function testEndpoints() {
     const response4 = await axios.post(`${API_BASE_URL}/divination/test`, testDivinationData, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 10000
     });
     console.log('✅ /test 成功:', response4.status, response4.data.success ? '成功' : '失败');
   } catch (error4) {
-    console.log('❌ /test 失败:', error4.response?.status, error4.response?.data?.message || error4.message);
-    if (error4.response?.status === 400) {
-      console.log('🔍 400错误详情:', JSON.stringify(error4.response.data, null, 2));
+    console.log('❌ /test 失败:');
+    if (error4.response) {
+      console.log('  状态码:', error4.response.status);
+      console.log('  错误消息:', error4.response.data?.message || '无消息');
+      console.log('  完整响应:', JSON.stringify(error4.response.data, null, 2));
+    } else if (error4.request) {
+      console.log('  网络错误:', error4.message);
+      console.log('  请求已发送但无响应');
+    } else {
+      console.log('  请求配置错误:', error4.message);
     }
   }
 

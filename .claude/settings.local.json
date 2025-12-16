@@ -24,7 +24,8 @@
       "Bash(cross-env PORT=8081 npm run dev:*)",
       "Bash(PORT=8081 npm run dev:*)",
       "Bash(python:*)",
-      "Bash(npm restart)"
+      "Bash(npm restart)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
