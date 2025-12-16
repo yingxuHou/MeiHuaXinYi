@@ -296,6 +296,7 @@ router.get('/info', (req, res) => {
 
 // 测试占卜修复状态（公开端点，无需认证）
 router.get('/test-fix', (req, res) => {
+  console.log('访问 /test-fix 端点');
   res.json({
     success: true,
     message: '占卜API修复已部署',
@@ -312,8 +313,9 @@ router.get('/test-fix', (req, res) => {
 
 // 测试占卜算法（公开端点，无需认证，仅用于调试）
 router.get('/test-divination', async (req, res) => {
-  const algorithmManager = require('../algorithms').algorithmManager;
+  console.log('访问 /test-divination 端点');
   try {
+    const algorithmManager = require('../algorithms').algorithmManager;
     const result = await algorithmManager.performDivination('测试工作发展', {
       method: 'time',
       params: {
@@ -331,6 +333,7 @@ router.get('/test-divination', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('测试占卜失败:', error);
     res.status(500).json({
       success: false,
       message: '占卜算法测试失败',
