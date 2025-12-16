@@ -31,8 +31,7 @@ const baguaSchema = new mongoose.Schema({
   },
   nature: {
     type: String,
-    required: true,
-    enum: ['天', '泽', '火', '雷', '风', '水', '山', '地']
+    required: true
   },
   direction: {
     type: String,
@@ -112,8 +111,7 @@ const wuxingRelationshipSchema = new mongoose.Schema({
   },
   meaning: {
     type: String,
-    required: true,
-    enum: ['生', '克', '同', '平']
+    required: true
   },
   description: {
     type: String,
