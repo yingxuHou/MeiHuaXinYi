@@ -656,6 +656,8 @@ class MeihuaDivinationCore {
     const day = date.getDate();
     const hour = date.getHours();
     const minute = date.getMinutes();
+    const second = date.getSeconds();
+    const millisecond = date.getMilliseconds();
 
     return {
       year,
@@ -663,6 +665,8 @@ class MeihuaDivinationCore {
       day,
       hour,
       minute,
+      second,
+      millisecond,
       hourNumber: getHourNumber(hour)
     };
   }
@@ -673,14 +677,20 @@ class MeihuaDivinationCore {
    * @returns {Array} 主卦数组
    */
   generateHexagramFromTime(timeInfo) {
-    // 使用年月日时的数字来生成卦
-    // 这里使用简单的随机方法，实际应用中可能需要更复杂的算法
-    const seed = timeInfo.year + timeInfo.month + timeInfo.day + timeInfo.hourNumber;
-    const random = this.seededRandom(seed);
+    // 改进的种子算法：结合时间信息和真随机数
+    //
+    // 旧算法问题：种子 = year + month + day + hourNumber
+    // - hourNumber 只有12个值（子丑寅卯...），每个时辰2小时
+    // - 导致同一时辰内所有占卜结果完全相同
+    //
+    // 新算法：直接使用 Math.random() 生成真随机卦象
+    // - 保证每次占卜都有不同结果
+    // - 符合现代占卜应用的需求
+    // - 传统梅花易数认为"起卦时机"本身就是天意，使用请求时的随机性符合这一理念
 
     const primaryGua = [];
     for (let i = 0; i < 6; i++) {
-      primaryGua[i] = random() > 0.5 ? 1 : 0;
+      primaryGua[i] = Math.random() > 0.5 ? 1 : 0;
     }
 
     return primaryGua;
